@@ -1,12 +1,13 @@
-import {Field, ObjectType, registerEnumType} from "type-graphql";
+import {Field, InputType, ObjectType, registerEnumType} from "type-graphql";
 import {Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {Class} from "./class";
 import {University} from "./university";
 import {Branch} from "./branch";
 import {School} from "./school";
 import {Candidate} from "./candidate";
-import {States} from "../utils/enums";
+import {States, Year} from "../utils/enums";
 import {Vote} from "./vote";
+import {IsEmail} from "class-validator";
 
 registerEnumType(States, {name: 'States'});
 
@@ -16,6 +17,10 @@ export class Student {
     @Field()
     @PrimaryGeneratedColumn()
     readonly id: string;
+
+    @Field()
+    @Column({unique: true})
+    reg_no: string;
 
     /**
      * User can use only one email at a time.
@@ -45,6 +50,7 @@ export class Student {
     /**
      * Despite from bridge-registration but is this user verified
      * This is useful when we verify them all. We can trust everyone who brings members.
+     * - Once verified can not be deleted with api calls.
      */
     @Column()
     isVerified: boolean;
@@ -98,5 +104,24 @@ export class Student {
 
     @OneToMany(() => Vote, s => s.student)
     votes: Vote[];
+}
+
+/**
+ * This is sent directly from bridge.
+ */
+@InputType()
+export class RegistrationInput implements Partial<Student> {
+    @Field()
+    reg_no: string;
+
+    @Field()
+    @IsEmail()
+    email: string;
+
+    @Field()
+    year: Year;
+
+    @Field()
+    classId: number;
 }
 

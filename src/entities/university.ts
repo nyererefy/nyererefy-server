@@ -1,8 +1,10 @@
-import {Field, ID, ObjectType} from "type-graphql";
+import {Field, ID, InputType, ObjectType} from "type-graphql";
 import {Column, Entity, Generated, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {Student} from "./student";
 import {Class} from "./class";
 import {School} from "./school";
+import {Election} from "./election";
+import {IsEmail, IsUrl, Length} from "class-validator";
 
 @ObjectType()
 @Entity('universities')
@@ -18,6 +20,14 @@ export class University {
 
     @Field()
     @Column()
+    title: string;
+
+    @Field()
+    @Column({unique: true})
+    abbreviation: string;
+
+    @Field()
+    @Column()
     email: string;
 
     @Field()
@@ -29,12 +39,8 @@ export class University {
     bridge_url: string;
 
     @Field()
-    @Column()
-    title: string;
-
-    @Field()
-    @Column()
-    secret: string;
+    @Column({nullable: true})
+    secret?: string;
 
     /**
      * OneToMany
@@ -50,5 +56,33 @@ export class University {
 
     @OneToMany(() => School, s => s.university)
     schools: School[];
+
+    @OneToMany(() => Election, s => s.university)
+    elections: Election[];
+}
+
+@InputType()
+export class UniversityInput implements Partial<University> {
+    @Field()
+    @IsEmail()
+    email: string;
+
+    @Field()
+    @Length(5, 100)
+    title: string;
+
+    @Field()
+    @IsUrl()
+    @Length(5, 100)
+    web_url: string;
+
+    @Field()
+    @IsUrl()
+    @Length(5, 100)
+    bridge_url: string;
+}
+
+@InputType()
+export class UniversityEditInput extends UniversityInput {
 }
 

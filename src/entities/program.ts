@@ -27,6 +27,10 @@ export class Program {
     @Column({type: "enum", enum: Duration})
     duration: Duration;
 
+    @Field()
+    @Column({unique: true})
+    abbreviation: string;
+
     /**
      * OneToMany
      */

@@ -20,13 +20,6 @@ export class Category {
     @Column({type: "enum", enum: Eligible})
     eligible: Eligible;
 
-    /**
-     * This will make this category be eligible to all who share the eligibility regardless of university or branch
-     * This will only work for program/sex/all
-     */
-    @Field()
-    @Column()
-    isExtended: boolean;
 
     /**
      * OneToMany

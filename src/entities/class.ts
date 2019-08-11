@@ -5,6 +5,9 @@ import {University} from "./university";
 import {Branch} from "./branch";
 import {School} from "./school";
 
+/**
+ * These are generated automatically..
+ */
 @ObjectType()
 @Entity('classes')
 export class Class {
