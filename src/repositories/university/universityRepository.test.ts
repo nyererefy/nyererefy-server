@@ -15,8 +15,9 @@ describe('University', () => {
         const input: UniversityInput = {
             email: faker.internet.email(),
             title: faker.company.companyName(),
-            web_url: faker.internet.url(),
-            bridge_url: faker.internet.url(),
+            abbreviation: faker.lorem.word(),
+            webUrl: faker.internet.url(),
+            bridgeUrl: faker.internet.url(),
         };
         const result = await repository.createUniversity(input);
 
@@ -29,8 +30,9 @@ describe('University', () => {
         const input: UniversityEditInput = {
             email: faker.internet.email(),
             title: faker.lorem.sentence(),
-            web_url: faker.internet.url(),
-            bridge_url: faker.internet.url(),
+            abbreviation: faker.lorem.word(),
+            webUrl: faker.internet.url(),
+            bridgeUrl: faker.internet.url(),
         };
         const result = await repository.editUniversity(1, input);
 

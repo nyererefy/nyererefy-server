@@ -9,6 +9,6 @@ const studentRepository = getCustomRepository(StudentRepository);
 export class UserResolver {
     @Query(() => Student)
     async user(): Promise<Student> {
-        return await studentRepository.getStudent(1) as Student;
+        return await studentRepository.findStudent(1) as Student;
     }
 }

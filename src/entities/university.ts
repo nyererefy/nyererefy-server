@@ -16,7 +16,7 @@ export class University {
     @Field(() => ID)
     @Generated('uuid')
     @Column({unique: true})
-    identifier: number;
+    uuid: number;
 
     @Field()
     @Column()
@@ -32,11 +32,11 @@ export class University {
 
     @Field()
     @Column()
-    web_url: string;
+    webUrl: string;
 
     @Field()
     @Column()
-    bridge_url: string;
+    bridgeUrl: string;
 
     @Field()
     @Column({nullable: true})
@@ -72,14 +72,18 @@ export class UniversityInput implements Partial<University> {
     title: string;
 
     @Field()
-    @IsUrl()
-    @Length(5, 100)
-    web_url: string;
+    @Length(2, 10)
+    abbreviation: string;
 
     @Field()
     @IsUrl()
     @Length(5, 100)
-    bridge_url: string;
+    webUrl: string;
+
+    @Field()
+    @IsUrl()
+    @Length(5, 100)
+    bridgeUrl: string;
 }
 
 @InputType()

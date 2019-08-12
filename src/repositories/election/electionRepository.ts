@@ -4,12 +4,12 @@ import {University} from "../../entities/university";
 
 @EntityRepository(Election)
 export class ElectionRepository extends Repository<Election> {
-    createElection(input: ElectionInput) {
+    createElection(universityId: number, input: ElectionInput) {
         const election = new Election();
         election.title = input.title;
 
         const university = new University();
-        university.id = input.universityId;
+        university.id = universityId;
 
         election.university = university;
 
@@ -31,5 +31,9 @@ export class ElectionRepository extends Repository<Election> {
 
     findElections() {
         return this.find()
+    }
+
+    findElectionCategories(id: number) {
+        return this.findOne(id, {relations: ['categories']})
     }
 }

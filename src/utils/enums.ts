@@ -1,33 +1,41 @@
 export enum Eligible {
     /**
-     * All students in the system.
+     * All students in the UNIVERSITY.
+     * If this and isExtended === true then this category is universal.
      */
     ALL = 1,
-    /**
-     * All students sharing the same faculty/course/school
-     */
-    SCHOOL = 2,
+
     /**
      * All students at specific branch, Useful for universities having more than one branch.
      * Eg St Augustine -> Main and Tabora
      */
-    BRANCH = 3,
+    BRANCH = 2,
+
+    /**
+     * All students sharing the same faculty/course/school
+     */
+    SCHOOL = 3,
+
     /**
      * For students in specific class only.
      */
     CLASS = 4,
+
     /**
      * Students living in the same residence
      */
     RESIDENCE = 5,
+
     /**
      * Students sharing the same year.
      */
     YEAR = 6,
+
     /**
      * Students sharing the same sex.
      */
     SEX = 7,
+
     /**
      * Students sharing the same program even if outside the college.
      * Can be useful for miss Pharmacy of all country.

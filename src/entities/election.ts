@@ -2,13 +2,14 @@ import {Field, ID, InputType, ObjectType} from "type-graphql";
 import {Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {Category} from "./category";
 import {University} from "./university";
+import {IsAlpha} from "class-validator";
 
 @ObjectType()
 @Entity('elections')
 export class Election {
     @Field(() => ID)
     @PrimaryGeneratedColumn()
-    readonly id: number;
+    id: number;
 
     @Field()
     @Column()
@@ -48,7 +49,7 @@ export class Election {
     /**
      * OneToMany
      */
-    @OneToMany(() => Category, s => s.election)
+    @OneToMany(() => Category, c => c.election)
     categories: Category[];
 
     /**
@@ -62,18 +63,16 @@ export class Election {
     university?: University
 }
 
-
 @InputType()
 export class ElectionInput implements Partial<Election> {
-    @Field()
+    @IsAlpha()
+    @Field({description: 'Name of election. a-zA-Z only'})
     title: string;
-
-    @Field()
-    universityId: number;
 }
 
 @InputType()
 export class ElectionEditInput implements Partial<Election> {
-    @Field()
+    @IsAlpha()
+    @Field({description: 'Name of election. a-zA-Z only'})
     title: string;
 }

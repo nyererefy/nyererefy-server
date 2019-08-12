@@ -6,6 +6,6 @@ import {Entity, PrimaryGeneratedColumn} from "typeorm";
 export class Opinion {
     @Field(() => ID)
     @PrimaryGeneratedColumn()
-    readonly id: number;
+    id: number;
 }
 

@@ -14,7 +14,7 @@ describe('Student', () => {
     it('should create a new student', async () => {
         const input: RegistrationInput = {
             email: faker.internet.email(),
-            reg_no: faker.company.companyName(),
+            regNo: faker.company.companyName(),
             classId: 1,
             year: 1
         };
@@ -22,7 +22,7 @@ describe('Student', () => {
 
         expect(result).toMatchObject({
             email: input.email,
-            reg_no: input.reg_no
+            regNo: input.regNo
         })
     });
 

@@ -7,7 +7,7 @@ import {School} from "./school";
 import {Candidate} from "./candidate";
 import {States, Year} from "../utils/enums";
 import {Vote} from "./vote";
-import {IsEmail} from "class-validator";
+import {IsAlphanumeric, IsEmail} from "class-validator";
 
 registerEnumType(States, {name: 'States'});
 
@@ -20,7 +20,7 @@ export class Student {
 
     @Field()
     @Column({unique: true})
-    reg_no: string;
+    regNo: string;
 
     /**
      * User can use only one email at a time.
@@ -111,8 +111,10 @@ export class Student {
  */
 @InputType()
 export class RegistrationInput implements Partial<Student> {
+    //Todo strip all other characters on bridge.
+    @IsAlphanumeric({message: '$value contains illegal characters, Only a-zA-Z0-9 are allowed'})
     @Field()
-    reg_no: string;
+    regNo: string;
 
     @Field()
     @IsEmail()

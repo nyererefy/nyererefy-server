@@ -9,6 +9,6 @@ import {Entity, PrimaryGeneratedColumn} from "typeorm";
 export class Notification {
     @Field(() => ID)
     @PrimaryGeneratedColumn()
-    readonly id: number;
+    id: number;
 }
 
