@@ -48,7 +48,7 @@ describe('Category', () => {
 
         expect(results).toContainEqual(
             expect.objectContaining({
-                id: expect.any(String),
+                id: expect.any(Number),
                 title: expect.any(String)
             })
         )

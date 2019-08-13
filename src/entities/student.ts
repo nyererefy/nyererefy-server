@@ -16,7 +16,7 @@ registerEnumType(States, {name: 'States'});
 export class Student {
     @Field()
     @PrimaryGeneratedColumn()
-    readonly id: string;
+    id: number;
 
     @Field()
     @Column({unique: true})
@@ -64,7 +64,7 @@ export class Student {
 
     @Field()
     @CreateDateColumn()
-    joinedAt: string;
+    joinedAt: Date;
 
     /**
      * Last seen should be updated when user logs in.

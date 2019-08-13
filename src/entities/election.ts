@@ -36,15 +36,15 @@ export class Election {
 
     @Field()
     @CreateDateColumn()
-    createdAt: string;
+    createdAt: Date;
 
     @Field({nullable: true})
     @Column('datetime', {nullable: true})
-    startAt?: string;
+    startAt?: Date;
 
     @Field({nullable: true})
     @Column('datetime', {nullable: true})
-    endAt?: string;
+    endAt?: Date;
 
     /**
      * OneToMany

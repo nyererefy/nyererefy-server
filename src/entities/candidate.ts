@@ -1,8 +1,10 @@
-import {Field, ID, ObjectType} from "type-graphql";
+import {Field, ID, InputType, ObjectType} from "type-graphql";
 import {Column, Entity, Generated, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {Student} from "./student";
 import {Category} from "./category";
 import {Vote} from "./vote";
+import {GraphQLUpload} from "graphql-upload";
+import {GraphQLScalarType} from "graphql";
 
 /**
  * You can't contest on more than one category per election
@@ -12,7 +14,7 @@ import {Vote} from "./vote";
 export class Candidate {
     @Field(() => ID)
     @PrimaryGeneratedColumn()
-    readonly id: number;
+    id: number;
 
     /**
      * Not meant to be human readable...
@@ -27,7 +29,7 @@ export class Candidate {
      */
     @Field({nullable: true})
     @Column({nullable: true})
-    image?: string;
+    avatar?: string;
 
     @Field({nullable: true})
     @Column({nullable: true})
@@ -44,5 +46,26 @@ export class Candidate {
 
     @OneToMany(() => Vote, s => s.candidate, {onDelete: "RESTRICT"})
     votes: Vote[];
+}
+
+@InputType()
+export class CandidateInput {
+    @Field(() => ID)
+    studentId: number;
+
+    @Field(() => ID)
+    categoryId: number;
+}
+
+@InputType()
+export class CandidateEditInput implements Partial<Candidate> {
+    @Field(() => ID)
+    bio: string;
+}
+
+@InputType()
+export class CandidateAvatarInput {
+    @Field(() => GraphQLUpload)
+    avatar: GraphQLScalarType;
 }
 
