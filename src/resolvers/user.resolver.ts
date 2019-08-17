@@ -5,10 +5,15 @@ import {UserRepository} from "../repositories/user/userRepository";
 
 const userRepository = getCustomRepository(UserRepository);
 
-@Resolver()
+@Resolver(() => User)
 export class UserResolver {
     @Query(() => User)
     async user(): Promise<User> {
         return await userRepository.findUser(1) as User;
+    }
+
+    @Query(() => [User])
+    async users(): Promise<User[]> {
+        return await userRepository.findUsers();
     }
 }

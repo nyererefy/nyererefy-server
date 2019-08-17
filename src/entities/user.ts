@@ -1,4 +1,4 @@
-import {Field, InputType, ObjectType, registerEnumType} from "type-graphql";
+import {Field, ID, InputType, ObjectType, registerEnumType} from "type-graphql";
 import {
     Column,
     CreateDateColumn,
@@ -19,7 +19,7 @@ registerEnumType(States, {name: 'States'});
 @ObjectType()
 @Entity('users')
 export class User {
-    @Field()
+    @Field(() => ID)
     @PrimaryGeneratedColumn()
     id: number;
 

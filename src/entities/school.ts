@@ -33,6 +33,10 @@ export class School {
     @ManyToOne(() => Branch, s => s.schools)
     branch: Branch;
 
+    /**
+     * Why ManyToOne?
+     * -Because School of Pharmacy offers two programs BPHARM and DPS
+     */
     @ManyToOne(() => Program, p => p.schools)
     program: Program;
 

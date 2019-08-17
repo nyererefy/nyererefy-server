@@ -18,10 +18,11 @@ export class Class {
 
     /**
      * Resolved from School abbreviation and year.
+     * This will return string like MD 5 or BPHARM 3
      */
     @Field()
     get title(): string {
-        return `${this.school.title} ${this.year}`;
+        return `${this.school.program.abbreviation} ${this.year}`;
     }
 
     /**

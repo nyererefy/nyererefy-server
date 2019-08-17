@@ -47,7 +47,7 @@ export class University {
     @OneToMany(() => Class, s => s.university)
     classes: Class[];
 
-    @OneToMany(() => Class, s => s.university)
+    @OneToMany(() => Class, s => s.university, {cascade: ['insert', 'remove']})
     branches: Class[];
 
     @OneToMany(() => School, s => s.university)
