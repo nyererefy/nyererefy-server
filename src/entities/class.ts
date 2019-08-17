@@ -1,9 +1,10 @@
 import {Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {Field, ID, ObjectType} from "type-graphql";
-import {Student} from "./student";
+import {User} from "./user";
 import {University} from "./university";
 import {Branch} from "./branch";
 import {School} from "./school";
+import {Year} from "../utils/enums";
 
 /**
  * These are generated automatically..
@@ -15,8 +16,31 @@ export class Class {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
-    title: string;
+    /**
+     * Resolved from School abbreviation and year.
+     */
+    @Field()
+    get title(): string {
+        return `${this.school.title} ${this.year}`;
+    }
+
+    /**
+     * This can also be generated on fly!! Basing on below years right?
+     */
+    @Column({type: 'enum', enum: Year, default: Year.COMPLETED})
+    year: Year;
+
+    /**
+     * Year this class started.
+     */
+    @Column('datetime', {nullable: true})
+    startedAt?: string;
+
+    /**
+     * Year this class ends.
+     */
+    @Column('datetime', {nullable: true})
+    endedAt?: string;
 
     /**
      * ManyToOne
@@ -27,12 +51,12 @@ export class Class {
     @ManyToOne(() => Branch, b => b.classes)
     branch: Branch;
 
-    @ManyToOne(() => School, f => f.classes)
+    @ManyToOne(() => School, f => f.classes, {eager: true})
     school: School;
 
     /**
      * OneToMany
      */
-    @OneToMany(() => Student, student => student.class)
-    students: Student[]
+    @OneToMany(() => User, user => user.class)
+    users: User[]
 }

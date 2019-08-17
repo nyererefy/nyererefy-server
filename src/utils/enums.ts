@@ -1,23 +1,23 @@
 export enum Eligible {
     /**
-     * All students in the UNIVERSITY.
+     * All users in the UNIVERSITY.
      * If this and isExtended === true then this category is universal.
      */
     ALL = 1,
 
     /**
-     * All students at specific branch, Useful for universities having more than one branch.
+     * All users at specific branch, Useful for universities having more than one branch.
      * Eg St Augustine -> Main and Tabora
      */
     BRANCH = 2,
 
     /**
-     * All students sharing the same faculty/course/school
+     * All users sharing the same faculty/course/school
      */
     SCHOOL = 3,
 
     /**
-     * For students in specific class only.
+     * For users in specific class only.
      */
     CLASS = 4,
 
@@ -53,11 +53,12 @@ export enum Duration {
 }
 
 export enum Year {
+    COMPLETED = 0,
     FIRST_YEAR = 1,
     SECOND_YEAR = 2,
     THIRD_YEAR = 3,
     FOURTH_YEAR = 4,
-    FIFTH_YEAR = 5
+    FIFTH_YEAR = 5,
 }
 
 export enum States {

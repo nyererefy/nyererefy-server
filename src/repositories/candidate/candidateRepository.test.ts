@@ -14,7 +14,7 @@ beforeEach(async () => {
 describe('CandidateRepository', () => {
     it('should create a new candidate', async () => {
         const input: CandidateInput = {
-            studentId: 2,
+            userId: 2,
             categoryId: 1
         };
         const result = await repository.createCandidate(input);

@@ -1,28 +1,28 @@
 import {EntityRepository, Repository} from "typeorm";
 import {Candidate, CandidateEditInput, CandidateInput} from "../../entities/candidate";
 import {Category} from "../../entities/category";
-import {Student} from "../../entities/student";
+import {User} from "../../entities/user";
 
 @EntityRepository(Candidate)
 export class CandidateRepository extends Repository<Candidate> {
     async createCandidate(input: CandidateInput): Promise<Candidate> {
-        //Associated student.
-        const student = new Student();
-        student.id = input.studentId;
+        //Associated user.
+        const user = new User();
+        user.id = input.userId;
 
         //Associated category.
         const category = new Category();
         category.id = input.categoryId;
 
-        // Checking if student is already a candidate on the same category
-        const result: [Candidate[], number] = await this.findAndCount({student, category});
+        // Checking if user is already a candidate on the same category
+        const result: [Candidate[], number] = await this.findAndCount({user, category});
         const count = result[1];
 
         if (count !== 0) {
-            throw new Error('Student is already a candidate in this category!')
+            throw new Error('User is already a candidate in this category!')
         }
 
-        const candidate = this.create({student, category});
+        const candidate = this.create({user, category});
 
         return await this.save(candidate);
     }

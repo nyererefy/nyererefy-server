@@ -1,6 +1,6 @@
 import {Field, ID, InputType, ObjectType} from "type-graphql";
 import {Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
-import {Student} from "./student";
+import {User} from "./user";
 import {Candidate} from "./candidate";
 import {Category} from "./category";
 import {IsUUID} from "class-validator";
@@ -21,7 +21,7 @@ export class Vote {
     ip: string;
 
     /**
-     * Combination of studentId-categoryId so that the same key won't be recorded twice.
+     * Combination of userId-categoryId so that the same key won't be recorded twice.
      * We use this to check if user has voted. This has index you know.
      */
     @Column({type: "int", unique: true})
@@ -40,8 +40,8 @@ export class Vote {
     /**
      * ManyToOne
      */
-    @ManyToOne(() => Student, s => s.votes)
-    student: Student;
+    @ManyToOne(() => User, s => s.votes)
+    user: User;
 
     @ManyToOne(() => Candidate, s => s.votes)
     candidate: Candidate;

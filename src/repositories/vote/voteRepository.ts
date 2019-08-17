@@ -1,7 +1,7 @@
 import {EntityRepository, Repository} from "typeorm";
 import {Vote, VoteInput} from "../../entities/vote";
 import {Category} from "../../entities/category";
-import {Student} from "../../entities/student";
+import {User} from "../../entities/user";
 import {Candidate} from "../../entities/candidate";
 
 /**
@@ -11,8 +11,8 @@ import {Candidate} from "../../entities/candidate";
 export class VoteRepository extends Repository<Vote> {
     async createVote(_input: VoteInput) {
         //Voter.
-        const student = new Student();
-        student.id = 1; //From session.
+        const user = new User();
+        user.id = 1; //From session.
 
         //Category.
         const category = new Category();
@@ -22,17 +22,17 @@ export class VoteRepository extends Repository<Vote> {
         const candidate = new Candidate();
         candidate.id = 1;
 
-        const guard = parseInt(`${student}${category}`);
+        const guard = parseInt(`${user}${category}`);
 
-        // Checking if student has already voted
-        const result: [Vote[], number] = await this.findAndCount({student, category});
+        // Checking if user has already voted
+        const result: [Vote[], number] = await this.findAndCount({user, category});
         const count = result[1];
 
         if (count !== 0) {
             throw new Error('You already voted in this category!')
         }
 
-        const vote = this.create({student, category, candidate, guard});
+        const vote = this.create({user, category, candidate, guard});
 
         return this.save(vote);
     }

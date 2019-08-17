@@ -1,6 +1,6 @@
 import {Field, ID, InputType, ObjectType} from "type-graphql";
 import {Column, Entity, Generated, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
-import {Student} from "./student";
+import {User} from "./user";
 import {Category} from "./category";
 import {Vote} from "./vote";
 import {GraphQLUpload} from "graphql-upload";
@@ -38,8 +38,8 @@ export class Candidate {
     /**
      * ManyToOne
      */
-    @ManyToOne(() => Student, s => s.candidates)
-    student: Student;
+    @ManyToOne(() => User, s => s.candidates)
+    user: User;
 
     @ManyToOne(() => Category, s => s.candidates)
     category: Category;
@@ -51,7 +51,7 @@ export class Candidate {
 @InputType()
 export class CandidateInput {
     @Field(() => ID)
-    studentId: number;
+    userId: number;
 
     @Field(() => ID)
     categoryId: number;

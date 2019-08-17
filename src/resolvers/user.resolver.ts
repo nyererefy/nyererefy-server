@@ -1,14 +1,14 @@
 import {Query, Resolver} from "type-graphql";
-import {Student} from "../entities/student";
+import {User} from "../entities/user";
 import {getCustomRepository} from "typeorm";
-import {StudentRepository} from "../repositories/student/studentRepository";
+import {UserRepository} from "../repositories/user/userRepository";
 
-const studentRepository = getCustomRepository(StudentRepository);
+const userRepository = getCustomRepository(UserRepository);
 
 @Resolver()
 export class UserResolver {
-    @Query(() => Student)
-    async user(): Promise<Student> {
-        return await studentRepository.findStudent(1) as Student;
+    @Query(() => User)
+    async user(): Promise<User> {
+        return await userRepository.findUser(1) as User;
     }
 }

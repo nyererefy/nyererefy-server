@@ -1,9 +1,14 @@
 import {Field, InputType, ObjectType, registerEnumType} from "type-graphql";
-import {Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import {
+    Column,
+    CreateDateColumn,
+    Entity,
+    ManyToOne,
+    OneToMany,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn
+} from "typeorm";
 import {Class} from "./class";
-import {University} from "./university";
-import {Branch} from "./branch";
-import {School} from "./school";
 import {Candidate} from "./candidate";
 import {States, Year} from "../utils/enums";
 import {Vote} from "./vote";
@@ -12,14 +17,14 @@ import {IsAlphanumeric, IsEmail} from "class-validator";
 registerEnumType(States, {name: 'States'});
 
 @ObjectType()
-@Entity('students')
-export class Student {
+@Entity('users')
+export class User {
     @Field()
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Field()
-    @Column({unique: true})
+    @Field({nullable: true})
+    @Column({unique: true, nullable: true})
     regNo: string;
 
     /**
@@ -66,6 +71,10 @@ export class Student {
     @CreateDateColumn()
     joinedAt: Date;
 
+    @Field()
+    @UpdateDateColumn()
+    updatedAt: Date;
+
     /**
      * Last seen should be updated when user logs in.
      * This is used to delete account after some time.
@@ -79,30 +88,21 @@ export class Student {
      */
     @Field()
     @Column({type: "enum", enum: States, default: States.ACTIVE})
-    eligible: States;
+    state: States;
 
     /**
      * ManyToOne
      */
-    @ManyToOne(() => University, u => u.students)
-    university: University;
-
-    @ManyToOne(() => Branch, b => b.students)
-    branch: Branch;
-
-    @ManyToOne(() => School, f => f.students)
-    school: School;
-
-    @ManyToOne(() => Class, c => c.students)
+    @ManyToOne(() => Class, c => c.users)
     class: Class;
 
     /**
      * OneToMany
      */
-    @OneToMany(() => Candidate, s => s.student)
+    @OneToMany(() => Candidate, s => s.user)
     candidates: Candidate[];
 
-    @OneToMany(() => Vote, s => s.student)
+    @OneToMany(() => Vote, s => s.user)
     votes: Vote[];
 }
 
@@ -110,7 +110,7 @@ export class Student {
  * This is sent directly from bridge.
  */
 @InputType()
-export class RegistrationInput implements Partial<Student> {
+export class RegistrationInput implements Partial<User> {
     //Todo strip all other characters on bridge.
     @IsAlphanumeric({message: '$value contains illegal characters, Only a-zA-Z0-9 are allowed'})
     @Field()
