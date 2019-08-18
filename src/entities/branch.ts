@@ -1,5 +1,4 @@
 import {Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
-import {Class} from "./class";
 import {University} from "./university";
 import {Field, ID, ObjectType} from "type-graphql";
 import {School} from "./school";
@@ -21,9 +20,6 @@ export class Branch {
     /**
      * OneToMany
      */
-    @OneToMany(() => Class, c => c.branch)
-    classes: Class[];
-
     @OneToMany(() => School, s => s.branch)
     schools: School[];
 

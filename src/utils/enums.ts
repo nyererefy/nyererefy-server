@@ -37,7 +37,7 @@ export enum Eligible {
     SEX = 7,
 
     /**
-     * Students sharing the same program even if outside the college.
+     * Students sharing the same programs even if outside the college.
      * Can be useful for miss Pharmacy of all country.
      */
     PROGRAM = 8
@@ -61,7 +61,7 @@ export enum Year {
     FIFTH_YEAR = 5,
 }
 
-export enum States {
+export enum State {
     /**
      * Normal and functioning well.
      */

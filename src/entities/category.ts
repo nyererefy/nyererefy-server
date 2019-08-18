@@ -5,6 +5,7 @@ import {Election} from "./election";
 import {Eligible} from "../utils/enums";
 import {Vote} from "./vote";
 import {IsAlpha, IsNumber} from "class-validator";
+import {Review} from "./review";
 
 @ObjectType()
 @Entity('categories')
@@ -29,6 +30,9 @@ export class Category {
 
     @OneToMany(() => Vote, s => s.category)
     votes: Vote[];
+
+    @OneToMany(() => Review, s => s.category)
+    reviews: Review[];
 
     /**
      * ManyToOne

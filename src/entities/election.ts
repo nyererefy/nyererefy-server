@@ -28,7 +28,7 @@ export class Election {
 
     /**
      * This will make this category be eligible to all who share the eligibility regardless of university or branch
-     * This will only work for program/sex/all
+     * This will only work for programs/sex/all
      */
     @Field()
     @Column()

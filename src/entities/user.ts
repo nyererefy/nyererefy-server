@@ -10,11 +10,12 @@ import {
 } from "typeorm";
 import {Class} from "./class";
 import {Candidate} from "./candidate";
-import {States, Year} from "../utils/enums";
+import {State, Year} from "../utils/enums";
 import {Vote} from "./vote";
 import {IsAlphanumeric, IsEmail} from "class-validator";
+import {Review} from "./review";
 
-registerEnumType(States, {name: 'States'});
+registerEnumType(State, {name: 'State'});
 
 @ObjectType()
 @Entity('users')
@@ -35,21 +36,21 @@ export class User {
     @Column({unique: true})
     email: string;
 
-    @Field()
+    @Field({nullable: true})
     @Column({unique: true, nullable: true})
     username?: string;
 
     /**
      * We take this name from email when use social login.
      */
-    @Field()
+    @Field({nullable: true})
     @Column({nullable: true})
     name?: string;
 
     /**
      * Email token
      */
-    @Field()
+    @Column()
     token: string;
 
     /**
@@ -57,6 +58,7 @@ export class User {
      * This is useful when we verify them all. We can trust everyone who brings members.
      * - Once verified can not be deleted with api calls.
      */
+    @Field()
     @Column()
     isVerified: boolean;
 
@@ -84,11 +86,11 @@ export class User {
     lastSeenAt?: string;
 
     /**
-     * States of account
+     * State of account
      */
-    @Field()
-    @Column({type: "enum", enum: States, default: States.ACTIVE})
-    state: States;
+    @Field(() => State)
+    @Column({type: "enum", enum: State, default: State.ACTIVE})
+    state: State;
 
     /**
      * ManyToOne
@@ -104,6 +106,9 @@ export class User {
 
     @OneToMany(() => Vote, s => s.user)
     votes: Vote[];
+
+    @OneToMany(() => Review, s => s.category)
+    reviews: Review[];
 }
 
 /**

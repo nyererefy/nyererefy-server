@@ -1,9 +1,9 @@
 import {FieldResolver, Query, Resolver, Root} from "type-graphql";
-import {User} from "../entities/user";
+import {User} from "../../entities/user";
 import {getCustomRepository} from "typeorm";
-import {UserRepository} from "../repositories/user/userRepository";
-import {CandidateRepository} from "../repositories/candidate/candidateRepository";
-import {Candidate} from "../entities/candidate";
+import {UserRepository} from "../../repositories/user/userRepository";
+import {CandidateRepository} from "../../repositories/candidate/candidateRepository";
+import {Candidate} from "../../entities/candidate";
 
 const userRepository = getCustomRepository(UserRepository);
 const candidateRepository = getCustomRepository(CandidateRepository);

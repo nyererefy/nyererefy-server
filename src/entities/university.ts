@@ -1,9 +1,8 @@
 import {Field, ID, InputType, ObjectType} from "type-graphql";
 import {Column, Entity, Generated, OneToMany, PrimaryGeneratedColumn} from "typeorm";
-import {Class} from "./class";
-import {School} from "./school";
 import {Election} from "./election";
 import {IsEmail, IsUrl, Length} from "class-validator";
+import {Branch} from "./branch";
 
 @ObjectType()
 @Entity('universities')
@@ -44,14 +43,8 @@ export class University {
     /**
      * OneToMany
      */
-    @OneToMany(() => Class, s => s.university)
-    classes: Class[];
-
-    @OneToMany(() => Class, s => s.university, {cascade: ['insert', 'remove']})
-    branches: Class[];
-
-    @OneToMany(() => School, s => s.university)
-    schools: School[];
+    @OneToMany(() => Branch, s => s.university, {cascade: ['insert', 'remove']})
+    branches: Branch[];
 
     @OneToMany(() => Election, s => s.university)
     elections: Election[];

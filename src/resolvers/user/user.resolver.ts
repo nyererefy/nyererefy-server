@@ -1,7 +1,7 @@
 import {Query, Resolver} from "type-graphql";
-import {User} from "../entities/user";
+import {User} from "../../entities/user";
 import {getCustomRepository} from "typeorm";
-import {UserRepository} from "../repositories/user/userRepository";
+import {UserRepository} from "../../repositories/user/userRepository";
 
 const userRepository = getCustomRepository(UserRepository);
 

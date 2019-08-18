@@ -1,10 +1,9 @@
 import {Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {Field, ID, ObjectType} from "type-graphql";
 import {User} from "./user";
-import {University} from "./university";
-import {Branch} from "./branch";
 import {School} from "./school";
 import {Year} from "../utils/enums";
+import {Program} from "./program";
 
 /**
  * These are generated automatically..
@@ -22,7 +21,7 @@ export class Class {
      */
     @Field()
     get title(): string {
-        return `${this.school.program.abbreviation} ${this.year}`;
+        return `${this.program.abbreviation} ${this.year}`;
     }
 
     /**
@@ -46,18 +45,21 @@ export class Class {
     /**
      * ManyToOne
      */
-    @ManyToOne(() => University, u => u.classes)
-    university: University;
-
-    @ManyToOne(() => Branch, b => b.classes)
-    branch: Branch;
 
     @ManyToOne(() => School, f => f.classes, {eager: true})
     school: School;
 
     /**
+     * Program can be shared by many classes from different universities.
+     */
+    @Field(() => Program)
+    @ManyToOne(() => Program, f => f.classes, {eager: true})
+    program: Program;
+
+    /**
      * OneToMany
      */
     @OneToMany(() => User, user => user.class)
-    users: User[]
+    users: User[];
+
 }
