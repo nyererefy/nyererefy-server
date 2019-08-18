@@ -38,7 +38,7 @@ describe('User', () => {
         expect(results).toContainEqual(
             expect.objectContaining({
                 id: expect.any(Number),
-                title: expect.any(String)
+                email: expect.any(String)
             })
         )
     });

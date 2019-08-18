@@ -2,15 +2,14 @@ import '../../utils/test/initTestDb'
 import {CategoryRepository} from "./categoryRepository";
 import {getCustomRepository} from "typeorm";
 import faker from "faker";
-import {Category, CategoryEditInput, CategoryInput} from "../../entities/category";
+import {CategoryEditInput, CategoryInput} from "../../entities/category";
 import {Eligible} from "../../utils/enums";
 
 let repository: CategoryRepository;
-let categories: Category[];
+const categoryId = 1;
 
 beforeEach(async () => {
     repository = getCustomRepository(CategoryRepository);
-    categories = await repository.findCategories();
 });
 
 describe('Category', () => {
@@ -26,20 +25,17 @@ describe('Category', () => {
     });
 
     it('should edit an category', async () => {
-        const id = categories[0].id;
-
         const input: CategoryEditInput = {
             title: faker.random.words(2),
             eligible: Eligible.BRANCH
         };
-        const result = await repository.editCategory(id, input);
+        const result = await repository.editCategory(categoryId, input);
 
         await expect(result).toMatchObject(input)
     });
 
     it('should find category', async () => {
-        const id = categories[0].id;
-        const result = await repository.findCategory(id);
+        const result = await repository.findCategory(categoryId);
         expect(result).toBeDefined();
     });
 

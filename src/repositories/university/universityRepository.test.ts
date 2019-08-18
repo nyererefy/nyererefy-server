@@ -15,7 +15,7 @@ describe('University', () => {
         const input: UniversityInput = {
             email: faker.internet.email(),
             title: faker.company.companyName(),
-            abbreviation: faker.lorem.word(),
+            abbreviation: faker.random.word(),
             webUrl: faker.internet.url(),
             bridgeUrl: faker.internet.url(),
         };
@@ -24,13 +24,13 @@ describe('University', () => {
         expect(result).toMatchObject(input)
     });
 
-    it('should edit an election', async () => {
+    it('should edit an university', async () => {
         const id = 1;
 
         const input: UniversityEditInput = {
             email: faker.internet.email(),
             title: faker.lorem.sentence(),
-            abbreviation: faker.lorem.word(),
+            abbreviation: faker.random.word(),
             webUrl: faker.internet.url(),
             bridgeUrl: faker.internet.url(),
         };
@@ -42,7 +42,7 @@ describe('University', () => {
         })
     });
 
-    it('should find election', async () => {
+    it('should find university', async () => {
         const electionId = 1;
         const result = await repository.findUniversity(electionId);
         expect(result).toBeDefined();

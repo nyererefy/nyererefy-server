@@ -5,7 +5,9 @@ import {CandidateEditInput, CandidateInput} from "../../entities/candidate";
 import faker from 'faker';
 
 let repository: CandidateRepository;
-const id = 1; //Id to test
+const userId = 2;
+const candidateId = 1;
+const categoryId = 1;
 
 beforeEach(async () => {
     repository = getCustomRepository(CandidateRepository);
@@ -14,8 +16,8 @@ beforeEach(async () => {
 describe('CandidateRepository', () => {
     it('should create a new candidate', async () => {
         const input: CandidateInput = {
-            userId: 2,
-            categoryId: 1
+            userId,
+            categoryId
         };
         const result = await repository.createCandidate(input);
 
@@ -27,13 +29,13 @@ describe('CandidateRepository', () => {
         const input: CandidateEditInput = {
             bio: faker.random.words(2),
         };
-        const result = await repository.editCandidate(id, input);
+        const result = await repository.editCandidate(candidateId, input);
 
         await expect(result).toMatchObject(input)
     });
 
     it('should find candidate', async () => {
-        const result = await repository.findCandidate(id);
+        const result = await repository.findCandidate(candidateId);
         expect(result).toBeDefined();
     });
 

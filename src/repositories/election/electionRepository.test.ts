@@ -5,6 +5,8 @@ import faker from "faker";
 import {ElectionEditInput, ElectionInput} from "../../entities/election";
 
 let repository: ElectionRepository;
+const universityId = 1;
+const electionId = 1;
 
 beforeEach(async () => {
     repository = getCustomRepository(ElectionRepository);
@@ -12,7 +14,6 @@ beforeEach(async () => {
 
 describe('Election', () => {
     it('should create a new election', async () => {
-        const universityId = 1;
 
         const input: ElectionInput = {
             title: faker.lorem.sentence()
@@ -23,31 +24,28 @@ describe('Election', () => {
     });
 
     it('should edit an election', async () => {
-        const id = 1;
         const input: ElectionEditInput = {
             title: faker.lorem.sentence()
         };
-        const result = await repository.editElection(1, input);
+        const result = await repository.editElection(electionId, input);
 
         await expect(result).toMatchObject({
-            id,
+            id: electionId,
             title: input.title
         })
     });
 
     it('should find election', async () => {
-        const electionId = 1;
         const result = await repository.findElection(electionId);
         expect(result).toBeDefined();
     });
 
     it('should find election and its categories', async () => {
-        const electionId = 1;
         const result = await repository.findElectionCategories(electionId);
 
         expect(result!.categories).toContainEqual(
             expect.objectContaining({
-                id: expect.any(String),
+                id: expect.any(Number),
                 title: expect.any(String)
             })
         )

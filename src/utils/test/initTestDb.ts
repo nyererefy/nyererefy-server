@@ -1,16 +1,18 @@
 import {Connection} from "typeorm";
 import {testConnection} from "./testConnection";
+import {insertDummyData} from "./initDummyData";
 
-function initTestDb() {
+const initTestDb = () => {
     let con: Connection;
 
     beforeAll(async () => {
-        con = await testConnection()
+        con = await testConnection();
+        await insertDummyData();
     });
 
     afterAll(async () => {
         await con.close()
     });
-}
+};
 
 initTestDb();
