@@ -25,15 +25,13 @@ export class ElectionRepository extends Repository<Election> {
         return this.save(election);
     }
 
-    findElection(id: number) {
-        return this.findOne(id)
+    async findElection(id: number): Promise<Election> {
+        const election = await this.findOne(id);
+        if (!election) throw new Error('Election was not found');
+        return election;
     }
 
-    findElections() {
+    findElections(): Promise<Election[]> {
         return this.find()
-    }
-
-    findElectionCategories(id: number) {
-        return this.findOne(id, {relations: ['categories']})
     }
 }
