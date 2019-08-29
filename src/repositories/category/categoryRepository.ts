@@ -4,7 +4,8 @@ import {Election} from "../../entities/election";
 
 @EntityRepository(Category)
 export class CategoryRepository extends Repository<Category> {
-    createCategory(input: CategoryInput) {
+    createCategory(input: CategoryInput): Promise<Category> {
+        //Todo make sure election belongs to right owner.
         //Associated election
         const election = new Election();
         election.id = input.electionId;
@@ -15,8 +16,8 @@ export class CategoryRepository extends Repository<Category> {
         return this.save(category);
     }
 
-    async editCategory(id: number, input: CategoryEditInput) {
-        let category = await this.findOne(id);
+    async updateCategory(input: CategoryEditInput): Promise<Category> {
+        let category = await this.findOne(input.categoryId);
         if (!category) throw new Error('Category was not found');
 
         category = this.merge(category, input);
@@ -24,12 +25,18 @@ export class CategoryRepository extends Repository<Category> {
         return this.save(category);
     }
 
-    findCategory(id: number) {
-        return this.findOne(id)
+    async findCategory(id: number): Promise<Category> {
+        let category = await this.findOne(id);
+        if (!category) throw new Error('Category was not found');
+
+        return category;
     }
 
-    findCategories() {
-        return this.find()
+    findCategories(electionId: number): Promise<Category[]> {
+        const election = new Election();
+        election.id = electionId;
+
+        return this.find({where: {election}})
     }
 
 }

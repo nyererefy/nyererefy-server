@@ -1,5 +1,13 @@
 import {Field, ID, InputType, ObjectType} from "type-graphql";
-import {Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import {
+    Column,
+    CreateDateColumn,
+    Entity,
+    ManyToOne,
+    OneToMany,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn
+} from "typeorm";
 import {Category} from "./category";
 import {University} from "./university";
 import {IsAlpha} from "class-validator";
@@ -37,6 +45,10 @@ export class Election {
     @Field()
     @CreateDateColumn()
     createdAt: Date;
+
+    @Field({nullable: true})
+    @UpdateDateColumn()
+    updatedAt?: Date;
 
     @Field({nullable: true})
     @Column('datetime', {nullable: true})

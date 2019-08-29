@@ -4,7 +4,7 @@ import {Candidate} from "./candidate";
 import {Election} from "./election";
 import {Eligible} from "../utils/enums";
 import {Vote} from "./vote";
-import {IsAlpha, IsNumber} from "class-validator";
+import {IsAlpha, IsNumber, Length} from "class-validator";
 import {Review} from "./review";
 
 @ObjectType()
@@ -44,6 +44,7 @@ export class Category {
 @InputType()
 export class CategoryInput implements Partial<Category> {
     @IsAlpha()
+    @Length(1, 50)
     @Field({description: 'a-zA-Z only'})
     title: string;
 
@@ -58,10 +59,15 @@ export class CategoryInput implements Partial<Category> {
 @InputType()
 export class CategoryEditInput implements Partial<Category> {
     @IsAlpha()
+    @Length(1, 50)
     @Field({description: 'a-zA-Z only'})
     title: string;
 
     @Field()
     eligible: Eligible;
+
+    @IsNumber()
+    @Field()
+    categoryId: number
 }
 

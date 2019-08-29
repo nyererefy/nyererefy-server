@@ -7,6 +7,7 @@ import {Eligible} from "../../utils/enums";
 
 let repository: CategoryRepository;
 const categoryId = 1;
+const electionId = 1;
 
 beforeEach(async () => {
     repository = getCustomRepository(CategoryRepository);
@@ -27,9 +28,10 @@ describe('Category', () => {
     it('should edit an category', async () => {
         const input: CategoryEditInput = {
             title: faker.random.words(2),
-            eligible: Eligible.BRANCH
+            eligible: Eligible.BRANCH,
+            categoryId
         };
-        const result = await repository.editCategory(categoryId, input);
+        const result = await repository.updateCategory(input);
 
         await expect(result).toMatchObject(input)
     });
@@ -39,8 +41,8 @@ describe('Category', () => {
         expect(result).toBeDefined();
     });
 
-    it('should find categories', async () => {
-        const results = await repository.findCategories();
+    it('should find election\'s categories', async () => {
+        const results = await repository.findCategories(electionId);
 
         expect(results).toContainEqual(
             expect.objectContaining({
