@@ -80,3 +80,17 @@ export enum State {
      */
     TO_BE_DELETED = 4,
 }
+
+/**
+ * Field in survey to show how options will look like
+ */
+export enum SurveyOptionsType {
+    /*
+     * Normal and functioning well.
+     */
+    RADIO = 1,
+    /*
+     * Due to spam we can suspend account.
+     */
+    SUSPENDED = 2
+}
