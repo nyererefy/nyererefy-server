@@ -19,20 +19,20 @@ registerEnumType(Duration, {name: 'Duration'});
 export class Program {
     @Field(() => ID)
     @PrimaryGeneratedColumn()
-    readonly id: number;
+    id: number;
 
     //Unique because we register programs only once.
     @Field()
     @Column({unique: true})
     title: string;
 
-    @Field(() => Duration)
-    @Column({type: "enum", enum: Duration})
-    duration: Duration;
-
     @Field()
     @Column({unique: true})
     abbreviation: string;
+
+    @Field(() => Duration)
+    @Column({type: "enum", enum: Duration})
+    duration: Duration;
 
     /* ManyToOne */
 

@@ -18,8 +18,16 @@ export class UniversityRepository extends Repository<University> {
         return this.save(university);
     }
 
-    findUniversity(id: number) {
-        return this.findOne(id)
+    async findUniversity(id: number): Promise<University> {
+        let university = await this.findOne(id);
+        if (!university) throw new Error('University was not found');
+        return university;
+    }
+
+    async findUniversityByUUId(uuid: string): Promise<University> {
+        let university = await this.findOne({where: {uuid}});
+        if (!university) throw new Error('University was not found');
+        return university;
     }
 
     findUniversities() {

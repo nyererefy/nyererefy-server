@@ -6,7 +6,7 @@ const initTestDb = () => {
     let con: Connection;
 
     beforeAll(async () => {
-        con = await testConnection();
+        con = await testConnection(true);
         await insertDummyData();
     });
 

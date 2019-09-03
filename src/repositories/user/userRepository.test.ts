@@ -3,26 +3,32 @@ import {UserRepository} from "./userRepository";
 import {getCustomRepository} from "typeorm";
 import faker from "faker";
 import {RegistrationInput} from "../../entities/user";
+import {UniversityRepository} from "../university/universityRepository";
+import {University} from "../../entities/university";
 
 let repository: UserRepository;
+let universityRepository: UniversityRepository;
+let university: University;
 
 beforeEach(async () => {
     repository = getCustomRepository(UserRepository);
+    universityRepository = getCustomRepository(UniversityRepository);
+
+    university = await universityRepository.findUniversity(1)
 });
 
 describe('User', () => {
-    it('should create a new user', async () => {
+    it('should create a new user basing on university\'s uuid', async () => {
         const input: RegistrationInput = {
             email: faker.internet.email(),
-            regNo: faker.company.companyName(),
-            classId: 1,
-            year: 1
+            regNo: faker.internet.userName(),
+            uuid: university.uuid
         };
         const result = await repository.registerUser(input);
 
         expect(result).toMatchObject({
-            email: input.email,
-            regNo: input.regNo
+            email: input.email.toLowerCase(),
+            regNo: input.regNo.toUpperCase()
         })
     });
 

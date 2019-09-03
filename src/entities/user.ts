@@ -1,5 +1,6 @@
-import {Field, ID, InputType, ObjectType, registerEnumType} from "type-graphql";
+import {Field, ID, ObjectType, registerEnumType} from "type-graphql";
 import {
+    BeforeInsert,
     Column,
     CreateDateColumn,
     Entity,
@@ -12,8 +13,9 @@ import {Class} from "./class";
 import {Candidate} from "./candidate";
 import {State, Year} from "../utils/enums";
 import {Vote} from "./vote";
-import {IsAlphanumeric, IsEmail} from "class-validator";
+import {IsEmail, IsUUID, Length} from "class-validator";
 import {Review} from "./review";
+import {University} from "./university";
 
 registerEnumType(State, {name: 'State'});
 
@@ -24,8 +26,8 @@ export class User {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Field({nullable: true})
-    @Column({unique: true, nullable: true})
+    @Field()
+    @Column({unique: true})
     regNo: string;
 
     /**
@@ -50,8 +52,8 @@ export class User {
     /**
      * Email token
      */
-    @Column()
-    token: string;
+    @Column({nullable: true})
+    token?: string;
 
     /**
      * Despite from bridge-registration but is this user verified
@@ -99,6 +101,12 @@ export class User {
     class: Class;
 
     /**
+     * Some may not have classes registered.
+     */
+    @ManyToOne(() => University)
+    university: University;
+
+    /**
      * OneToMany
      */
     @OneToMany(() => Candidate, s => s.user)
@@ -109,26 +117,61 @@ export class User {
 
     @OneToMany(() => Review, s => s.category)
     reviews: Review[];
+
+    @BeforeInsert()
+    cleanData() {
+        this.regNo = this.regNo.toUpperCase();
+        this.email = this.email.toLowerCase();
+    }
 }
 
 /**
- * This is sent directly from bridge.
+ * This one just registers user with their specific university that's all.
+ * Everything will be the same for all.
  */
-@InputType()
 export class RegistrationInput implements Partial<User> {
-    //Todo strip all other characters on bridge.
-    @IsAlphanumeric({message: '$value contains illegal characters, Only a-zA-Z0-9 are allowed'})
-    @Field()
+    @Length(1, 50)
     regNo: string;
 
     @Field()
     @IsEmail()
     email: string;
 
+    /**
+     * We get it from university's uuid
+     */
     @Field()
+    @IsUUID('4')
+    uuid: string;
+}
+
+/**
+ * This one checks reg no patterns to match with what student is studying.
+ * We can find who is student from registration number.
+ * number should be split  by dashes like uuid.
+ */
+export class IntelligentRegistrationInput extends RegistrationInput {
+}
+
+/**
+ * This is should contain year and program abbreviation.
+ */
+export class RegistrationByProgramInput extends RegistrationInput {
     year: Year;
 
-    @Field()
-    classId: number;
+    @Length(1, 50)
+    programAbbreviation: string;
 }
+
+/**
+ * Like I am Sylvanus taking bachelor in Pharmacy should bring BPHARM
+ */
+export class RegistrationBySchoolInput extends RegistrationInput {
+    year: Year;
+
+    @Length(1, 50)
+    schoolIdentifier: string;
+}
+
+
 

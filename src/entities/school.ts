@@ -12,11 +12,16 @@ import {Program} from "./program";
 export class School {
     @Field(() => ID)
     @PrimaryGeneratedColumn()
-    readonly id: number;
+    id: number;
 
     @Field()
     @Column()
     title: string;
+
+    //Representation of what this school is
+    @Field()
+    @Column({unique: true, length: 50})
+    identifier: string;
 
     /* OneToMany */
 

@@ -48,14 +48,13 @@ async function createCategory(electionId: number) {
     return await categoryRepository.createCategory(categoryInput);
 }
 
-async function createUser(classId: number) {
+async function createUser(uuid: string) {
     const userRepository = getCustomRepository(UserRepository);
 
     const input: RegistrationInput = {
         email: faker.internet.email(),
-        regNo: faker.company.companyName(),
-        classId,
-        year: 1
+        regNo: faker.internet.userName(),
+        uuid
     };
 
     return await userRepository.registerUser(input);
@@ -74,8 +73,8 @@ async function createCandidate(userId: number, categoryId: number) {
 export const insertDummyData = async () => {
     const university = await createUniversity();
 
-    const user = await createUser(1);
-    await createUser(1);
+    const user = await createUser(university.uuid);
+    await createUser(university.uuid);
 
     const election = await createElection(university.id);
     const category = await createCategory(election.id);

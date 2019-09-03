@@ -14,7 +14,7 @@ export class University {
     @Field(() => ID)
     @Generated('uuid')
     @Column({unique: true})
-    uuid: number;
+    uuid: string;
 
     @Field()
     @Column()
