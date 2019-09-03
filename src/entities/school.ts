@@ -1,8 +1,10 @@
-import {Field, ID, ObjectType} from "type-graphql";
+import {Field, ID, InputType, ObjectType} from "type-graphql";
 import {Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {Class} from "./class";
 import {Branch} from "./branch";
 import {Program} from "./program";
+import {IsInt, IsOptional, Length, Max} from "class-validator";
+import {University} from "./university";
 
 /**
  * Means the same thing as faculty/course
@@ -17,6 +19,10 @@ export class School {
     @Field()
     @Column()
     title: string;
+
+    @Field({nullable: true})
+    @Column({unique: true, nullable: true})
+    abbreviation?: string;
 
     //Representation of what this school is
     @Field()
@@ -39,5 +45,29 @@ export class School {
 
     @ManyToOne(() => Branch, s => s.schools)
     branch: Branch;
+
+    @ManyToOne(() => University, s => s.schools)
+    university: University;
+}
+
+@InputType()
+export class SchoolInput implements Partial<School> {
+    @Field()
+    @Length(1, 100)
+    title: string;
+
+    @Field()
+    @Length(1, 50)
+    identifier: string;
+
+    @Field({nullable: true})
+    @IsOptional()
+    @Max(10)
+    abbreviation?: string;
+
+    @Field({nullable: true})
+    @IsOptional()
+    @IsInt()
+    branchId?: number;
 }
 
