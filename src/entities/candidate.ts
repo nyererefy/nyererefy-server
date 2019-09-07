@@ -1,10 +1,10 @@
 import {Field, ID, InputType, ObjectType} from "type-graphql";
 import {Column, Entity, Generated, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {User} from "./user";
-import {Category} from "./category";
 import {Vote} from "./vote";
 import {GraphQLUpload} from "graphql-upload";
 import {GraphQLScalarType} from "graphql";
+import {Subcategory} from "./subcategory";
 
 /**
  * You can't contest on more than one category per election
@@ -41,8 +41,8 @@ export class Candidate {
     @ManyToOne(() => User, s => s.candidates)
     user: User;
 
-    @ManyToOne(() => Category, s => s.candidates)
-    category: Category;
+    @ManyToOne(() => Subcategory, s => s.candidates)
+    subcategory: Subcategory;
 
     @OneToMany(() => Vote, s => s.candidate, {onDelete: "RESTRICT"})
     votes: Vote[];
@@ -54,7 +54,7 @@ export class CandidateInput {
     userId: number;
 
     @Field(() => ID)
-    categoryId: number;
+    subcategoryId: number;
 }
 
 @InputType()

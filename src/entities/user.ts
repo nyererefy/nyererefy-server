@@ -115,7 +115,7 @@ export class User {
     @OneToMany(() => Vote, s => s.user)
     votes: Vote[];
 
-    @OneToMany(() => Review, s => s.category)
+    @OneToMany(() => Review, s => s.user)
     reviews: Review[];
 
     @BeforeInsert()

@@ -1,5 +1,5 @@
 import {Field, ID, InputType, ObjectType} from "type-graphql";
-import {Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import {BeforeInsert, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {Class} from "./class";
 import {Branch} from "./branch";
 import {Program} from "./program";
@@ -20,9 +20,9 @@ export class School {
     @Column()
     title: string;
 
-    @Field({nullable: true})
-    @Column({unique: true, nullable: true})
-    abbreviation?: string;
+    @Field()
+    @Column()
+    abbreviation: string;
 
     //Representation of what this school is
     @Field()
@@ -48,6 +48,11 @@ export class School {
 
     @ManyToOne(() => University, s => s.schools)
     university: University;
+
+    @BeforeInsert()
+    clearData() {
+        this.abbreviation = this.abbreviation.toUpperCase();
+    }
 }
 
 @InputType()
@@ -60,10 +65,9 @@ export class SchoolInput implements Partial<School> {
     @Length(1, 50)
     identifier: string;
 
-    @Field({nullable: true})
-    @IsOptional()
+    @Field()
     @Max(10)
-    abbreviation?: string;
+    abbreviation: string;
 
     @Field({nullable: true})
     @IsOptional()

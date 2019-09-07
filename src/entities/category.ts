@@ -1,11 +1,9 @@
 import {Field, ID, InputType, ObjectType} from "type-graphql";
 import {Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
-import {Candidate} from "./candidate";
 import {Election} from "./election";
 import {Eligible} from "../utils/enums";
-import {Vote} from "./vote";
 import {IsAlpha, IsNumber, Length} from "class-validator";
-import {Review} from "./review";
+import {Subcategory} from "./subcategory";
 
 @ObjectType()
 @Entity('categories')
@@ -15,24 +13,18 @@ export class Category {
     id: number;
 
     @Field()
-    @Column()
+    @Column({length: 100})
     title: string;
 
-    @Field()
-    @Column({type: "enum", enum: Eligible})
+    @Field({defaultValue: Eligible.ALL})
+    @Column({type: "tinyint", default: Eligible.ALL})
     eligible: Eligible;
 
     /**
      * OneToMany
      */
-    @OneToMany(() => Candidate, s => s.category)
-    candidates: Candidate[];
-
-    @OneToMany(() => Vote, s => s.category)
-    votes: Vote[];
-
-    @OneToMany(() => Review, s => s.category)
-    reviews: Review[];
+    @OneToMany(() => Subcategory, s => s.category)
+    subcategories: Subcategory[];
 
     /**
      * ManyToOne

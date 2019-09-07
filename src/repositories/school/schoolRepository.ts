@@ -39,7 +39,10 @@ export class SchoolRepository extends Repository<School> {
         return this.findOne(id);
     }
 
-    findSchools() {
-        return this.find();
+    findSchools(universityId: number) {
+        const university = new University();
+        university.id = universityId;
+
+        return this.find({where: {university}});
     }
 }

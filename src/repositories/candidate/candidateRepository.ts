@@ -1,6 +1,6 @@
 import {EntityRepository, Repository} from "typeorm";
 import {Candidate, CandidateEditInput, CandidateInput} from "../../entities/candidate";
-import {Category} from "../../entities/category";
+import {Subcategory} from "../../entities/subcategory";
 import {User} from "../../entities/user";
 
 @EntityRepository(Candidate)
@@ -10,19 +10,19 @@ export class CandidateRepository extends Repository<Candidate> {
         const user = new User();
         user.id = input.userId;
 
-        //Associated category.
-        const category = new Category();
-        category.id = input.categoryId;
+        //Associated subcategory.
+        const subcategory = new Subcategory();
+        subcategory.id = input.subcategoryId;
 
-        // Checking if user is already a candidate on the same category
-        const result: [Candidate[], number] = await this.findAndCount({user, category});
+        // Checking if user is already a candidate on the same subcategory
+        const result: [Candidate[], number] = await this.findAndCount({user, subcategory});
         const count = result[1];
 
         if (count !== 0) {
-            throw new Error('User is already a candidate in this category!')
+            throw new Error('User is already a candidate in this subcategory!')
         }
 
-        const candidate = this.create({user, category});
+        const candidate = this.create({user, subcategory});
 
         return await this.save(candidate);
     }
@@ -37,8 +37,15 @@ export class CandidateRepository extends Repository<Candidate> {
         return await this.save(candidate);
     }
 
+    async findCandidate(id: number) {
+        let candidate = await this.findOne(id);
+
+        if (!candidate) throw new Error('Candidate was not found');
+        return candidate;
+    }
+
     async findCandidateByUUID(uuid: string) {
-        let candidate = await this.findOne({where: {uuid}, relations: ['category']});
+        let candidate = await this.findOne({where: {uuid}, relations: ['subcategory']});
 
         if (!candidate) throw new Error('Candidate was not found');
         return candidate;

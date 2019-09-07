@@ -2,8 +2,8 @@ import {Field, ID, InputType, ObjectType} from "type-graphql";
 import {Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 import {User} from "./user";
 import {Candidate} from "./candidate";
-import {Category} from "./category";
 import {IsUUID} from "class-validator";
+import {Subcategory} from "./subcategory";
 
 @ObjectType()
 @Entity('votes')
@@ -46,8 +46,8 @@ export class Vote {
     @ManyToOne(() => Candidate, s => s.votes)
     candidate: Candidate;
 
-    @ManyToOne(() => Category, s => s.votes)
-    category: Category;
+    @ManyToOne(() => Subcategory, s => s.votes)
+    subcategory: Subcategory;
 }
 
 @InputType()

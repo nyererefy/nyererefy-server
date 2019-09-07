@@ -11,6 +11,7 @@ import {
 import {Category} from "./category";
 import {University} from "./university";
 import {IsAlpha} from "class-validator";
+import {Subcategory} from "./subcategory";
 
 @ObjectType()
 @Entity('elections')
@@ -63,6 +64,9 @@ export class Election {
      */
     @OneToMany(() => Category, c => c.election)
     categories: Category[];
+
+    @OneToMany(() => Subcategory, c => c.election)
+    subcategories: Subcategory[];
 
     /**
      * ManyToOne

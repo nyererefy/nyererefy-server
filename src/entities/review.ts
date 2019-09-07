@@ -1,7 +1,7 @@
 import {Field, ID, ObjectType} from "type-graphql";
 import {Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
-import {Category} from "./category";
 import {User} from "./user";
+import {Subcategory} from "./subcategory";
 
 @ObjectType()
 @Entity('reviews')
@@ -18,8 +18,8 @@ export class Review {
     @CreateDateColumn()
     createdAt: Date;
 
-    @ManyToOne(() => Category, cat => cat.votes, {nullable: false})
-    category: Category;
+    @ManyToOne(() => Subcategory, cat => cat.votes, {nullable: false})
+    subcategory: Subcategory;
 
     @Field(() => User)
     @ManyToOne(() => User, u => u.reviews, {eager: true, nullable: false})

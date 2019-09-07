@@ -11,6 +11,10 @@ import {CandidateInput} from "../../entities/candidate";
 import {CandidateRepository} from "../../repositories/candidate/candidateRepository";
 import {RegistrationInput} from "../../entities/user";
 import {UserRepository} from "../../repositories/user/userRepository";
+import {SubcategoryRepository} from "../../repositories/subcategory/subcategoryRepository";
+import {Subcategory} from "../../entities/subcategory";
+import {SchoolRepository} from "../../repositories/school/schoolRepository";
+import {School, SchoolInput} from "../../entities/school";
 
 async function createUniversity(): Promise<University> {
     const universityRepository = getCustomRepository(UniversityRepository);
@@ -26,7 +30,19 @@ async function createUniversity(): Promise<University> {
     return await universityRepository.createUniversity(input);
 }
 
-async function createElection(universityId: number) {
+export async function createSchool(universityId: number): Promise<School> {
+    const repository = getCustomRepository(SchoolRepository);
+
+    const input: SchoolInput = {
+        title: faker.random.words(3),
+        identifier: faker.internet.userName(),
+        abbreviation: faker.random.word()
+    };
+
+    return await repository.createSchool(universityId, input);
+}
+
+export async function createElection(universityId: number) {
     const electionRepository = getCustomRepository(ElectionRepository);
 
     const input: ElectionInput = {
@@ -36,16 +52,22 @@ async function createElection(universityId: number) {
     return await electionRepository.createElection(universityId, input);
 }
 
-export async function createCategory(electionId: number) {
+export async function createCategory(electionId: number, eligible = Eligible.ALL) {
     const categoryRepository = getCustomRepository(CategoryRepository);
 
     const categoryInput: CategoryInput = {
         title: faker.random.words(2),
         electionId,
-        eligible: Eligible.ALL
+        eligible
     };
 
     return await categoryRepository.createCategory(categoryInput);
+}
+
+export async function generateSubcategories(universityId: number, electionId: number): Promise<Subcategory[]> {
+    const subcategoryRepository = getCustomRepository(SubcategoryRepository);
+
+    return await subcategoryRepository.generateSubcategories(universityId, electionId);
 }
 
 async function createUser(uuid: string) {
@@ -60,12 +82,12 @@ async function createUser(uuid: string) {
     return await userRepository.registerUser(input);
 }
 
-export async function createCandidate(userId: number, categoryId: number) {
+export async function createCandidate(userId: number, subcategoryId: number) {
     const candidateRepository = getCustomRepository(CandidateRepository);
 
     const input: CandidateInput = {
         userId,
-        categoryId
+        subcategoryId
     };
     return await candidateRepository.createCandidate(input);
 }
@@ -77,7 +99,10 @@ export const insertDummyData = async () => {
     await createUser(university.uuid);
 
     const election = await createElection(university.id);
-    const category = await createCategory(election.id);
+    await createCategory(election.id);
+    await createCategory(election.id);
 
-    await createCandidate(user1.id, category.id);
+    const subcategories = await generateSubcategories(university.id, election.id);
+
+    await createCandidate(user1.id, subcategories[0].id);
 };
