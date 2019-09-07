@@ -22,7 +22,7 @@ export class Candidate {
     @Field(() => ID)
     @Column({unique: true})
     @Generated("uuid")
-    readonly uuid: string;
+    uuid: string;
 
     /**
      * Cloud storage link...

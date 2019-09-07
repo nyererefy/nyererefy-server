@@ -1,28 +1,29 @@
-import {EntityRepository, Repository} from "typeorm";
+import {EntityRepository, getCustomRepository, Repository} from "typeorm";
 import {Vote, VoteInput} from "../../entities/vote";
-import {Category} from "../../entities/category";
 import {User} from "../../entities/user";
-import {Candidate} from "../../entities/candidate";
+import {CandidateRepository} from "../candidate/candidateRepository";
 
 /**
  * Caching https://github.com/typeorm/typeorm/blob/master/docs/caching.md
  */
 @EntityRepository(Vote)
 export class VoteRepository extends Repository<Vote> {
-    async createVote(_input: VoteInput) {
+    private candidateRepository: CandidateRepository;
+
+    constructor() {
+        super();
+        this.candidateRepository = getCustomRepository(CandidateRepository)
+    }
+
+    async createVote(userId: number, input: VoteInput, ip?: string): Promise<Vote> {
         //Voter.
         const user = new User();
-        user.id = 1; //From session.
+        user.id = userId;
 
-        //Category.
-        const category = new Category();
-        category.id = 1;
+        const candidate = await this.candidateRepository.findCandidateByUUID(input.uuid);
+        const category = candidate.category;
 
-        //Vote
-        const candidate = new Candidate();
-        candidate.id = 1;
-
-        const guard = parseInt(`${user}${category}`);
+        const guard = parseInt(`${user.id}${candidate.category.id}`);
 
         // Checking if user has already voted
         const result: [Vote[], number] = await this.findAndCount({user, category});
@@ -32,9 +33,9 @@ export class VoteRepository extends Repository<Vote> {
             throw new Error('You already voted in this category!')
         }
 
-        const vote = this.create({user, category, candidate, guard});
+        const vote = this.create({user, category, candidate, guard, ip});
 
-        return this.save(vote);
+        return await this.save(vote);
     }
 
     findVote(id: number) {

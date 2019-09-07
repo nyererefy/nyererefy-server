@@ -36,7 +36,7 @@ async function createElection(universityId: number) {
     return await electionRepository.createElection(universityId, input);
 }
 
-async function createCategory(electionId: number) {
+export async function createCategory(electionId: number) {
     const categoryRepository = getCustomRepository(CategoryRepository);
 
     const categoryInput: CategoryInput = {
@@ -60,7 +60,7 @@ async function createUser(uuid: string) {
     return await userRepository.registerUser(input);
 }
 
-async function createCandidate(userId: number, categoryId: number) {
+export async function createCandidate(userId: number, categoryId: number) {
     const candidateRepository = getCustomRepository(CandidateRepository);
 
     const input: CandidateInput = {
@@ -73,10 +73,11 @@ async function createCandidate(userId: number, categoryId: number) {
 export const insertDummyData = async () => {
     const university = await createUniversity();
 
-    const user = await createUser(university.uuid);
+    const user1 = await createUser(university.uuid);
     await createUser(university.uuid);
 
     const election = await createElection(university.id);
     const category = await createCategory(election.id);
-    await createCandidate(user.id, category.id);
+
+    await createCandidate(user1.id, category.id);
 };

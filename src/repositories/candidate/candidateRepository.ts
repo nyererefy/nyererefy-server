@@ -37,8 +37,11 @@ export class CandidateRepository extends Repository<Candidate> {
         return await this.save(candidate);
     }
 
-    findCandidate(id: number) {
-        return this.findOne(id)
+    async findCandidateByUUID(uuid: string) {
+        let candidate = await this.findOne({where: {uuid}, relations: ['category']});
+
+        if (!candidate) throw new Error('Candidate was not found');
+        return candidate;
     }
 
     findCandidates() {
