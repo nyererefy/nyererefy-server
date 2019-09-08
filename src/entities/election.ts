@@ -35,12 +35,24 @@ export class Election {
     isStrict: boolean;
 
     /**
-     * This will make this category be eligible to all who share the eligibility regardless of university or branch
      * This will only work for programs/sex/all
      */
-    @Field()
-    @Column()
+    @Field({
+        defaultValue: false,
+        description: 'This will make this category be eligible to all who share the eligibility regardless of university'
+    })
+    @Column({default: false})
     isExtended: boolean;
+
+    /**
+     * Eg MD student running for BPHARM position.
+     */
+    @Field({
+        defaultValue: false,
+        description: 'Allows candidates to be placed in category with no shared characters. It\'s rarely true '
+    })
+    @Column({default: false})
+    isAbnormal: boolean;
 
     @Field()
     @CreateDateColumn()
