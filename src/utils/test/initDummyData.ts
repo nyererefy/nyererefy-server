@@ -21,6 +21,8 @@ import {ProgramRepository} from "../../repositories/program/programRepository";
 import {Program, ProgramInput} from "../../entities/program";
 import {SchoolProgramRepository} from "../../repositories/schoolProgram/schoolProgramRepository";
 import {SchoolProgram} from "../../entities/schoolProgram";
+import {ClassRepository} from "../../repositories/class/classRepository";
+import {Class} from "../../entities/class";
 
 async function createUniversity(): Promise<University> {
     const universityRepository = getCustomRepository(UniversityRepository);
@@ -60,12 +62,12 @@ export async function createSchool(branchId: number): Promise<School> {
     return await repository.createSchool(input);
 }
 
-export async function createProgram(): Promise<Program> {
+export async function createProgram(duration = Duration.FOUR_YEARS): Promise<Program> {
     const repository = getCustomRepository(ProgramRepository);
 
     const input: ProgramInput = {
         title: faker.random.words(3),
-        duration: Duration.FOUR_YEARS,
+        duration,
         abbreviation: faker.random.words(1),
     };
 
@@ -76,6 +78,12 @@ export async function registerProgram(schoolId: number, programId: number): Prom
     const repository = getCustomRepository(SchoolProgramRepository);
 
     return await repository.registerProgram({schoolId, programId});
+}
+
+export async function generateClasses(schoolId: number): Promise<Class[]> {
+    const repository = getCustomRepository(ClassRepository);
+
+    return await repository.generateClasses(schoolId);
 }
 
 export async function createElection(universityId: number) {
@@ -139,14 +147,16 @@ export const insertDummyData = async () => {
 
     await registerProgram(school.id, program.id);
 
-    // const user1 = await createUser(university.uuid);
-    // await createUser(university.uuid);
+    const classes = await generateClasses(branch.id);
+
+    const user1 = await createUser(classes[0].id);
+    await createUser(classes[0].id);
 
     const election = await createElection(university.id);
     await createCategory(election.id);
     await createCategory(election.id);
 
-    //const subcategories = await generateSubcategories(university.id, election.id);
+    const subcategories = await generateSubcategories(university.id, election.id);
 
-    //await createCandidate(user1.id, subcategories[0].id);
+    await createCandidate(user1.id, subcategories[0].id);
 };

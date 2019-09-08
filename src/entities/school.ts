@@ -35,10 +35,10 @@ export class School {
 
     /**
      * Why ManyToOne?
-     * -Because School of Pharmacy offers two programs BPHARM and DPS
+     * -Because School of Pharmacy offers two schoolPrograms BPHARM and DPS
      */
     @OneToMany(() => SchoolProgram, s => s.school)
-    programs: SchoolProgram[];
+    schoolPrograms: SchoolProgram[];
 
     /* ManyToOne */
     @ManyToOne(() => Branch, s => s.schools)

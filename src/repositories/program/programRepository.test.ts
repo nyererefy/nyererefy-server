@@ -45,7 +45,7 @@ describe('Program', () => {
         expect(result).toBeDefined();
     });
 
-    it('should find programs', async () => {
+    it('should find schoolPrograms', async () => {
         const results = await repository.findPrograms();
 
         expect(results).toContainEqual(

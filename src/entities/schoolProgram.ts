@@ -9,10 +9,10 @@ export class SchoolProgram {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(() => School, u => u.programs)
+    @ManyToOne(() => School, u => u.schoolPrograms)
     school: School;
 
-    @ManyToOne(() => Program,)
+    @ManyToOne(() => Program, {eager: true})
     program: Program;
 }
 

@@ -35,7 +35,7 @@ export class Election {
     isStrict: boolean;
 
     /**
-     * This will only work for programs/sex/all
+     * This will only work for schoolPrograms/sex/all
      */
     @Field({
         defaultValue: false,

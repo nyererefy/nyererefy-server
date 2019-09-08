@@ -8,21 +8,21 @@ import {SchoolProgram} from "./schoolProgram";
 registerEnumType(Duration, {name: 'Duration'});
 
 /**
- * This stores programs which are reusable to all universities.
- * Eg Bachelor of Pharmacy 4 years programs.
- * Eg Bachelor of Laboratory 3 years programs.
+ * This stores schoolPrograms which are reusable to all universities.
+ * Eg Bachelor of Pharmacy 4 years schoolPrograms.
+ * Eg Bachelor of Laboratory 3 years schoolPrograms.
  * Universities and Colleges should start here.
  * Todo this should be the first step when registering a university and then we should generate schools automatically.
  * TODO WE ARE THE ONE WHO REGISTER PROGRAMS.
  */
 @ObjectType()
-@Entity('programs')
+@Entity('schoolPrograms')
 export class Program {
     @Field(() => ID)
     @PrimaryGeneratedColumn()
     id: number;
 
-    //Unique because we register programs only once.
+    //Unique because we register schoolPrograms only once.
     @Field()
     @Column({unique: true})
     title: string;
@@ -38,7 +38,7 @@ export class Program {
     /* OneToMany */
 
     /**
-     * This is helpful to know how many classes have similar programs.
+     * This is helpful to know how many classes have similar schoolPrograms.
      * Like in kichuo
      */
     @OneToMany(() => Class, s => s.program)

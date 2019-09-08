@@ -20,13 +20,11 @@ export class SchoolRepository extends Repository<School> {
         return await this.save(school);
     }
 
-    editSchool(input: SchoolInput) {
-        const school = this.create(input);
-        return this.save(school);
-    }
+    async findSchoolAndPrograms(id: number) {
+        let school = await this.findOne(id, {relations: ['schoolPrograms']});
+        if (!school) throw new Error('School was not found');
 
-    findSchool(id: number) {
-        return this.findOne(id);
+        return school;
     }
 
     findSchools(universityId: number) {

@@ -21,13 +21,16 @@ export class Class {
      */
     @Field()
     get title(): string {
-        return `${this.program.abbreviation} ${this.year}`;
+        return `${this.abbreviation} ${this.year}`;
     }
+
+    @Column({length: 20})
+    abbreviation: string;
 
     /**
      * This can also be generated on fly!! Basing on below years right?
      */
-    @Column({type: 'enum', enum: Year, default: Year.COMPLETED})
+    @Column({type: "tinyint", default: Year.COMPLETED})
     year: Year;
 
     /**
@@ -46,14 +49,14 @@ export class Class {
      * ManyToOne
      */
 
-    @ManyToOne(() => School, f => f.classes, {eager: true})
+    @ManyToOne(() => School, f => f.classes)
     school: School;
 
     /**
      * Program can be shared by many classes from different universities.
      */
     @Field(() => Program)
-    @ManyToOne(() => Program, f => f.classes, {eager: true})
+    @ManyToOne(() => Program, f => f.classes)
     program: Program;
 
     /**
@@ -61,5 +64,4 @@ export class Class {
      */
     @OneToMany(() => User, user => user.class)
     users: User[];
-
 }
