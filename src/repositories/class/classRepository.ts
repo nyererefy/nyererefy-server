@@ -46,7 +46,6 @@ export class ClassRepository extends Repository<Class> {
     }
 
     /**
-     * Todo we should check if similar class already exists, if true update it. deleting it is dangerous.
      * @param schoolId
      * @param program
      * @param year
@@ -56,7 +55,15 @@ export class ClassRepository extends Repository<Class> {
         const school = new School();
         school.id = schoolId;
 
-        const klass = this.create({school, program, year, abbreviation});
+        let klass = await this.findOne({where: {program, school, year}});
+
+        if (klass) {
+            //updating abbreviation
+            klass = this.merge(klass, {abbreviation});
+            return await this.save(klass);
+        }
+
+        klass = this.create({school, program, year, abbreviation});
         return await this.save(klass);
     }
 }
