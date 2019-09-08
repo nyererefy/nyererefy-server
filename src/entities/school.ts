@@ -2,9 +2,8 @@ import {Field, ID, InputType, ObjectType} from "type-graphql";
 import {BeforeInsert, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {Class} from "./class";
 import {Branch} from "./branch";
-import {Program} from "./program";
-import {IsInt, IsOptional, Length, Max} from "class-validator";
-import {University} from "./university";
+import {IsInt, Length, Max} from "class-validator";
+import {SchoolProgram} from "./schoolProgram";
 
 /**
  * Means the same thing as faculty/course
@@ -38,16 +37,12 @@ export class School {
      * Why ManyToOne?
      * -Because School of Pharmacy offers two programs BPHARM and DPS
      */
-    @OneToMany(() => Program, p => p.school)
-    programs: Program[];
+    @OneToMany(() => SchoolProgram, s => s.school)
+    programs: SchoolProgram[];
 
     /* ManyToOne */
-
     @ManyToOne(() => Branch, s => s.schools)
     branch: Branch;
-
-    @ManyToOne(() => University, s => s.schools)
-    university: University;
 
     @BeforeInsert()
     clearData() {
@@ -69,9 +64,8 @@ export class SchoolInput implements Partial<School> {
     @Max(10)
     abbreviation: string;
 
-    @Field({nullable: true})
-    @IsOptional()
+    @Field()
     @IsInt()
-    branchId?: number;
+    branchId: number;
 }
 

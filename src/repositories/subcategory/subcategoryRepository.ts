@@ -1,6 +1,5 @@
 import {EntityRepository, getCustomRepository, Repository} from "typeorm";
 import {Category, CategoryEditInput} from "../../entities/category";
-import {Election} from "../../entities/election";
 import {Subcategory} from "../../entities/subcategory";
 import {CategoryRepository} from "../category/categoryRepository";
 import {SchoolRepository} from "../school/schoolRepository";
@@ -118,11 +117,11 @@ export class SubcategoryRepository extends Repository<Subcategory> {
         return category;
     }
 
-    findCategories(electionId: number): Promise<Subcategory[]> {
-        const election = new Election();
-        election.id = electionId;
-
-        return this.find({where: {election}})
+    async findElectionSubcategories(electionId: number): Promise<Subcategory[]> {
+        return await this
+            .createQueryBuilder('sub')
+            .innerJoinAndSelect('sub.category', 'cat', 'cat.electionId = :electionId', {electionId})
+            .where("cat.electionId = :electionId", {electionId})
+            .getMany();
     }
-
 }

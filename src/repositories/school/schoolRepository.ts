@@ -5,27 +5,17 @@ import {University} from "../../entities/university";
 
 @EntityRepository(School)
 export class SchoolRepository extends Repository<School> {
-    async createSchool(universityId: number, input: SchoolInput): Promise<School> {
+    async createSchool(input: SchoolInput): Promise<School> {
         const school = new School();
 
         school.title = input.title;
         school.abbreviation = input.abbreviation;
         school.identifier = input.identifier;
 
-        //University
-        const university = new University();
-        university.id = universityId;
+        const branch = new Branch();
+        branch.id = input.branchId;
 
-        school.university = university;
-
-        //Save branch if exists.
-        const branchId = input.branchId;
-        if (branchId) {
-            const branch = new Branch();
-            branch.id = branchId;
-
-            school.branch = branch;
-        }
+        school.branch = branch;
 
         return await this.save(school);
     }

@@ -1,22 +1,21 @@
-import {EntityRepository, getCustomRepository, Repository} from "typeorm";
+import {EntityRepository, Repository} from "typeorm";
 import {RegistrationByProgramInput, RegistrationBySchoolInput, RegistrationInput, User} from "../../entities/user";
-import {UniversityRepository} from "../university/universityRepository";
+import {Class} from "../../entities/class";
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
-    private universityRepository: UniversityRepository;
 
     constructor() {
         super();
-        this.universityRepository = getCustomRepository(UniversityRepository)
     }
 
     async registerUser(input: RegistrationInput): Promise<User> {
-        const university = await this.universityRepository.findUniversityByUUId(input.uuid);
-
         const user = new User();
 
-        user.university = university;
+        const userClass = new Class();
+        userClass.id = input.classId;
+
+        user.class = userClass;
         user.regNo = input.regNo;
         user.email = input.email;
 
@@ -24,11 +23,11 @@ export class UserRepository extends Repository<User> {
     }
 
     async registerUserByClass(input: RegistrationBySchoolInput | RegistrationByProgramInput): Promise<User> {
-        const university = await this.universityRepository.findUniversityByUUId(input.uuid);
+        //const university = await this.universityRepository.findUniversityByUUId(input.uuid);
 
         const user = new User();
 
-        user.university = university;
+        //user.university = university;
         user.regNo = input.regNo;
         user.email = input.email;
 
@@ -50,6 +49,22 @@ export class UserRepository extends Repository<User> {
 
     findUser(id: number) {
         return this.findOne(id);
+    }
+
+    async findUserInfo(userId: number): Promise<User> {
+        const user = await this
+            .createQueryBuilder('user')
+            .innerJoinAndSelect('user.class', 'class')
+            .innerJoinAndSelect('class.school', 'school')
+            .innerJoinAndSelect('class.program', 'program')
+            .leftJoinAndSelect('school.branch', 'branch')
+            .where("user.id = :userId", {userId})
+            .getOne();
+
+        if (!user) {
+            throw new Error('User not found!')
+        }
+        return user;
     }
 
     findUsers() {

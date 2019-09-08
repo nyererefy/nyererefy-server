@@ -13,9 +13,8 @@ import {Class} from "./class";
 import {Candidate} from "./candidate";
 import {State, Year} from "../utils/enums";
 import {Vote} from "./vote";
-import {IsEmail, IsUUID, Length} from "class-validator";
+import {IsEmail, Length} from "class-validator";
 import {Review} from "./review";
-import {University} from "./university";
 
 registerEnumType(State, {name: 'State'});
 
@@ -101,12 +100,6 @@ export class User {
     class: Class;
 
     /**
-     * Some may not have classes registered.
-     */
-    @ManyToOne(() => University)
-    university: University;
-
-    /**
      * OneToMany
      */
     @OneToMany(() => Candidate, s => s.user)
@@ -137,12 +130,8 @@ export class RegistrationInput implements Partial<User> {
     @IsEmail()
     email: string;
 
-    /**
-     * We get it from university's uuid
-     */
     @Field()
-    @IsUUID('4')
-    uuid: string;
+    classId: number;
 }
 
 /**

@@ -1,8 +1,9 @@
-import {Field, ID, ObjectType, registerEnumType} from "type-graphql";
-import {Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import {Field, ID, InputType, ObjectType, registerEnumType} from "type-graphql";
+import {BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {Duration} from "../utils/enums";
-import {School} from "./school";
 import {Class} from "./class";
+import {Length} from "class-validator";
+import {SchoolProgram} from "./schoolProgram";
 
 registerEnumType(Duration, {name: 'Duration'});
 
@@ -12,7 +13,7 @@ registerEnumType(Duration, {name: 'Duration'});
  * Eg Bachelor of Laboratory 3 years programs.
  * Universities and Colleges should start here.
  * Todo this should be the first step when registering a university and then we should generate schools automatically.
- * Todo We are the one who register programs.
+ * TODO WE ARE THE ONE WHO REGISTER PROGRAMS.
  */
 @ObjectType()
 @Entity('programs')
@@ -31,13 +32,8 @@ export class Program {
     abbreviation: string;
 
     @Field(() => Duration)
-    @Column({type: "enum", enum: Duration})
+    @Column({type: "tinyint"})
     duration: Duration;
-
-    /* ManyToOne */
-
-    @ManyToOne(() => School, s => s.programs)
-    school: School;
 
     /* OneToMany */
 
@@ -47,4 +43,26 @@ export class Program {
      */
     @OneToMany(() => Class, s => s.program)
     classes: Class[];
+
+    @OneToMany(() => SchoolProgram, s => s.program)
+    university_programs: SchoolProgram[];
+
+    @BeforeInsert()
+    clearData() {
+        this.abbreviation = this.abbreviation.toUpperCase();
+    }
+}
+
+@InputType()
+export class ProgramInput implements Partial<Program> {
+    @Field()
+    @Length(5, 100)
+    title: string;
+
+    @Field()
+    @Length(2, 10)
+    abbreviation: string;
+
+    @Field()
+    duration: Duration;
 }

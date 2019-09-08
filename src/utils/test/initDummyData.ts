@@ -4,7 +4,7 @@ import {University, UniversityInput} from "../../entities/university";
 import faker from "faker";
 import {CategoryRepository} from "../../repositories/category/categoryRepository";
 import {CategoryInput} from "../../entities/category";
-import {Eligible} from "../enums";
+import {Duration, Eligible} from "../enums";
 import {ElectionInput} from "../../entities/election";
 import {ElectionRepository} from "../../repositories/election/electionRepository";
 import {CandidateInput} from "../../entities/candidate";
@@ -15,6 +15,12 @@ import {SubcategoryRepository} from "../../repositories/subcategory/subcategoryR
 import {Subcategory} from "../../entities/subcategory";
 import {SchoolRepository} from "../../repositories/school/schoolRepository";
 import {School, SchoolInput} from "../../entities/school";
+import {BranchRepository} from "../../repositories/branch/branchRepository";
+import {Branch, BranchInput} from "../../entities/branch";
+import {ProgramRepository} from "../../repositories/program/programRepository";
+import {Program, ProgramInput} from "../../entities/program";
+import {SchoolProgramRepository} from "../../repositories/schoolProgram/schoolProgramRepository";
+import {SchoolProgram} from "../../entities/schoolProgram";
 
 async function createUniversity(): Promise<University> {
     const universityRepository = getCustomRepository(UniversityRepository);
@@ -30,16 +36,46 @@ async function createUniversity(): Promise<University> {
     return await universityRepository.createUniversity(input);
 }
 
-export async function createSchool(universityId: number): Promise<School> {
+export async function createBranch(universityId: number): Promise<Branch> {
+    const repository = getCustomRepository(BranchRepository);
+
+    const input: BranchInput = {
+        title: faker.company.companyName(),
+        abbreviation: faker.random.word(),
+    };
+
+    return await repository.createBranch(universityId, input);
+}
+
+export async function createSchool(branchId: number): Promise<School> {
     const repository = getCustomRepository(SchoolRepository);
 
     const input: SchoolInput = {
         title: faker.random.words(3),
         identifier: faker.internet.userName(),
-        abbreviation: faker.random.words(1)
+        abbreviation: faker.random.words(1),
+        branchId
     };
 
-    return await repository.createSchool(universityId, input);
+    return await repository.createSchool(input);
+}
+
+export async function createProgram(): Promise<Program> {
+    const repository = getCustomRepository(ProgramRepository);
+
+    const input: ProgramInput = {
+        title: faker.random.words(3),
+        duration: Duration.FOUR_YEARS,
+        abbreviation: faker.random.words(1),
+    };
+
+    return await repository.createProgram(input);
+}
+
+export async function registerProgram(schoolId: number, programId: number): Promise<SchoolProgram> {
+    const repository = getCustomRepository(SchoolProgramRepository);
+
+    return await repository.registerProgram({schoolId, programId});
 }
 
 export async function createElection(universityId: number) {
@@ -70,13 +106,13 @@ export async function generateSubcategories(universityId: number, electionId: nu
     return await subcategoryRepository.generateSubcategories(universityId, electionId);
 }
 
-async function createUser(uuid: string) {
+export async function createUser(classId: number) {
     const userRepository = getCustomRepository(UserRepository);
 
     const input: RegistrationInput = {
         email: faker.internet.email(),
         regNo: faker.internet.userName(),
-        uuid
+        classId
     };
 
     return await userRepository.registerUser(input);
@@ -93,16 +129,24 @@ export async function createCandidate(userId: number, subcategoryId: number) {
 }
 
 export const insertDummyData = async () => {
+    const program = await createProgram();
+
     const university = await createUniversity();
 
-    const user1 = await createUser(university.uuid);
-    await createUser(university.uuid);
+    const branch = await createBranch(university.id);
+
+    const school = await createSchool(branch.id);
+
+    await registerProgram(school.id, program.id);
+
+    // const user1 = await createUser(university.uuid);
+    // await createUser(university.uuid);
 
     const election = await createElection(university.id);
     await createCategory(election.id);
     await createCategory(election.id);
 
-    const subcategories = await generateSubcategories(university.id, election.id);
+    //const subcategories = await generateSubcategories(university.id, election.id);
 
-    await createCandidate(user1.id, subcategories[0].id);
+    //await createCandidate(user1.id, subcategories[0].id);
 };

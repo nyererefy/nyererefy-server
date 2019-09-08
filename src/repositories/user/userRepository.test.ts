@@ -3,18 +3,13 @@ import {UserRepository} from "./userRepository";
 import {getCustomRepository} from "typeorm";
 import faker from "faker";
 import {RegistrationInput} from "../../entities/user";
-import {UniversityRepository} from "../university/universityRepository";
-import {University} from "../../entities/university";
 
 let repository: UserRepository;
-let universityRepository: UniversityRepository;
-let university: University;
+let userId = 1;
 
 beforeEach(async () => {
     repository = getCustomRepository(UserRepository);
-    universityRepository = getCustomRepository(UniversityRepository);
 
-    university = await universityRepository.findUniversity(1)
 });
 
 describe('User', () => {
@@ -22,7 +17,7 @@ describe('User', () => {
         const input: RegistrationInput = {
             email: faker.internet.email(),
             regNo: faker.internet.userName(),
-            uuid: university.uuid
+            classId: 1
         };
         const result = await repository.registerUser(input);
 
@@ -33,8 +28,13 @@ describe('User', () => {
     });
 
     it('should find user', async () => {
-        const id = 1;
-        const result = await repository.findUser(id);
+        const result = await repository.findUser(userId);
+        expect(result).toBeDefined();
+    });
+
+    it('should find user with voting info', async () => {
+        const result = await repository.findUserInfo(userId);
+        console.log(result);
         expect(result).toBeDefined();
     });
 

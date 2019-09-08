@@ -9,7 +9,7 @@ let repository: SubcategoryRepository;
 let election: Election;
 const universityId: number = 1;
 
-beforeEach(async () => {
+beforeAll(async () => {
     repository = getCustomRepository(SubcategoryRepository);
     election = await createElection(universityId);
 });
@@ -44,8 +44,8 @@ describe('Subcategory', () => {
         )
     });
 
-    it('should delete all election subcategories', async () => {
-        const results = await repository.deleteAllSubcategories(1);
+    it('should find all election subcategories', async () => {
+        const results = await repository.findElectionSubcategories(1);
 
         console.log(results);
 
@@ -56,4 +56,17 @@ describe('Subcategory', () => {
             })
         )
     });
+
+    it('should delete all election subcategories', async () => {
+        const results = await repository.deleteAllSubcategories(1);
+
+        expect(results).toContainEqual(
+            expect.objectContaining({
+                id: expect.any(Number),
+                title: expect.any(String)
+            })
+        )
+    });
+
+
 });
