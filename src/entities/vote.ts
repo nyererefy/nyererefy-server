@@ -46,7 +46,7 @@ export class Vote {
     @ManyToOne(() => Candidate, s => s.votes)
     candidate: Candidate;
 
-    @ManyToOne(() => Subcategory, s => s.votes)
+    @ManyToOne(() => Subcategory, s => s.votes, {onDelete: "CASCADE"})
     subcategory: Subcategory;
 }
 

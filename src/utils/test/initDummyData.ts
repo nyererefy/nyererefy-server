@@ -36,7 +36,7 @@ export async function createSchool(universityId: number): Promise<School> {
     const input: SchoolInput = {
         title: faker.random.words(3),
         identifier: faker.internet.userName(),
-        abbreviation: faker.random.word()
+        abbreviation: faker.random.words(1)
     };
 
     return await repository.createSchool(universityId, input);

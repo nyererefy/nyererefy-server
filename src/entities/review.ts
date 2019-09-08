@@ -18,7 +18,7 @@ export class Review {
     @CreateDateColumn()
     createdAt: Date;
 
-    @ManyToOne(() => Subcategory, cat => cat.votes, {nullable: false})
+    @ManyToOne(() => Subcategory, cat => cat.reviews, {nullable: false, onDelete: "CASCADE"})
     subcategory: Subcategory;
 
     @Field(() => User)

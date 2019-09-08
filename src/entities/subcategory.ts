@@ -3,6 +3,7 @@ import {
     BeforeInsert,
     Column,
     Entity,
+    Index,
     JoinColumn,
     ManyToOne,
     OneToMany,
@@ -13,7 +14,6 @@ import {Candidate} from "./candidate";
 import {Vote} from "./vote";
 import {Review} from "./review";
 import {Category} from "./category";
-import {Election} from "./election";
 
 /**
  * These are generated automatically with one click "Generate".
@@ -57,14 +57,23 @@ export class Subcategory {
     @ManyToOne(() => Category, s => s.subcategories)
     category: Category;
 
-    @ManyToOne(() => Election, s => s.subcategories)
-    election: Election;
-
     /**
      * OneToOne
      */
     @OneToOne(() => Candidate, {nullable: true})
     @JoinColumn()
     winner: Candidate;
+
+    /**
+     * For intelligence.
+     */
+    @Index()
+    @Column()
+    ref: number;
 }
+
+/***
+ * ways to make this work
+ * 1. integrate all filters here and use them during fetching. branch, school,class all here as FK.
+ */
 

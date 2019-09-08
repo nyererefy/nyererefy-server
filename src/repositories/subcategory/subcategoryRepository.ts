@@ -1,4 +1,4 @@
-import {DeleteResult, EntityRepository, getCustomRepository, Repository} from "typeorm";
+import {EntityRepository, getCustomRepository, Repository} from "typeorm";
 import {Category, CategoryEditInput} from "../../entities/category";
 import {Election} from "../../entities/election";
 import {Subcategory} from "../../entities/subcategory";
@@ -7,7 +7,6 @@ import {SchoolRepository} from "../school/schoolRepository";
 import {Eligible} from "../../utils/enums";
 
 interface SaveCategoryInterface {
-    electionId: number
     categoryId: number
     title: string
     suffix: string
@@ -42,7 +41,6 @@ export class SubcategoryRepository extends Repository<Subcategory> {
                 subcategory = await this.saveSubcategory({
                     title: category.title,
                     suffix: 'All',
-                    electionId,
                     categoryId: category.id
                 });
 
@@ -60,7 +58,6 @@ export class SubcategoryRepository extends Repository<Subcategory> {
                     subcategory = await this.saveSubcategory({
                         title: category.title,
                         suffix: school.abbreviation,
-                        electionId,
                         categoryId: category.id
                     });
 
@@ -72,22 +69,37 @@ export class SubcategoryRepository extends Repository<Subcategory> {
         return subcategories;
     }
 
-    private async saveSubcategory({electionId, categoryId, title, suffix}: SaveCategoryInterface) {
-        const election = new Election();
-        election.id = electionId;
-
+    private async saveSubcategory({categoryId, title, suffix}: SaveCategoryInterface) {
         const category = new Category();
         category.id = categoryId;
 
-        const subcategory = this.create({election, category, title, suffix});
+        const subcategory = this.create({category, title, suffix});
         return await this.save(subcategory);
     }
 
-    async deleteAllSubcategories(electionId: number): Promise<DeleteResult> {
-        const election = new Election();
-        election.id = electionId;
+    /**
+     * This will delete all candidates/votes/reviews as well.
+     * Todo we will need to check if election is running or has finished then we will allow.
+     * @param electionId
+     */
+    async deleteAllSubcategories(electionId: number): Promise<Subcategory[]> {
 
-        return await this.delete({election});
+        let subs = await this
+            .createQueryBuilder('sub')
+            .innerJoin('sub.category', 'cat', 'cat.electionId = :electionId', {electionId})
+            .where("cat.electionId = :electionId", {electionId})
+            .getMany();
+
+        for (let i = 0; i < subs.length; i++) {
+            const sub = subs[i];
+
+            await this.createQueryBuilder()
+                .delete()
+                .where("id = :id", {id: sub.id})
+                .execute()
+        }
+
+        return subs;
     }
 
     async updateCategory(input: CategoryEditInput): Promise<Subcategory> {
