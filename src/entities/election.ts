@@ -20,7 +20,7 @@ export class Election {
     id: number;
 
     @Field()
-    @Column()
+    @Column({length: 100})
     title: string;
 
     @Field()

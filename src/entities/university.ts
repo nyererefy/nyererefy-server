@@ -3,6 +3,7 @@ import {Column, Entity, Generated, OneToMany, PrimaryGeneratedColumn} from "type
 import {Election} from "./election";
 import {IsEmail, IsUrl, Length} from "class-validator";
 import {Branch} from "./branch";
+import {Residence} from "./residence";
 
 @ObjectType()
 @Entity('universities')
@@ -51,12 +52,14 @@ export class University {
     /**
      * OneToMany
      */
-    @OneToMany(() => Branch, s => s.university, {cascade: ['insert', 'remove']})
+    @OneToMany(() => Branch, s => s.university)
     branches: Branch[];
 
     @OneToMany(() => Election, s => s.university)
     elections: Election[];
 
+    @OneToMany(() => Residence, s => s.university)
+    residences: Residence[];
 }
 
 @InputType()

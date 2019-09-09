@@ -15,6 +15,7 @@ import {Sex, State, Year} from "../utils/enums";
 import {Vote} from "./vote";
 import {IsEmail, Length} from "class-validator";
 import {Review} from "./review";
+import {Residence} from "./residence";
 
 registerEnumType(State, {name: 'State'});
 registerEnumType(Sex, {name: 'Sex'});
@@ -108,6 +109,9 @@ export class User {
     @Field(() => Class)
     @ManyToOne(() => Class, c => c.users, {eager: true})
     class: Class;
+
+    @ManyToOne(() => Residence, c => c.users)
+    residence: Residence;
 
     /**
      * OneToMany
