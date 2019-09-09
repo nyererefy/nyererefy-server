@@ -95,8 +95,10 @@ export class User {
 
     /**
      * ManyToOne
+     * Eager just for showing class snippet Sylvanus Kateile BPHARM 4.
      */
-    @ManyToOne(() => Class, c => c.users)
+    @Field(() => Class)
+    @ManyToOne(() => Class, c => c.users, {eager: true})
     class: Class;
 
     /**

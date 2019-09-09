@@ -4,9 +4,12 @@ import {Subcategory} from "../../entities/subcategory";
 import {CategoryRepository} from "../category/categoryRepository";
 import {SchoolRepository} from "../school/schoolRepository";
 import {Eligible} from "../../utils/enums";
+import {UserRepository} from "../user/userRepository";
+import {ClassRepository} from "../class/classRepository";
 
 interface SaveCategoryInterface {
     categoryId: number
+    ref?: number | undefined
     title: string
     suffix: string
 }
@@ -15,11 +18,15 @@ interface SaveCategoryInterface {
 export class SubcategoryRepository extends Repository<Subcategory> {
     private categoryRepository: CategoryRepository;
     private schoolRepository: SchoolRepository;
+    private userRepository: UserRepository;
+    private classRepository: ClassRepository;
 
     constructor() {
         super();
         this.categoryRepository = getCustomRepository(CategoryRepository);
         this.schoolRepository = getCustomRepository(SchoolRepository);
+        this.userRepository = getCustomRepository(UserRepository);
+        this.classRepository = getCustomRepository(ClassRepository);
     }
 
     async generateSubcategories(universityId: number, electionId: number): Promise<Subcategory[]> {
@@ -57,7 +64,27 @@ export class SubcategoryRepository extends Repository<Subcategory> {
                     subcategory = await this.saveSubcategory({
                         title: category.title,
                         suffix: school.abbreviation,
-                        categoryId: category.id
+                        categoryId: category.id,
+                        ref: school.id
+                    });
+
+                    subcategories.push(subcategory);
+                }
+            }
+
+            if (category.eligible === Eligible.CLASS) {
+                //Finding all classes
+                const classes = await this.classRepository.findUniversityClasses(universityId);
+
+                //Generate subcategories for all of them.
+                for (let j = 0; j < classes.length; j++) {
+                    const klass = classes[j];
+
+                    subcategory = await this.saveSubcategory({
+                        title: category.title,
+                        suffix: klass.title,
+                        categoryId: category.id,
+                        ref: klass.id
                     });
 
                     subcategories.push(subcategory);
@@ -68,11 +95,11 @@ export class SubcategoryRepository extends Repository<Subcategory> {
         return subcategories;
     }
 
-    private async saveSubcategory({categoryId, title, suffix}: SaveCategoryInterface) {
+    private async saveSubcategory({categoryId, title, suffix, ref}: SaveCategoryInterface) {
         const category = new Category();
         category.id = categoryId;
 
-        const subcategory = this.create({category, title, suffix});
+        const subcategory = this.create({category, title, suffix, ref});
         return await this.save(subcategory);
     }
 
@@ -117,11 +144,50 @@ export class SubcategoryRepository extends Repository<Subcategory> {
         return category;
     }
 
-    async findElectionSubcategories(electionId: number): Promise<Subcategory[]> {
-        return await this
+    async findEligibleElectionSubcategories(electionId: number, userId: number): Promise<Subcategory[]> {
+        const subcategories: Subcategory[] = [];
+        const user = await this.userRepository.findUserInfo(userId);
+
+        const subs = await this
             .createQueryBuilder('sub')
-            .innerJoinAndSelect('sub.category', 'cat', 'cat.electionId = :electionId', {electionId})
+            .innerJoinAndSelect('sub.category', 'cat')
             .where("cat.electionId = :electionId", {electionId})
             .getMany();
+
+        for (let i = 0; i < subs.length; i++) {
+            const sub = subs[i];
+
+            //all student will see this subcategory.
+            if (sub.category.eligible === Eligible.ALL) {
+                subcategories.push(sub)
+            }
+
+            //Means student is in same branch as eligibility requires
+            if (sub.category.eligible === Eligible.BRANCH && sub.ref === user.class.school.branch.id) {
+                subcategories.push(sub)
+            }
+
+            //Means student is in same school as eligibility requires
+            if (sub.category.eligible === Eligible.SCHOOL && sub.ref === user.class.school.id) {
+                subcategories.push(sub)
+            }
+
+            //Means student is in same class as eligibility requires
+            if (sub.category.eligible === Eligible.CLASS && sub.ref === user.class.id) {
+                subcategories.push(sub)
+            }
+
+            //Means student is in same year as eligibility requires
+            if (sub.category.eligible === Eligible.YEAR && sub.ref === user.class.year) {
+                subcategories.push(sub)
+            }
+
+            //Means student is in same year as eligibility requires
+            if (sub.category.eligible === Eligible.PROGRAM && sub.ref === user.class.program.id) {
+                subcategories.push(sub)
+            }
+        }
+        //todo for sex loop all pushed categories and get sex extra-eligibility categories.
+        return subcategories;
     }
 }

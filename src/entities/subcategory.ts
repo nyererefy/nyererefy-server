@@ -3,7 +3,6 @@ import {
     BeforeInsert,
     Column,
     Entity,
-    Index,
     JoinColumn,
     ManyToOne,
     OneToMany,
@@ -67,9 +66,14 @@ export class Subcategory {
     /**
      * For intelligence.
      */
-    @Index()
-    @Column()
-    ref: number;
+    @Column({nullable: true})
+    ref?: number;
+
+    /**
+     * For sex specifically
+     */
+    @Column({nullable: true})
+    extraRef: string;
 }
 
 /***

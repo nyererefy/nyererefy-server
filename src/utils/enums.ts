@@ -43,6 +43,19 @@ export enum Eligible {
     PROGRAM = 8
 }
 
+export enum Extra {
+    /**
+     * Students sharing the same sex.
+     */
+    SEX = 1
+}
+
+export enum Sex {
+    MALE = 1,
+    FEMALE = 2,
+    OTHER = 3
+}
+
 export enum Duration {
     ONE_YEAR = 1,
     TWO_YEARS = 2,

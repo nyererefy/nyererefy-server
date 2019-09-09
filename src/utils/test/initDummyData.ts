@@ -70,7 +70,7 @@ export async function createProgram(duration = Duration.FOUR_YEARS): Promise<Pro
     const input: ProgramInput = {
         title: faker.random.words(3),
         duration,
-        abbreviation: faker.random.words(1),
+        abbreviation: faker.random.word(),
     };
 
     return await repository.createProgram(input);

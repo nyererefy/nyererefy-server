@@ -47,8 +47,12 @@ export class UserRepository extends Repository<User> {
         return this.save(user);
     }
 
-    findUser(id: number) {
-        return this.findOne(id);
+    async findUser(id: number) {
+        const user = await this.findOne(id);
+        if (!user) {
+            throw new Error('User not found!')
+        }
+        return user;
     }
 
     async findUserInfo(userId: number): Promise<User> {

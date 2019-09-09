@@ -2,7 +2,7 @@ import '../../utils/test/initTestDb'
 import {UserRepository} from "./userRepository";
 import {getCustomRepository} from "typeorm";
 import faker from "faker";
-import {RegistrationInput} from "../../entities/user";
+import {RegistrationInput, User} from "../../entities/user";
 
 let repository: UserRepository;
 let userId = 1;
@@ -33,9 +33,11 @@ describe('User', () => {
     });
 
     it('should find user with voting info', async () => {
-        const result = await repository.findUserInfo(userId);
-        console.log(result);
-        expect(result).toBeDefined();
+        const user: User = await repository.findUser(userId);
+        const userInfo: User = await repository.findUserInfo(userId);
+
+        //Returned class should match
+        expect(userInfo.class.id).toEqual(user.class.id);
     });
 
     it('should find users', async () => {

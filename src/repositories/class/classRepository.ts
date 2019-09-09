@@ -80,4 +80,13 @@ export class ClassRepository extends Repository<Class> {
         klass = this.create({school, program, year, abbreviation, startedAt, endedAt});
         return await this.save(klass);
     }
+
+    async findUniversityClasses(universityId: number): Promise<Class[]> {
+        return await this
+            .createQueryBuilder('class')
+            .innerJoin('class.school', 'school')
+            .innerJoin('school.branch', 'branch')
+            .where("branch.universityId = :universityId", {universityId})
+            .getMany();
+    }
 }
