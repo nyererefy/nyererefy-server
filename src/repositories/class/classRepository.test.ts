@@ -22,7 +22,7 @@ beforeAll(async () => {
 
 describe('Class', () => {
     it('should create a classes for all years', async () => {
-        const results = await repository.generateClasses(school.id);
+        const results = await repository.generateClasses(1, school.id);
 
         expect(results).toContainEqual(
             expect.objectContaining({
@@ -33,7 +33,7 @@ describe('Class', () => {
     });
 
     it('should update classes for all years', async () => {
-        const results = await repository.generateClasses(school.id);
+        const results = await repository.generateClasses(1, school.id);
 
         expect(results).toContainEqual(
             expect.objectContaining({

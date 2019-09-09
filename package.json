@@ -30,6 +30,7 @@
     "graphql": "^14.4.2",
     "graphql-redis-subscriptions": "^2.1.1",
     "ioredis": "^4.11.2",
+    "moment": "^2.24.0",
     "mysql": "^2.17.1",
     "random-string-generator": "^1.0.0",
     "reflect-metadata": "^0.1.13",

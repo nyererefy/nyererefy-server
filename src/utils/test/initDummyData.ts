@@ -24,7 +24,7 @@ import {SchoolProgram} from "../../entities/schoolProgram";
 import {ClassRepository} from "../../repositories/class/classRepository";
 import {Class} from "../../entities/class";
 
-async function createUniversity(): Promise<University> {
+export async function createUniversity(): Promise<University> {
     const universityRepository = getCustomRepository(UniversityRepository);
 
     const input: UniversityInput = {
@@ -33,6 +33,8 @@ async function createUniversity(): Promise<University> {
         abbreviation: faker.random.word(),
         webUrl: faker.internet.url(),
         bridgeUrl: faker.internet.url(),
+        semesterStartsIn: 10,
+        semesterEndsIn: 8
     };
 
     return await universityRepository.createUniversity(input);
@@ -80,10 +82,10 @@ export async function registerProgram(schoolId: number, programId: number): Prom
     return await repository.registerProgram({schoolId, programId});
 }
 
-export async function generateClasses(schoolId: number): Promise<Class[]> {
+export async function generateClasses(universityId: number, schoolId: number): Promise<Class[]> {
     const repository = getCustomRepository(ClassRepository);
 
-    return await repository.generateClasses(schoolId);
+    return await repository.generateClasses(universityId, schoolId);
 }
 
 export async function createElection(universityId: number) {
@@ -147,7 +149,7 @@ export const insertDummyData = async () => {
 
     await registerProgram(school.id, program.id);
 
-    const classes = await generateClasses(branch.id);
+    const classes = await generateClasses(university.id, branch.id);
 
     const user1 = await createUser(classes[0].id);
     await createUser(classes[0].id);

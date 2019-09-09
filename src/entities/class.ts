@@ -37,13 +37,13 @@ export class Class {
      * Year this class started.
      */
     @Column('datetime', {nullable: true})
-    startedAt?: string;
+    startedAt: Date;
 
     /**
      * Year this class ends.
      */
     @Column('datetime', {nullable: true})
-    endedAt?: string;
+    endedAt: Date;
 
     /**
      * ManyToOne

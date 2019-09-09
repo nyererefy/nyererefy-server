@@ -40,6 +40,14 @@ export class University {
     @Column({nullable: true})
     secret?: string;
 
+    @Field({description: 'Month new semester starts'})
+    @Column("tinyint")
+    semesterStartsIn: number;
+
+    @Field({description: 'Month new semester ends'})
+    @Column("tinyint")
+    semesterEndsIn: number;
+
     /**
      * OneToMany
      */
@@ -74,6 +82,14 @@ export class UniversityInput implements Partial<University> {
     @IsUrl()
     @Length(5, 100)
     bridgeUrl: string;
+
+    @Field({description: 'Month new semester starts'})
+    @Column()
+    semesterStartsIn: number;
+
+    @Field({description: 'Month new semester ends'})
+    @Column()
+    semesterEndsIn: number;
 }
 
 @InputType()

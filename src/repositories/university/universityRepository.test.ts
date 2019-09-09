@@ -2,7 +2,8 @@ import '../../utils/test/initTestDb'
 import {UniversityRepository} from "./universityRepository";
 import {getCustomRepository} from "typeorm";
 import faker from "faker";
-import {UniversityEditInput, UniversityInput} from "../../entities/university";
+import {UniversityEditInput} from "../../entities/university";
+import {createUniversity} from "../../utils/test/initDummyData";
 
 let repository: UniversityRepository;
 
@@ -12,16 +13,11 @@ beforeEach(async () => {
 
 describe('University', () => {
     it('should create a new university', async () => {
-        const input: UniversityInput = {
-            email: faker.internet.email(),
-            title: faker.company.companyName(),
-            abbreviation: faker.random.word(),
-            webUrl: faker.internet.url(),
-            bridgeUrl: faker.internet.url(),
-        };
-        const result = await repository.createUniversity(input);
+        const result = await createUniversity();
 
-        expect(result).toMatchObject(input)
+        expect(result).toMatchObject({
+            id: expect.any(Number)
+        })
     });
 
     it('should edit an university', async () => {
@@ -33,6 +29,8 @@ describe('University', () => {
             abbreviation: faker.random.word(),
             webUrl: faker.internet.url(),
             bridgeUrl: faker.internet.url(),
+            semesterStartsIn: 10,
+            semesterEndsIn: 8
         };
         const result = await repository.editUniversity(1, input);
 
