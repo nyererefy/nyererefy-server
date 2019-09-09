@@ -16,7 +16,7 @@ registerEnumType(Duration, {name: 'Duration'});
  * TODO WE ARE THE ONE WHO REGISTER PROGRAMS.
  */
 @ObjectType()
-@Entity('schoolPrograms')
+@Entity('programs')
 export class Program {
     @Field(() => ID)
     @PrimaryGeneratedColumn()
