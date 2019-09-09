@@ -11,12 +11,13 @@ import {
 } from "typeorm";
 import {Class} from "./class";
 import {Candidate} from "./candidate";
-import {State, Year} from "../utils/enums";
+import {Sex, State, Year} from "../utils/enums";
 import {Vote} from "./vote";
 import {IsEmail, Length} from "class-validator";
 import {Review} from "./review";
 
 registerEnumType(State, {name: 'State'});
+registerEnumType(Sex, {name: 'Sex'});
 
 @ObjectType()
 @Entity('users')
@@ -90,8 +91,15 @@ export class User {
      * State of account
      */
     @Field(() => State)
-    @Column({type: "enum", enum: State, default: State.ACTIVE})
+    @Column({type: "tinyint", default: State.ACTIVE})
     state: State;
+
+    /**
+     * State of account
+     */
+    @Field(() => Sex, {nullable: true})
+    @Column({type: "tinyint", nullable: true})
+    sex: State;
 
     /**
      * ManyToOne

@@ -50,10 +50,13 @@ export enum Extra {
     SEX = 1
 }
 
+/**
+ * https://en.wikipedia.org/wiki/ISO/IEC_5218
+ */
 export enum Sex {
     MALE = 1,
     FEMALE = 2,
-    OTHER = 3
+    OTHER = 0
 }
 
 export enum Duration {
