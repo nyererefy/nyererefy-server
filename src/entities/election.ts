@@ -80,11 +80,8 @@ export class Election {
      * ManyToOne
      */
 
-    /**
-     * nullable: true because we can create election which are not un-based.
-     */
-    @ManyToOne(() => University, u => u.elections, {nullable: true})
-    university?: University
+    @ManyToOne(() => University, u => u.elections)
+    university: University
 }
 
 @InputType()

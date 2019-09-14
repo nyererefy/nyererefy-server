@@ -29,7 +29,10 @@ export class BranchRepository extends Repository<Branch> {
         return branch;
     }
 
-    findUniversities() {
-        return this.find()
+    findUniversityBranches(universityId: number) {
+        const university = new University();
+        university.id = universityId;
+
+        return this.find({where: {university}})
     }
 }

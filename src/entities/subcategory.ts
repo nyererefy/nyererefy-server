@@ -1,14 +1,5 @@
 import {Field, ID, ObjectType} from "type-graphql";
-import {
-    BeforeInsert,
-    Column,
-    Entity,
-    JoinColumn,
-    ManyToOne,
-    OneToMany,
-    OneToOne,
-    PrimaryGeneratedColumn
-} from "typeorm";
+import {Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn} from "typeorm";
 import {Candidate} from "./candidate";
 import {Vote} from "./vote";
 import {Review} from "./review";
@@ -32,11 +23,6 @@ export class Subcategory {
     @Field({description: 'auto-generated texts to show hint of who are allowed to vote.'})
     @Column({length: 100})
     suffix: string;
-
-    @BeforeInsert()
-    clearData() {
-        this.suffix = this.suffix.toUpperCase();
-    }
 
     /**
      * OneToMany
@@ -73,7 +59,7 @@ export class Subcategory {
      * For sex specifically
      */
     @Column({nullable: true})
-    extraRef: string;
+    extraRef: number;
 }
 
 /***

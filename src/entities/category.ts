@@ -1,7 +1,7 @@
 import {Field, ID, InputType, ObjectType} from "type-graphql";
 import {Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {Election} from "./election";
-import {Eligible, Extra} from "../utils/enums";
+import {Eligible} from "../utils/enums";
 import {IsAlpha, IsNumber, Length} from "class-validator";
 import {Subcategory} from "./subcategory";
 
@@ -19,10 +19,6 @@ export class Category {
     @Field({defaultValue: Eligible.ALL})
     @Column({type: "tinyint", default: Eligible.ALL})
     eligible: Eligible;
-
-    @Field({nullable: true})
-    @Column({type: "tinyint", nullable: true})
-    extra: Extra;
 
     /**
      * OneToMany

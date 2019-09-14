@@ -32,22 +32,15 @@ export enum Eligible {
     YEAR = 6,
 
     /**
-     * Students sharing the same sex.
-     */
-    SEX = 7,
-
-    /**
      * Students sharing the same schoolPrograms even if outside the college.
      * Can be useful for miss Pharmacy of all country.
      */
-    PROGRAM = 8
-}
+    PROGRAM = 7,
 
-export enum Extra {
     /**
-     * Students sharing the same sex.
+     * If election is universal then all categories should also made universal
      */
-    SEX = 1
+    // UNIVERSAL = 0
 }
 
 /**

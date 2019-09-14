@@ -3,8 +3,9 @@ import {ProgramRepository} from "./programRepository";
 import {getCustomRepository} from "typeorm";
 import faker from "faker";
 import {ProgramInput} from "../../entities/program";
-import {createProgram} from "../../utils/test/initDummyData";
+import {createProgram, createSchool, registerProgram} from "../../utils/test/initDummyData";
 import {Duration} from "../../utils/enums";
+import {TEST_BRANCH_ID, TEST_UNIVERSITY_ID} from "../../utils/consts";
 
 let repository: ProgramRepository;
 
@@ -47,6 +48,27 @@ describe('Program', () => {
 
     it('should find schoolPrograms', async () => {
         const results = await repository.findPrograms();
+
+        expect(results).toContainEqual(
+            expect.objectContaining({
+                id: expect.any(Number),
+                title: expect.any(String)
+            })
+        )
+    });
+
+    it('should find all university Programs', async () => {
+        const pg1 = await createProgram();
+        const pg2 = await createProgram();
+        const sc1 = await createSchool(TEST_BRANCH_ID);
+        const sc2 = await createSchool(TEST_BRANCH_ID);
+
+        await registerProgram(sc1.id, pg1.id);
+        await registerProgram(sc1.id, pg2.id);
+        await registerProgram(sc2.id, pg1.id);
+        await registerProgram(sc2.id, pg2.id);
+
+        const results = await repository.findUniversityPrograms(TEST_UNIVERSITY_ID);
 
         expect(results).toContainEqual(
             expect.objectContaining({
