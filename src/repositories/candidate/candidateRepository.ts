@@ -45,7 +45,12 @@ export class CandidateRepository extends Repository<Candidate> {
     }
 
     async findCandidateByUUID(uuid: string) {
-        let candidate = await this.findOne({where: {uuid}, relations: ['subcategory']});
+        const candidate = await this.createQueryBuilder('candidate')
+            .innerJoinAndSelect('candidate.subcategory', 'subcategory')
+            .innerJoinAndSelect('subcategory.category', 'category')
+            .innerJoinAndSelect('category.election', 'election')
+            .where("candidate.uuid = :uuid", {uuid})
+            .getOne();
 
         if (!candidate) throw new Error('Candidate was not found');
         return candidate;
@@ -54,5 +59,4 @@ export class CandidateRepository extends Repository<Candidate> {
     findCandidates() {
         return this.find()
     }
-
 }

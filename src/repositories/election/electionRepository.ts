@@ -1,6 +1,7 @@
 import {EntityRepository, Repository} from "typeorm";
 import {Election, ElectionEditInput, ElectionInput} from "../../entities/election";
 import {University} from "../../entities/university";
+import _ from "lodash";
 
 @EntityRepository(Election)
 export class ElectionRepository extends Repository<Election> {
@@ -20,7 +21,10 @@ export class ElectionRepository extends Repository<Election> {
         let election = await this.findOne(id);
         if (!election) throw new Error('Election was not found');
 
-        election = this.merge(election, {title: input.title});
+        //todo this does nothing
+        const updates = _.pickBy(input, v => v !== null);
+
+        election = this.merge(election, updates);
 
         return this.save(election);
     }

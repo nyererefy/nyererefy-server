@@ -10,7 +10,7 @@ import {
 } from "typeorm";
 import {Category} from "./category";
 import {University} from "./university";
-import {IsAlpha} from "class-validator";
+import {IsAlpha, IsAlphanumeric, IsOptional} from "class-validator";
 
 @ObjectType()
 @Entity('elections')
@@ -93,7 +93,26 @@ export class ElectionInput implements Partial<Election> {
 
 @InputType()
 export class ElectionEditInput implements Partial<Election> {
-    @IsAlpha()
-    @Field({description: 'Name of election. a-zA-Z only'})
-    title: string;
+    @IsAlphanumeric()
+    @IsOptional()
+    @Field({nullable: true, description: 'Name of election. a-zA-Z0-9 only'})
+    title?: string;
+
+    @Field({nullable: true})
+    startAt?: Date;
+
+    @Field({nullable: true})
+    endAt?: Date;
+
+    @Field({nullable: true})
+    isOpen?: boolean;
+
+    @Field({nullable: true})
+    isStrict?: boolean;
+
+    @Field({nullable: true})
+    isExtended?: boolean;
+
+    @Field({nullable: true})
+    isAbnormal?: boolean;
 }

@@ -153,6 +153,7 @@ export const insertDummyData = async () => {
 
     const user1 = await createUser(classes[0].id);
     await createUser(classes[0].id);
+    await createUser(classes[0].id);
 
     const election = await createElection(university.id);
     await createCategory(election.id);
