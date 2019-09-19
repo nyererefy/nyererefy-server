@@ -27,6 +27,7 @@ export class ClassRepository extends Repository<Class> {
         this.universityRepository = getCustomRepository(UniversityRepository);
     }
 
+    //todo remove schoolId: number so that it will be one click.
     async generateClasses(universityId: number, schoolId: number): Promise<Class[]> {
         const university = await this.universityRepository.findUniversity(universityId);
         let startMonth: number = university.semesterStartsIn;

@@ -56,7 +56,10 @@ export class CandidateRepository extends Repository<Candidate> {
         return candidate;
     }
 
-    findCandidates() {
-        return this.find()
+    findCandidates(subcategoryId: number) {
+        const subcategory = new Subcategory();
+        subcategory.id = subcategoryId;
+
+        return this.find({where: {subcategory}})
     }
 }

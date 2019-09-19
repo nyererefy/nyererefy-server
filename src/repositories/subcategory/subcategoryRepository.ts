@@ -1,5 +1,5 @@
 import {EntityRepository, getCustomRepository, Repository} from "typeorm";
-import {Category, CategoryEditInput} from "../../entities/category";
+import {Category} from "../../entities/category";
 import {Subcategory} from "../../entities/subcategory";
 import {CategoryRepository} from "../category/categoryRepository";
 import {SchoolRepository} from "../school/schoolRepository";
@@ -193,22 +193,6 @@ export class SubcategoryRepository extends Repository<Subcategory> {
         }
 
         return subs;
-    }
-
-    async updateCategory(input: CategoryEditInput): Promise<Subcategory> {
-        let category = await this.findOne(input.categoryId);
-        if (!category) throw new Error('Subcategory was not found');
-
-        category = this.merge(category, input);
-
-        return this.save(category);
-    }
-
-    async findCategory(id: number): Promise<Subcategory> {
-        let category = await this.findOne(id);
-        if (!category) throw new Error('Subcategory was not found');
-
-        return category;
     }
 
     async findEligibleElectionSubcategories(electionId: number, userId: number): Promise<Subcategory[]> {

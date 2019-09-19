@@ -18,8 +18,8 @@ export class CategoryResolver {
     }
 
     @Query(() => Category)
-    async category(@Arg('categoryId', () => ID) categoryId: number): Promise<Category> {
-        return await categoryRepository.findCategory(categoryId);
+    async category(@Arg('id', () => ID) id: number): Promise<Category> {
+        return await categoryRepository.findCategory(id);
     }
 
     @Query(() => [Category])

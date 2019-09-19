@@ -3,6 +3,7 @@ import {Vote, VoteInput} from "../../entities/vote";
 import {User} from "../../entities/user";
 import {CandidateRepository} from "../candidate/candidateRepository";
 import {SubcategoryRepository} from "../subcategory/subcategoryRepository";
+import {Subcategory} from "../../entities/subcategory";
 
 interface VoteInterface {
     userId: number,
@@ -75,12 +76,11 @@ export class VoteRepository extends Repository<Vote> {
         return await this.save(vote);
     }
 
-    findVote(id: number) {
-        return this.findOne(id)
-    }
+    findSubcategoryVotes(subcategoryId: number) {
+        const subcategory = new Subcategory();
+        subcategory.id = subcategoryId;
 
-    findVotes() {
-        return this.find()
+        return this.find({where: {subcategory}})
     }
 
 }

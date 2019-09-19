@@ -35,7 +35,7 @@ export class User {
      * User can use only one email at a time.
      * This is not social network so we don't need too many ways of login in.
      */
-    @Field()
+    @Field() //todo hide email and show it to its owner only.
     @Column({unique: true})
     email: string;
 

@@ -61,7 +61,7 @@ describe('CandidateRepository', () => {
     });
 
     it('should find candidates', async () => {
-        const results = await repository.findCandidates();
+        const results = await repository.findCandidates(subcategoryId);
 
         expect(results).toContainEqual(
             expect.objectContaining({
