@@ -46,7 +46,17 @@ describe('University', () => {
         expect(result).toBeDefined();
     });
 
-    it('should find elections', async () => {
+    it('should find university\'s schools and programs', async () => {
+        const electionId = 1;
+        const result = await repository.findUniversityAndSchoolAndPrograms(electionId);
+        console.log('branches', result.branches);
+        console.log('schools', result.branches[0].schools);
+        console.log('schoolPrograms', result.branches[0].schools[0].schoolPrograms);
+        console.log('program', result.branches[0].schools[0].schoolPrograms[0].program);
+        expect(result).toBeDefined();
+    });
+
+    it('should find universities', async () => {
         const results = await repository.findUniversities();
 
         expect(results).toContainEqual(

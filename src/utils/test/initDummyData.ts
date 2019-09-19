@@ -51,11 +51,11 @@ export async function createBranch(universityId: number): Promise<Branch> {
     return await repository.createBranch(universityId, input);
 }
 
-export async function createSchool(branchId: number): Promise<School> {
+export async function createSchool(branchId: number, title: string = faker.random.words(3)): Promise<School> {
     const repository = getCustomRepository(SchoolRepository);
 
     const input: SchoolInput = {
-        title: faker.random.words(3),
+        title,
         identifier: faker.internet.userName(),
         abbreviation: faker.random.words(1),
         branchId
@@ -64,13 +64,13 @@ export async function createSchool(branchId: number): Promise<School> {
     return await repository.createSchool(input);
 }
 
-export async function createProgram(duration = Duration.FOUR_YEARS): Promise<Program> {
+export async function createProgram(duration = Duration.FOUR_YEARS, abbreviation: string = faker.random.word()): Promise<Program> {
     const repository = getCustomRepository(ProgramRepository);
 
     const input: ProgramInput = {
         title: faker.random.words(3),
         duration,
-        abbreviation: faker.random.word(),
+        abbreviation,
     };
 
     return await repository.createProgram(input);
@@ -82,10 +82,10 @@ export async function registerProgram(schoolId: number, programId: number): Prom
     return await repository.registerProgram({schoolId, programId});
 }
 
-export async function generateClasses(universityId: number, schoolId: number): Promise<Class[]> {
+export async function generateClasses(universityId: number): Promise<Class[]> {
     const repository = getCustomRepository(ClassRepository);
 
-    return await repository.generateClasses(universityId, schoolId);
+    return await repository.generateClasses(universityId);
 }
 
 export async function createElection(universityId: number) {
@@ -149,7 +149,7 @@ export const insertDummyData = async () => {
 
     await registerProgram(school.id, program.id);
 
-    const classes = await generateClasses(university.id, branch.id);
+    const classes = await generateClasses(university.id);
 
     const user1 = await createUser(classes[0].id);
     await createUser(classes[0].id);

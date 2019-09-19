@@ -1,5 +1,4 @@
 import {EntityRepository, getCustomRepository, Repository} from "typeorm";
-import {SchoolRepository} from "../school/schoolRepository";
 import {Class} from "../../entities/class";
 import {Program} from "../../entities/program";
 import {Year} from "../../utils/enums";
@@ -18,51 +17,56 @@ interface SaveClassInterface {
 
 @EntityRepository(Class)
 export class ClassRepository extends Repository<Class> {
-    private schoolRepository: SchoolRepository;
     private universityRepository: UniversityRepository;
 
     constructor() {
         super();
-        this.schoolRepository = getCustomRepository(SchoolRepository);
         this.universityRepository = getCustomRepository(UniversityRepository);
     }
 
-    //todo remove schoolId: number so that it will be one click.
-    async generateClasses(universityId: number, schoolId: number): Promise<Class[]> {
-        const university = await this.universityRepository.findUniversity(universityId);
+    async generateClasses(universityId: number): Promise<Class[]> {
+        const university = await this.universityRepository.findUniversityAndSchoolAndPrograms(universityId);
         let startMonth: number = university.semesterStartsIn;
         let endMonth: number = university.semesterEndsIn;
-
-        const school = await this.schoolRepository.findSchoolAndPrograms(schoolId);
         let classes: Class[] = [];
 
-        for (let i = 0; i < school.schoolPrograms.length; i++) {
-            const program = school.schoolPrograms[i].program;
-            const duration = program.duration;
+        const branches = university.branches;
 
-            //Generate classes for all of them.
-            for (let j = 0; j < program.duration; j++) {
-                let klass = new Class();
-                const year = j + 1; //so we won't have zero year
+        for (let b = 0; b < branches.length; b++) {
+            const branch = branches[b];
+            const schools = branch.schools;
 
-                const yearsLeft = duration - year;
-                const thisYear = new Date().getFullYear();
+            for (let s = 0; s < schools.length; s++) {
+                const school = schools[s];
 
-                let startedAt = moment(`${startMonth}/01/${thisYear}`, 'MM/DD/YYYY').subtract(year, "year");
-                let endedAt = moment(`${endMonth}/30/${thisYear}`, 'MM/DD/YYYY').add(yearsLeft, "year");
+                for (let i = 0; i < school.schoolPrograms.length; i++) {
+                    const program = school.schoolPrograms[i].program;
+                    const duration = program.duration;
 
-                klass = await this.saveClass({
-                    abbreviation: program.abbreviation,
-                    year,
-                    schoolId,
-                    program,
-                    startedAt: startedAt.toDate(),
-                    endedAt: endedAt.toDate()
-                });
-                classes.push(klass);
+                    //Generate classes for all of them.
+                    for (let j = 0; j < program.duration; j++) {
+                        let klass = new Class();
+                        const year = j + 1; //so we won't have zero year
+
+                        const yearsLeft = duration - year;
+                        const thisYear = new Date().getFullYear();
+
+                        let startedAt = moment(`${startMonth}/01/${thisYear}`, 'MM/DD/YYYY').subtract(year, "year");
+                        let endedAt = moment(`${endMonth}/30/${thisYear}`, 'MM/DD/YYYY').add(yearsLeft, "year");
+
+                        klass = await this.saveClass({
+                            abbreviation: program.abbreviation,
+                            year,
+                            schoolId: school.id,
+                            program,
+                            startedAt: startedAt.toDate(),
+                            endedAt: endedAt.toDate()
+                        });
+                        classes.push(klass);
+                    }
+                }
             }
         }
-
         return classes;
     }
 

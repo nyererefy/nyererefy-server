@@ -9,7 +9,7 @@ const categoryRepository = getCustomRepository(ClassRepository);
 export class ClassResolver {
     @Mutation(() => [Class])
     async generateClasses(): Promise<Class[]> {
-        return await categoryRepository.generateClasses(1, 1); //todo
+        return await categoryRepository.generateClasses(1); //todo
     }
 
     @Query(() => [Class])
