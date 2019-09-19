@@ -29,8 +29,8 @@ describe('Class', () => {
     });
 
     it('should update classes for all years', async () => {
-        const program = await createProgram(Duration.THREE_YEARS, 'BMLS');
-        const school = await createSchool(TEST_BRANCH_ID, 'Lab School');
+        const program = await createProgram(Duration.THREE_YEARS, 'BSN');
+        const school = await createSchool(TEST_BRANCH_ID, 'School of Nursing');
         await registerProgram(school.id, program.id);
 
         const results = await repository.generateClasses(1);

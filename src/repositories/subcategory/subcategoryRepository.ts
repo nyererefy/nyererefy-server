@@ -88,7 +88,7 @@ export class SubcategoryRepository extends Repository<Subcategory> {
 
                     subcategory = await this.saveSubcategory({
                         title: category.title,
-                        suffix: school.abbreviation,
+                        suffix: school.abbreviation || school.title,
                         categoryId: category.id,
                         ref: school.id
                     });

@@ -51,13 +51,17 @@ export async function createBranch(universityId: number): Promise<Branch> {
     return await repository.createBranch(universityId, input);
 }
 
-export async function createSchool(branchId: number, title: string = faker.random.words(3)): Promise<School> {
+export async function createSchool(
+    branchId: number,
+    title: string = faker.random.words(3),
+    abbreviation?: string
+): Promise<School> {
     const repository = getCustomRepository(SchoolRepository);
 
     const input: SchoolInput = {
         title,
         identifier: faker.internet.userName(),
-        abbreviation: faker.random.words(1),
+        abbreviation,
         branchId
     };
 
@@ -145,7 +149,7 @@ export const insertDummyData = async () => {
 
     const branch = await createBranch(university.id);
 
-    const school = await createSchool(branch.id);
+    const school = await createSchool(branch.id, 'School of Medicine', 'SM');
 
     await registerProgram(school.id, program.id);
 

@@ -41,7 +41,7 @@ beforeAll(async () => {
     program = await createProgram();
     await registerProgram(school.id, program.id);
 
-    classes = await generateClasses(university.id, school.id);
+    classes = await generateClasses(university.id);
     klass = classes[0];
 
     user = await createUser(klass.id);

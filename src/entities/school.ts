@@ -2,7 +2,7 @@ import {Field, ID, InputType, ObjectType} from "type-graphql";
 import {BeforeInsert, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {Class} from "./class";
 import {Branch} from "./branch";
-import {IsInt, Length, Max} from "class-validator";
+import {IsInt, IsOptional, Length, Max} from "class-validator";
 import {SchoolProgram} from "./schoolProgram";
 
 /**
@@ -19,13 +19,13 @@ export class School {
     @Column()
     title: string;
 
-    @Field()
-    @Column()
-    abbreviation: string;
+    @Field({nullable: true})
+    @Column({nullable: true})
+    abbreviation?: string;
 
     //Representation of what this school is
     @Field()
-    @Column({unique: true, length: 50})
+    @Column({unique: true, length: 50}) //todo this should not be unique we will find using un id.
     identifier: string;
 
     /* OneToMany */
@@ -46,7 +46,7 @@ export class School {
 
     @BeforeInsert()
     clearData() {
-        this.abbreviation = this.abbreviation.toUpperCase();
+        if (this.abbreviation) this.abbreviation = this.abbreviation.toUpperCase();
     }
 }
 
@@ -60,9 +60,10 @@ export class SchoolInput implements Partial<School> {
     @Length(1, 50)
     identifier: string;
 
-    @Field()
+    @Field({nullable: true})
+    @IsOptional()
     @Max(10)
-    abbreviation: string;
+    abbreviation?: string;
 
     @Field()
     @IsInt()
