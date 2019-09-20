@@ -139,17 +139,4 @@ describe('Subcategory', () => {
             })
         )
     },10000);
-
-    it('should delete all election subcategories', async () => {
-        const results = await repository.deleteAllSubcategories(1);
-
-        expect(results).toContainEqual(
-            expect.objectContaining({
-                id: expect.any(Number),
-                title: expect.any(String)
-            })
-        )
-    });
-
-
 });

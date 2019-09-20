@@ -27,6 +27,10 @@ export class Election {
     @Column()
     isOpen: boolean;
 
+    @Field()
+    @Column()
+    isCompleted: boolean;
+
     /**
      * If is strict that means one vote per ip for certain category.
      */
@@ -73,7 +77,7 @@ export class Election {
     /**
      * OneToMany
      */
-    @OneToMany(() => Category, c => c.election)
+    @OneToMany(() => Category, c => c.election, {onDelete: "CASCADE"})
     categories: Category[];
 
     /**

@@ -29,6 +29,31 @@ export class ElectionRepository extends Repository<Election> {
         return this.save(election);
     }
 
+    async deleteElection(id: number): Promise<Election> {
+        const election = await this.findOne(id);
+
+        if (!election) throw new Error('Election was not found');
+
+        if (election.isOpen) {
+            throw new Error('Election is running, action is not allowed');
+        }
+        if (election.isCompleted) {
+            throw new Error('action is not allowed for completed elections');
+        }
+
+        try {
+            await this.createQueryBuilder()
+                .delete()
+                .where("id = :id", {id})
+                .execute();
+        } catch (e) {
+            //todo use winston here to log this.
+            throw new Error('Something went wrong, action was not allowed');
+        }
+
+        return election;
+    }
+
     async findElection(id: number): Promise<Election> {
         const election = await this.findOne(id);
         if (!election) throw new Error('Election was not found');

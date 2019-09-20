@@ -12,11 +12,6 @@ export class SubcategoryResolver {
         return await categoryRepository.generateSubcategories(1, electionId); //todo
     }
 
-    @Mutation(() => [Subcategory])
-    async deleteSubcategories(@Arg('electionId', () => ID) electionId: number): Promise<Subcategory[]> {
-        return await categoryRepository.deleteAllSubcategories(electionId);
-    }
-
     @Query(() => [Subcategory])
     async subcategories(@Arg('electionId', () => ID) electionId: number): Promise<Subcategory[]> {
         return await categoryRepository.findEligibleElectionSubcategories(electionId, 1); //todo

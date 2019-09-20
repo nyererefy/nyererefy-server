@@ -37,9 +37,6 @@ export class SubcategoryRepository extends Repository<Subcategory> {
     }
 
     async generateSubcategories(universityId: number, electionId: number): Promise<Subcategory[]> {
-        //deleting all subcategories first before generating new ones.
-        await this.deleteAllSubcategories(electionId);
-
         const categories = await this.categoryRepository.findCategories(electionId);
         let subcategories: Subcategory[] = [];
 
@@ -166,33 +163,16 @@ export class SubcategoryRepository extends Repository<Subcategory> {
         const category = new Category();
         category.id = categoryId;
 
-        const subcategory = this.create({category, title, suffix, ref, extraRef});
-        return await this.save(subcategory);
-    }
+        let cat = await this.findOne({where: {category, ref}});
 
-    /**
-     * This will delete all candidates/votes/reviews as well.
-     * Todo we will need to check if election is running or has finished then we will allow.
-     * @param electionId
-     */
-    async deleteAllSubcategories(electionId: number): Promise<Subcategory[]> {
-
-        let subs = await this
-            .createQueryBuilder('sub')
-            .innerJoin('sub.category', 'cat', 'cat.electionId = :electionId', {electionId})
-            .where("cat.electionId = :electionId", {electionId})
-            .getMany();
-
-        for (let i = 0; i < subs.length; i++) {
-            const sub = subs[i];
-
-            await this.createQueryBuilder()
-                .delete()
-                .where("id = :id", {id: sub.id})
-                .execute()
+        if (cat) {
+            //updating only
+            cat = this.merge(cat, {title, suffix, extraRef});
+            return await this.save(cat);
         }
 
-        return subs;
+        const subcategory = this.create({category, title, suffix, ref, extraRef});
+        return await this.save(subcategory);
     }
 
     async findEligibleElectionSubcategories(electionId: number, userId: number): Promise<Subcategory[]> {

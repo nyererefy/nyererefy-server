@@ -17,6 +17,11 @@ export class CategoryResolver {
         return await categoryRepository.updateCategory(input);
     }
 
+    @Mutation(() => Category)
+    async deleteCategory(@Arg('id', () => ID) id: number): Promise<Category> {
+        return await categoryRepository.deleteCategory(id);
+    }
+
     @Query(() => Category)
     async category(@Arg('id', () => ID) id: number): Promise<Category> {
         return await categoryRepository.findCategory(id);
