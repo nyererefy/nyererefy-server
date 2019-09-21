@@ -17,6 +17,10 @@ interface ElectionState {
 @EntityRepository(Election)
 export class ElectionRepository extends Repository<Election> {
     createElection(universityId: number, input: ElectionInput) {
+        if (input.startAt >= input.endAt) {
+            throw new Error('Invalid election dates!')
+        }
+
         const election = this.create(input);
 
         const university = new University();
