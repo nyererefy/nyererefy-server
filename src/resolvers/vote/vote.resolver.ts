@@ -1,4 +1,4 @@
-import {Arg, ID, Mutation, Query, Resolver, Subscription} from "type-graphql";
+import {Arg, Int, Mutation, Query, Resolver, Subscription} from "type-graphql";
 import {getCustomRepository} from "typeorm";
 import {VoteRepository} from "../../repositories/vote/voteRepository";
 import {Vote, VoteInput} from "../../entities/vote";
@@ -14,12 +14,32 @@ export class VoteResolver {
     }
 
     @Query(() => [Vote], {name: 'votes'})
-    async votesQuery(@Arg('id', () => ID) id: number): Promise<Vote[]> {
+    async votesQuery(@Arg('subcategoryId', () => Int) id: number): Promise<Vote[]> {
         return await voteRepository.findSubcategoryVotes(id);
     }
 
     @Subscription(() => Vote, {topics: [Topic.VOTING], name: 'votes'})
-    async votesSubscription(@Arg('id', () => ID) id: number): Promise<Vote[]> {
+    async votesSubscription(@Arg('subcategoryId', () => Int) id: number): Promise<Vote[]> {
         return await voteRepository.findSubcategoryVotes(id);
+    }
+
+    @Query(() => Int, {name: 'candidateVotesCount'})
+    async candidateVotesQuery(@Arg('candidateId', () => Int) id: number): Promise<number> {
+        return await voteRepository.countCandidateVotes(id);
+    }
+
+    @Subscription(() => Int, {topics: [Topic.VOTING], name: 'candidateVotesCount'})
+    async candidateVotesSubscription(@Arg('candidateId', () => Int) id: number): Promise<number> {
+        return await voteRepository.countCandidateVotes(id);
+    }
+
+    @Query(() => Int, {name: 'subcategoryVotesCount'})
+    async subcategoryVotesQuery(@Arg('candidateId', () => Int) id: number): Promise<number> {
+        return await voteRepository.countSubcategoryVotes(id);
+    }
+
+    @Subscription(() => Int, {topics: [Topic.VOTING], name: 'subcategoryVotesCount'})
+    async subcategoryVotesSubscription(@Arg('candidateId', () => Int) id: number): Promise<number> {
+        return await voteRepository.countSubcategoryVotes(id);
     }
 }

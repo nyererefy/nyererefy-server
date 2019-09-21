@@ -4,6 +4,8 @@ import {User} from "../../entities/user";
 import {CandidateRepository} from "../candidate/candidateRepository";
 import {SubcategoryRepository} from "../subcategory/subcategoryRepository";
 import {Subcategory} from "../../entities/subcategory";
+import {Candidate} from "../../entities/candidate";
+import {CACHE_CANDIDATE_VOTES} from "../../utils/consts";
 
 interface VoteInterface {
     userId: number,
@@ -81,6 +83,32 @@ export class VoteRepository extends Repository<Vote> {
         subcategory.id = subcategoryId;
 
         return this.find({where: {subcategory}})
+    }
+
+    countCandidateVotes(candidateId: number): Promise<number> {
+        const candidate = new Candidate();
+        candidate.id = candidateId;
+
+        return this.count({
+            where: {candidate},
+            cache: {
+                id: CACHE_CANDIDATE_VOTES,
+                milliseconds: 10 * 60 * 1000 //10 minutes
+            }
+        });
+    }
+
+    countSubcategoryVotes(subcategoryId: number): Promise<number> {
+        const subcategory = new Subcategory();
+        subcategory.id = subcategoryId;
+
+        return this.count({
+            where: {subcategory},
+            cache: {
+                id: CACHE_CANDIDATE_VOTES,
+                milliseconds: 10 * 60 * 1000 //10 minutes
+            }
+        });
     }
 
 }
