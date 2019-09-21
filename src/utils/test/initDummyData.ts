@@ -23,6 +23,7 @@ import {SchoolProgramRepository} from "../../repositories/schoolProgram/schoolPr
 import {SchoolProgram} from "../../entities/schoolProgram";
 import {ClassRepository} from "../../repositories/class/classRepository";
 import {Class} from "../../entities/class";
+import moment from "moment";
 
 export async function createUniversity(): Promise<University> {
     const universityRepository = getCustomRepository(UniversityRepository);
@@ -95,8 +96,12 @@ export async function generateClasses(universityId: number): Promise<Class[]> {
 export async function createElection(universityId: number) {
     const electionRepository = getCustomRepository(ElectionRepository);
 
+    const now = new Date();
+
     const input: ElectionInput = {
-        title: faker.lorem.sentence()
+        title: faker.lorem.sentence(),
+        startAt: moment(now).add(2, 'minute').toDate(),
+        endAt: moment(now).add(5, 'minute').toDate(),
     };
 
     return await electionRepository.createElection(universityId, input);

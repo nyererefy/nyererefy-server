@@ -4,3 +4,7 @@ export const TEST_VOTER_ID = 2;
 export const TEST_ELECTION_ID = 1;
 export const TEST_CATEGORY_ID = 1;
 export const TEST_CANDIDATE_ID = 1;
+
+
+
+export const CACHE_SCHEDULED_ELECTIONS = 'scheduled_elections';

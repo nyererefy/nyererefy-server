@@ -2,12 +2,22 @@ import {EntityRepository, Repository} from "typeorm";
 import {Election, ElectionEditInput, ElectionInput} from "../../entities/election";
 import {University} from "../../entities/university";
 import _ from "lodash";
+import moment from "moment";
+import {CACHE_SCHEDULED_ELECTIONS} from "../../utils/consts";
+
+/**
+ * useful for bringing feedback of what action has been taken.
+ */
+interface ElectionState {
+    election: Election,
+    isStarted?: boolean
+    isClosed?: boolean
+}
 
 @EntityRepository(Election)
 export class ElectionRepository extends Repository<Election> {
     createElection(universityId: number, input: ElectionInput) {
-        const election = new Election();
-        election.title = input.title;
+        const election = this.create(input);
 
         const university = new University();
         university.id = universityId;
@@ -26,7 +36,7 @@ export class ElectionRepository extends Repository<Election> {
 
         election = this.merge(election, updates);
 
-        return this.save(election);
+        return await this.save(election);
     }
 
     async deleteElection(id: number): Promise<Election> {
@@ -58,6 +68,37 @@ export class ElectionRepository extends Repository<Election> {
         const election = await this.findOne(id);
         if (!election) throw new Error('Election was not found');
         return election;
+    }
+
+    async startOrStopElections(): Promise<ElectionState[]> {
+        const electionsState: ElectionState[] = [];
+        const now = moment().toDate();
+
+        //Finding all elections that are uncompleted.
+        let elections = await this.find({
+            where: {isCompleted: false},
+            cache: {id: CACHE_SCHEDULED_ELECTIONS, milliseconds: 10 * 60 * 1000} //10 minutes
+        });
+
+        for (let i = 0; i < elections.length; i++) {
+            let election = elections[i];
+
+            if (election.startAt <= now && !election.isOpen) {
+                election.isOpen = true;
+                election = await this.save(election);
+
+                electionsState.push({election, isStarted: true});
+
+            } else if (election.endAt <= now && election.isOpen) {
+                election.isOpen = false;
+                election.isCompleted = true; //So we wont find it again in next round.
+                election = await this.save(election);
+
+                electionsState.push({election, isClosed: true});
+            }
+        }
+
+        return electionsState;
     }
 
     findElections(): Promise<Election[]> {

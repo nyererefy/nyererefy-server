@@ -10,7 +10,7 @@ import {
 } from "typeorm";
 import {Category} from "./category";
 import {University} from "./university";
-import {IsAlpha, IsAlphanumeric, IsOptional} from "class-validator";
+import {IsAlphanumeric, IsDate, IsOptional} from "class-validator";
 
 @ObjectType()
 @Entity('elections')
@@ -23,19 +23,25 @@ export class Election {
     @Column({length: 100})
     title: string;
 
-    @Field()
-    @Column()
+    @Field({
+        defaultValue: false,
+        description: 'If true it means people can vote, this is set to true automatically when specified time reaches.'
+    })
+    @Column({default: false})
     isOpen: boolean;
 
-    @Field()
-    @Column()
+    @Field({
+        defaultValue: false,
+        description: 'If true it means elections is archived and no any action will be allowed further'
+    })
+    @Column({default: false})
     isCompleted: boolean;
 
-    /**
-     * If is strict that means one vote per ip for certain category.
-     */
-    @Field()
-    @Column()
+    @Field({
+        defaultValue: false,
+        description: 'If is true that means one vote per ip for certain category.'
+    })
+    @Column({default: false})
     isStrict: boolean;
 
     /**
@@ -53,7 +59,7 @@ export class Election {
      */
     @Field({
         defaultValue: false,
-        description: 'Allows candidates to be placed in category with no shared characters. It\'s rarely true '
+        description: 'Allows candidates to be placed in category with no shared characters. It\'s rarely true'
     })
     @Column({default: false})
     isAbnormal: boolean;
@@ -66,13 +72,13 @@ export class Election {
     @UpdateDateColumn()
     updatedAt?: Date;
 
-    @Field({nullable: true})
-    @Column('datetime', {nullable: true})
-    startAt?: Date;
+    @Field()
+    @Column('datetime')
+    startAt: Date;
 
-    @Field({nullable: true})
-    @Column('datetime', {nullable: true})
-    endAt?: Date;
+    @Field()
+    @Column('datetime')
+    endAt: Date;
 
     /**
      * OneToMany
@@ -90,9 +96,17 @@ export class Election {
 
 @InputType()
 export class ElectionInput implements Partial<Election> {
-    @IsAlpha()
+    @IsAlphanumeric()
     @Field({description: 'Name of election. a-zA-Z only'})
     title: string;
+
+    @IsDate()
+    @Field()
+    startAt: Date;
+
+    @IsDate()
+    @Field()
+    endAt: Date;
 }
 
 @InputType()
@@ -102,21 +116,25 @@ export class ElectionEditInput implements Partial<Election> {
     @Field({nullable: true, description: 'Name of election. a-zA-Z0-9 only'})
     title?: string;
 
+    @IsOptional()
+    @IsDate()
     @Field({nullable: true})
     startAt?: Date;
 
+    @IsOptional()
+    @IsDate()
     @Field({nullable: true})
     endAt?: Date;
 
-    @Field({nullable: true})
+    @Field({nullable: true, defaultValue: false})
     isOpen?: boolean;
 
-    @Field({nullable: true})
+    @Field({nullable: true, defaultValue: false})
     isStrict?: boolean;
 
-    @Field({nullable: true})
+    @Field({nullable: true, defaultValue: false})
     isExtended?: boolean;
 
-    @Field({nullable: true})
+    @Field({nullable: true, defaultValue: false})
     isAbnormal?: boolean;
 }
