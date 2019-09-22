@@ -1,5 +1,5 @@
 import {EntityRepository, Repository} from "typeorm";
-import {RegistrationByProgramInput, RegistrationBySchoolInput, RegistrationInput, User} from "../../entities/user";
+import {RegistrationByProgramInput, RegistrationInput, User} from "../../entities/user";
 import {Class} from "../../entities/class";
 
 @EntityRepository(User)
@@ -9,11 +9,14 @@ export class UserRepository extends Repository<User> {
         super();
     }
 
-    async registerUser(input: RegistrationInput): Promise<User> {
+    async registerUser(input: RegistrationInput, intelligently: boolean): Promise<User> {
+        if (intelligently) {
+        }
+
         const user = new User();
 
         const userClass = new Class();
-        userClass.id = input.classId;
+        userClass.id = 1;
 
         user.class = userClass;
         user.regNo = input.regNo;
@@ -22,7 +25,7 @@ export class UserRepository extends Repository<User> {
         return await this.save(user);
     }
 
-    async registerUserByClass(input: RegistrationBySchoolInput | RegistrationByProgramInput): Promise<User> {
+    async registrationByProgram(input: RegistrationByProgramInput): Promise<User> {
         //const university = await this.universityRepository.findUniversityByUUId(input.uuid);
 
         const user = new User();
@@ -30,14 +33,6 @@ export class UserRepository extends Repository<User> {
         //user.university = university;
         user.regNo = input.regNo;
         user.email = input.email;
-
-        if (input instanceof RegistrationBySchoolInput) {
-            input.schoolIdentifier
-        }
-
-        if (input instanceof RegistrationByProgramInput) {
-
-        }
 
         return await this.save(user);
     }

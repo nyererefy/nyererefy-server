@@ -1,4 +1,4 @@
-import {Field, ID, ObjectType, registerEnumType} from "type-graphql";
+import {Field, ID, InputType, ObjectType, registerEnumType} from "type-graphql";
 import {
     BeforeInsert,
     Column,
@@ -133,47 +133,33 @@ export class User {
 }
 
 /**
- * This one just registers user with their specific university that's all.
- * Everything will be the same for all.
+ * This one checks reg no patterns to match with what student is studying.
+ * We can find who is student from registration number.
+ * number should be split  by dashes like uuid.
  */
+@InputType()
 export class RegistrationInput implements Partial<User> {
+    @Field()
     @Length(1, 50)
     regNo: string;
 
     @Field()
     @IsEmail()
     email: string;
-
-    @Field()
-    classId: number;
-}
-
-/**
- * This one checks reg no patterns to match with what student is studying.
- * We can find who is student from registration number.
- * number should be split  by dashes like uuid.
- */
-export class IntelligentRegistrationInput extends RegistrationInput {
 }
 
 /**
  * This is should contain year and program abbreviation.
- */
-export class RegistrationByProgramInput extends RegistrationInput {
-    year: Year;
-
-    @Length(1, 50)
-    programAbbreviation: string;
-}
-
-/**
  * Like I am Sylvanus taking bachelor in Pharmacy should bring BPHARM
  */
-export class RegistrationBySchoolInput extends RegistrationInput {
+@InputType()
+export class RegistrationByProgramInput extends RegistrationInput {
+    @Field()
     year: Year;
 
+    @Field()
     @Length(1, 50)
-    schoolIdentifier: string;
+    programIdentifier: string;
 }
 
 
