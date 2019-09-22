@@ -2,8 +2,10 @@ import '../../utils/test/initTestDb'
 import {CategoryRepository} from "./categoryRepository";
 import {getCustomRepository} from "typeorm";
 import faker from "faker";
-import {CategoryEditInput, CategoryInput} from "../../entities/category";
+import {CategoryEditInput} from "../../entities/category";
 import {Eligible} from "../../utils/enums";
+import {createCategory} from "../../utils/test/initDummyData";
+import {TEST_ELECTION_ID} from "../../utils/consts";
 
 let repository: CategoryRepository;
 const categoryId = 1;
@@ -15,14 +17,24 @@ beforeEach(async () => {
 
 describe('Category', () => {
     it('should create a new category', async () => {
-        const input: CategoryInput = {
-            title: faker.random.words(2),
-            electionId: 1,
-            eligible: Eligible.ALL
-        };
-        const result = await repository.createCategory(input);
+        const result = await createCategory(TEST_ELECTION_ID);
 
-        expect(result.title).toMatch(input.title)
+        expect(result).toMatchObject({
+            id: expect.any(Number),
+            title: expect.any(String)
+        });
+    });
+
+    it('should delete a category ', async () => {
+        const createdCategory = await createCategory(TEST_ELECTION_ID);
+        expect(createdCategory).toMatchObject({
+            id: expect.any(Number)
+        });
+
+        const deletedCategory = await repository.deleteCategory(createdCategory.id);
+        expect(deletedCategory).toMatchObject({
+            id: createdCategory.id
+        });
     });
 
     it('should edit an category', async () => {

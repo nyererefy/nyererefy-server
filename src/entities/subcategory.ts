@@ -27,13 +27,15 @@ export class Subcategory {
     /**
      * OneToMany
      */
-    @OneToMany(() => Candidate, s => s.subcategory)
+    @OneToMany(() => Candidate, s => s.subcategory, {onDelete: "CASCADE"})
     candidates: Candidate[];
 
-    @OneToMany(() => Vote, s => s.subcategory)
+    //If there are votes then we should restrict.
+    @OneToMany(() => Vote, s => s.subcategory, {onDelete: "RESTRICT"})
     votes: Vote[];
 
-    @OneToMany(() => Review, s => s.subcategory)
+    //If there are reviews then we should restrict.
+    @OneToMany(() => Review, s => s.subcategory, {onDelete: "RESTRICT"})
     reviews: Review[];
 
     /**
@@ -61,9 +63,4 @@ export class Subcategory {
     @Column({nullable: true})
     extraRef: number;
 }
-
-/***
- * ways to make this work
- * 1. integrate all filters here and use them during fetching. branch, school,class all here as FK.
- */
 

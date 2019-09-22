@@ -3,6 +3,7 @@ import {ElectionRepository} from "./electionRepository";
 import {getCustomRepository} from "typeorm";
 import faker from "faker";
 import {ElectionEditInput, ElectionInput} from "../../entities/election";
+import moment from "moment";
 
 let repository: ElectionRepository;
 const universityId = 1;
@@ -14,10 +15,14 @@ beforeEach(async () => {
 
 describe('Election', () => {
     it('should create a new election', async () => {
+        const now = new Date();
 
         const input: ElectionInput = {
-            title: faker.lorem.sentence()
+            title: faker.lorem.sentence(),
+            startAt: moment(now).add(1, 'minute').toDate(),
+            endAt: moment(now).add(3, 'minute').toDate(),
         };
+
         const result = await repository.createElection(universityId, input);
 
         expect(result.title).toMatch(input.title)
@@ -50,4 +55,54 @@ describe('Election', () => {
             })
         )
     });
+
+    // it('should start an election', async () => {
+    //     const now = new Date();
+    //
+    //     const input: ElectionInput = {
+    //         title: faker.lorem.sentence(),
+    //         startAt: moment(now).subtract(1, 'hour').toDate(),
+    //         endAt: moment(now).add(1, 'hour').toDate(),
+    //     };
+    //
+    //     const election = await repository.createElection(universityId, input);
+    //
+    //     const results = await repository.startOrStopElections();
+    //
+    //     expect(results).toContainEqual(
+    //         expect.objectContaining({
+    //             election: {
+    //                 id: election.id,
+    //                 isOpen: true
+    //             },
+    //             isStarted: true
+    //         })
+    //     )
+    // });
+    //
+    // it('should stop an election and complete election', async () => {
+    //     const now = new Date();
+    //
+    //     const input: ElectionInput = {
+    //         title: faker.lorem.sentence(),
+    //         startAt: moment(now).subtract(1, 'hour').toDate(),
+    //         endAt: moment(now).subtract(1, 'hour').toDate(),
+    //     };
+    //
+    //     const election = await repository.createElection(universityId, input);
+    //
+    //     await repository.editElection(election.id, {isOpen: true});
+    //
+    //     const results = await repository.startOrStopElections();
+    //
+    //     expect(results).toContainEqual(
+    //         expect.objectContaining({
+    //             election: {
+    //                 id: election.id,
+    //                 isOpen: true
+    //             },
+    //             isStarted: true
+    //         })
+    //     )
+    // });
 });

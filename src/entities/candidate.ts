@@ -38,7 +38,7 @@ export class Candidate {
     /**
      * ManyToOne
      */
-    @ManyToOne(() => User, s => s.candidates)
+    @ManyToOne(() => User, s => s.candidates, {eager: true})
     user: User;
 
     @ManyToOne(() => Subcategory, s => s.candidates, {onDelete: "CASCADE"})

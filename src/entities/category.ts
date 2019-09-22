@@ -23,7 +23,7 @@ export class Category {
     /**
      * OneToMany
      */
-    @OneToMany(() => Subcategory, s => s.category)
+    @OneToMany(() => Subcategory, s => s.category, {onDelete: "CASCADE"})
     subcategories: Subcategory[];
 
     /**

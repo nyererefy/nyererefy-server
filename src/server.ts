@@ -4,10 +4,13 @@ import {ApolloServer} from "apollo-server-express";
 import express from "express";
 import {createSchema} from "./utils/createSchema";
 import {createConnection} from "typeorm";
+import {registerCronJobs} from "./helpers/cronJob";
 
 const bootstrap = async () => {
     //Db connection.
     await createConnection();
+    //cron jobs.
+    registerCronJobs();
 
     const apolloServer = new ApolloServer({
         schema: await createSchema(),

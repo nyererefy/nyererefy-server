@@ -32,6 +32,31 @@ export class CategoryRepository extends Repository<Category> {
         return category;
     }
 
+    async deleteCategory(id: number): Promise<Category> {
+        const category = await this.findOne(id, {relations: ['election']});
+
+        if (!category) throw new Error('Category was not found');
+
+        if (category.election.isOpen) {
+            throw new Error('Election is running, action is not allowed');
+        }
+        if (category.election.isCompleted) {
+            throw new Error('action is not allowed for completed elections');
+        }
+
+        try {
+            await this.createQueryBuilder()
+                .delete()
+                .where("id = :id", {id})
+                .execute();
+        } catch (e) {
+            //todo use winston here to log this.
+            throw new Error('Something went wrong, action was not allowed');
+        }
+
+        return category;
+    }
+
     findCategories(electionId: number): Promise<Category[]> {
         const election = new Election();
         election.id = electionId;

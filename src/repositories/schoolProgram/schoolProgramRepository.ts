@@ -11,7 +11,7 @@ export interface RegisterProgramInterface {
 @EntityRepository(SchoolProgram)
 export class SchoolProgramRepository extends Repository<SchoolProgram> {
 
-    registerProgram({schoolId, programId}: RegisterProgramInterface) {
+    registerProgram({schoolId, programId}: RegisterProgramInterface): Promise<SchoolProgram> {
         const school = new School();
         school.id = schoolId;
 

@@ -12,13 +12,20 @@ export class Vote {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Field()
-    @Column()
-    device: string;
+    @Field({nullable: true})
+    @Column({nullable: true})
+    device?: string;
 
-    @Field()
-    @Column()
-    ip: string;
+    //todo this should not be shown to all people. either trim some number and show full only to the owner.
+    @Field({nullable: true})
+    @Column({nullable: true})
+    ip?: string;
+
+    //todo make sure no one would find user by their username.
+    @Field(() => String, {nullable: true})
+    get voterUsername(): string | null {
+        return `${this.user.username}` || null;
+    }
 
     /**
      * Combination of userId-categoryId so that the same key won't be recorded twice.
@@ -31,7 +38,7 @@ export class Vote {
      * If strict mode is on we keep track of ip address per category.
      */
     @Column({type: "varchar", nullable: true, unique: true})
-    ip_guard: string;
+    ip_guard?: string;
 
     @Field()
     @CreateDateColumn()
@@ -40,10 +47,11 @@ export class Vote {
     /**
      * ManyToOne
      */
-    @ManyToOne(() => User, s => s.votes)
+    @ManyToOne(() => User, s => s.votes, {eager: true})
     user: User;
 
-    @ManyToOne(() => Candidate, s => s.votes)
+    @Field(() => Candidate, {complexity: 5})
+    @ManyToOne(() => Candidate, s => s.votes, {eager: true})
     candidate: Candidate;
 
     @ManyToOne(() => Subcategory, s => s.votes, {onDelete: "CASCADE"})
@@ -52,9 +60,6 @@ export class Vote {
 
 @InputType()
 export class VoteInput {
-    @Field()
-    device: string;
-
     /**
      * Only candidate id since we are going to find the rest parameters eg categoryId.
      * If someone tries to vote for candidates that have no eligibility we suspend them.

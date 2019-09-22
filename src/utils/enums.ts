@@ -89,3 +89,7 @@ export enum State {
      */
     TO_BE_DELETED = 4,
 }
+
+export enum Topic {
+    VOTING = 'voting'
+}

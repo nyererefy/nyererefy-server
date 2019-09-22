@@ -24,6 +24,20 @@ export class UniversityRepository extends Repository<University> {
         return university;
     }
 
+    async findUniversityAndSchoolAndPrograms(universityId: number): Promise<University> {
+        let university = await this
+            .createQueryBuilder('university')
+            .innerJoinAndSelect('university.branches', 'branch')
+            .innerJoinAndSelect('branch.schools', 'school')
+            .innerJoinAndSelect('school.schoolPrograms', 'schoolProgram')
+            .innerJoinAndSelect('schoolProgram.program', 'program')
+            .where("university.id = :universityId", {universityId})
+            .getOne();
+
+        if (!university) throw new Error('University was not found');
+        return university;
+    }
+
     async findUniversityByUUId(uuid: string): Promise<University> {
         let university = await this.findOne({where: {uuid}});
         if (!university) throw new Error('University was not found');

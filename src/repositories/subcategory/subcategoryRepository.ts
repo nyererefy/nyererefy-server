@@ -1,5 +1,5 @@
 import {EntityRepository, getCustomRepository, Repository} from "typeorm";
-import {Category, CategoryEditInput} from "../../entities/category";
+import {Category} from "../../entities/category";
 import {Subcategory} from "../../entities/subcategory";
 import {CategoryRepository} from "../category/categoryRepository";
 import {SchoolRepository} from "../school/schoolRepository";
@@ -37,9 +37,6 @@ export class SubcategoryRepository extends Repository<Subcategory> {
     }
 
     async generateSubcategories(universityId: number, electionId: number): Promise<Subcategory[]> {
-        //deleting all subcategories first before generating new ones.
-        await this.deleteAllSubcategories(electionId);
-
         const categories = await this.categoryRepository.findCategories(electionId);
         let subcategories: Subcategory[] = [];
 
@@ -88,7 +85,7 @@ export class SubcategoryRepository extends Repository<Subcategory> {
 
                     subcategory = await this.saveSubcategory({
                         title: category.title,
-                        suffix: school.abbreviation,
+                        suffix: school.abbreviation || school.title,
                         categoryId: category.id,
                         ref: school.id
                     });
@@ -166,49 +163,16 @@ export class SubcategoryRepository extends Repository<Subcategory> {
         const category = new Category();
         category.id = categoryId;
 
-        const subcategory = this.create({category, title, suffix, ref, extraRef});
-        return await this.save(subcategory);
-    }
+        let cat = await this.findOne({where: {category, ref}});
 
-    /**
-     * This will delete all candidates/votes/reviews as well.
-     * Todo we will need to check if election is running or has finished then we will allow.
-     * @param electionId
-     */
-    async deleteAllSubcategories(electionId: number): Promise<Subcategory[]> {
-
-        let subs = await this
-            .createQueryBuilder('sub')
-            .innerJoin('sub.category', 'cat', 'cat.electionId = :electionId', {electionId})
-            .where("cat.electionId = :electionId", {electionId})
-            .getMany();
-
-        for (let i = 0; i < subs.length; i++) {
-            const sub = subs[i];
-
-            await this.createQueryBuilder()
-                .delete()
-                .where("id = :id", {id: sub.id})
-                .execute()
+        if (cat) {
+            //updating only
+            cat = this.merge(cat, {title, suffix, extraRef});
+            return await this.save(cat);
         }
 
-        return subs;
-    }
-
-    async updateCategory(input: CategoryEditInput): Promise<Subcategory> {
-        let category = await this.findOne(input.categoryId);
-        if (!category) throw new Error('Subcategory was not found');
-
-        category = this.merge(category, input);
-
-        return this.save(category);
-    }
-
-    async findCategory(id: number): Promise<Subcategory> {
-        let category = await this.findOne(id);
-        if (!category) throw new Error('Subcategory was not found');
-
-        return category;
+        const subcategory = this.create({category, title, suffix, ref, extraRef});
+        return await this.save(subcategory);
     }
 
     async findEligibleElectionSubcategories(electionId: number, userId: number): Promise<Subcategory[]> {
