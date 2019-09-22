@@ -15,22 +15,6 @@ export class UserRepository extends Repository<User> {
         this.classRepository = getCustomRepository(ClassRepository);
     }
 
-    // async registerUser(input: RegistrationInput, intelligently: boolean = false): Promise<User> {
-    //     if (intelligently) {
-    //     }
-    //
-    //     const user = new User();
-    //
-    //     const userClass = new Class();
-    //     userClass.id = 1;
-    //
-    //     user.class = userClass;
-    //     user.regNo = input.regNo;
-    //     user.email = input.email;
-    //
-    //     return await this.save(user);
-    // }
-
     async registrationByProgram(universityId: number, input: RegistrationByProgramInput): Promise<User> {
         const sp = await this.schoolProgramRepository.findSchoolProgram(universityId, input.programIdentifier);
         const klass = await this.classRepository.findClass(sp.school.id, input.year, sp.program.id);
