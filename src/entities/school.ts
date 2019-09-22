@@ -51,10 +51,6 @@ export class SchoolInput implements Partial<School> {
     @Length(1, 100)
     title: string;
 
-    @Field()
-    @Length(1, 50)
-    identifier: string;
-
     @Field({nullable: true})
     @IsOptional()
     @Max(10)

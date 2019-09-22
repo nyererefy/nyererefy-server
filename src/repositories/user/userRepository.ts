@@ -1,5 +1,5 @@
 import {EntityRepository, getCustomRepository, Repository} from "typeorm";
-import {RegistrationByProgramInput, RegistrationInput, User} from "../../entities/user";
+import {RegistrationByProgramInput, User} from "../../entities/user";
 import {SchoolProgramRepository} from "../schoolProgram/schoolProgramRepository";
 import {ClassRepository} from "../class/classRepository";
 
@@ -31,11 +31,6 @@ export class UserRepository extends Repository<User> {
         }
 
         throw new Error('Invalid data'); //todo be careful with this error.
-    }
-
-    editUser(input: RegistrationInput) {
-        const user = this.create(input);
-        return this.save(user);
     }
 
     async findUser(id: number) {
