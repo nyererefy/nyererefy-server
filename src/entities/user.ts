@@ -133,12 +133,11 @@ export class User {
 }
 
 /**
- * This one checks reg no patterns to match with what student is studying.
- * We can find who is student from registration number.
- * number should be split  by dashes like uuid.
+ * This is should contain year and program abbreviation.
+ * Like I am Sylvanus taking bachelor in Pharmacy should bring BPHARM
  */
 @InputType()
-export class RegistrationInput implements Partial<User> {
+export class RegistrationByProgramInput implements Partial<User> {
     @Field()
     @Length(1, 50)
     regNo: string;
@@ -146,14 +145,7 @@ export class RegistrationInput implements Partial<User> {
     @Field()
     @IsEmail()
     email: string;
-}
 
-/**
- * This is should contain year and program abbreviation.
- * Like I am Sylvanus taking bachelor in Pharmacy should bring BPHARM
- */
-@InputType()
-export class RegistrationByProgramInput extends RegistrationInput {
     @Field()
     year: Year;
 
