@@ -70,6 +70,31 @@ export class ClassRepository extends Repository<Class> {
         return classes;
     }
 
+    async findUniversityClasses(universityId: number): Promise<Class[]> {
+        return await this
+            .createQueryBuilder('class')
+            .innerJoin('class.school', 'school')
+            .innerJoin('school.branch', 'branch')
+            .where("branch.universityId = :universityId", {universityId})
+            .getMany();
+    }
+
+    async findClass(schoolId: number, year: Year, programId: number): Promise<Class> {
+        const school = new School();
+        school.id = schoolId;
+
+        const program = new Program();
+        program.id = programId;
+
+        const klass = await this.findOne({where: {school, year, program}});
+        if (klass) {
+            return klass;
+        }
+
+        throw new Error('Class not found')
+
+    }
+
     private async saveClass({schoolId, program, year, abbreviation, startedAt, endedAt}: SaveClassInterface) {
         const school = new School();
         school.id = schoolId;
@@ -84,14 +109,5 @@ export class ClassRepository extends Repository<Class> {
 
         klass = this.create({school, program, year, abbreviation, startedAt, endedAt});
         return await this.save(klass);
-    }
-
-    async findUniversityClasses(universityId: number): Promise<Class[]> {
-        return await this
-            .createQueryBuilder('class')
-            .innerJoin('class.school', 'school')
-            .innerJoin('school.branch', 'branch')
-            .where("branch.universityId = :universityId", {universityId})
-            .getMany();
     }
 }

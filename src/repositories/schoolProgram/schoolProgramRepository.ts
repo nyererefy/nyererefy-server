@@ -1,27 +1,37 @@
 import {EntityRepository, Repository} from "typeorm";
 import {Program} from "../../entities/program";
-import {SchoolProgram} from "../../entities/schoolProgram";
+import {SchoolProgram, SchoolProgramInput} from "../../entities/schoolProgram";
 import {School} from "../../entities/school";
-
-export interface RegisterProgramInterface {
-    schoolId: number,
-    programId: number
-}
 
 @EntityRepository(SchoolProgram)
 export class SchoolProgramRepository extends Repository<SchoolProgram> {
 
-    registerProgram({schoolId, programId}: RegisterProgramInterface): Promise<SchoolProgram> {
+    registerProgram(input: SchoolProgramInput): Promise<SchoolProgram> {
         const school = new School();
-        school.id = schoolId;
+        school.id = input.schoolId;
 
         const program = new Program();
-        program.id = programId;
+        program.id = input.programId;
 
-        const universityProgram = new SchoolProgram();
-        universityProgram.program = program;
-        universityProgram.school = school;
+        const schoolProgram = new SchoolProgram();
+        schoolProgram.program = program;
+        schoolProgram.school = school;
+        schoolProgram.identifier = input.identifier;
 
-        return this.save(universityProgram);
+        return this.save(schoolProgram);
+    }
+
+    async findSchoolProgram(universityId: number, identifier: string): Promise<SchoolProgram> {
+        const sp = await this.createQueryBuilder('sp')
+            .innerJoinAndSelect('sp.program', 'program')
+            .innerJoinAndSelect('sp.school', 'school')
+            .innerJoin('school.branch', 'branch')
+            .where('sp.identifier = :identifier', {identifier})
+            .andWhere('branch.university = :universityId', {universityId})
+            .getOne();
+
+        if (sp) return sp;
+
+        throw new Error('Class not found')
     }
 }

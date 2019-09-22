@@ -20,42 +20,36 @@ export class Vote {
     @Field({nullable: true})
     @Column({nullable: true})
     ip?: string;
-
-    //todo make sure no one would find user by their username.
-    @Field(() => String, {nullable: true})
-    get voterUsername(): string | null {
-        return `${this.user.username}` || null;
-    }
-
     /**
      * Combination of userId-categoryId so that the same key won't be recorded twice.
      * We use this to check if user has voted. This has index you know.
      */
     @Column({type: "int", unique: true})
     guard: number;
-
     /**
      * If strict mode is on we keep track of ip address per category.
      */
     @Column({type: "varchar", nullable: true, unique: true})
     ip_guard?: string;
-
     @Field()
     @CreateDateColumn()
     createdAt: string;
-
     /**
      * ManyToOne
      */
     @ManyToOne(() => User, s => s.votes, {eager: true})
     user: User;
-
     @Field(() => Candidate, {complexity: 5})
     @ManyToOne(() => Candidate, s => s.votes, {eager: true})
     candidate: Candidate;
-
     @ManyToOne(() => Subcategory, s => s.votes, {onDelete: "CASCADE"})
     subcategory: Subcategory;
+
+    //todo make sure no one would find user by their username.
+    @Field(() => String, {nullable: true})
+    get voterUsername(): string | null {
+        return `${this.user.username}` || null;
+    }
 }
 
 @InputType()

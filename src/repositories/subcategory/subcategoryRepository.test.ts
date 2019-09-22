@@ -138,5 +138,5 @@ describe('Subcategory', () => {
                 title: expect.any(String)
             })
         )
-    },10000);
+    }, 10000);
 });

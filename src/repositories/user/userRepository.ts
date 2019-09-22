@@ -1,40 +1,52 @@
-import {EntityRepository, Repository} from "typeorm";
+import {EntityRepository, getCustomRepository, Repository} from "typeorm";
 import {RegistrationByProgramInput, RegistrationInput, User} from "../../entities/user";
-import {Class} from "../../entities/class";
+import {SchoolProgramRepository} from "../schoolProgram/schoolProgramRepository";
+import {ClassRepository} from "../class/classRepository";
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
 
+    private schoolProgramRepository: SchoolProgramRepository;
+    private classRepository: ClassRepository;
+
     constructor() {
         super();
+        this.schoolProgramRepository = getCustomRepository(SchoolProgramRepository);
+        this.classRepository = getCustomRepository(ClassRepository);
     }
 
-    async registerUser(input: RegistrationInput, intelligently: boolean): Promise<User> {
-        if (intelligently) {
+    // async registerUser(input: RegistrationInput, intelligently: boolean = false): Promise<User> {
+    //     if (intelligently) {
+    //     }
+    //
+    //     const user = new User();
+    //
+    //     const userClass = new Class();
+    //     userClass.id = 1;
+    //
+    //     user.class = userClass;
+    //     user.regNo = input.regNo;
+    //     user.email = input.email;
+    //
+    //     return await this.save(user);
+    // }
+
+    async registrationByProgram(universityId: number, input: RegistrationByProgramInput): Promise<User> {
+        const sp = await this.schoolProgramRepository.findSchoolProgram(universityId, input.programIdentifier);
+        const klass = await this.classRepository.findClass(sp.school.id, input.year, sp.program.id);
+
+        if (sp && klass) {
+            const user = new User();
+
+            //user.university = university;
+            user.regNo = input.regNo;
+            user.email = input.email;
+            user.class = klass;
+
+            return await this.save(user);
         }
 
-        const user = new User();
-
-        const userClass = new Class();
-        userClass.id = 1;
-
-        user.class = userClass;
-        user.regNo = input.regNo;
-        user.email = input.email;
-
-        return await this.save(user);
-    }
-
-    async registrationByProgram(input: RegistrationByProgramInput): Promise<User> {
-        //const university = await this.universityRepository.findUniversityByUUId(input.uuid);
-
-        const user = new User();
-
-        //user.university = university;
-        user.regNo = input.regNo;
-        user.email = input.email;
-
-        return await this.save(user);
+        throw new Error('Invalid data'); //todo be careful with this error.
     }
 
     editUser(input: RegistrationInput) {

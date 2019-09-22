@@ -23,11 +23,6 @@ export class School {
     @Column({nullable: true})
     abbreviation?: string;
 
-    //Representation of what this school is
-    @Field()
-    @Column({unique: true, length: 50}) //todo this should not be unique we will find using un id.
-    identifier: string;
-
     /* OneToMany */
 
     @OneToMany(() => Class, s => s.school)

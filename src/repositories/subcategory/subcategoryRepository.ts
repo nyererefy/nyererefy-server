@@ -159,22 +159,6 @@ export class SubcategoryRepository extends Repository<Subcategory> {
         return subcategories;
     }
 
-    private async saveSubcategory({categoryId, title, suffix, ref, extraRef}: SaveCategoryInterface) {
-        const category = new Category();
-        category.id = categoryId;
-
-        let cat = await this.findOne({where: {category, ref}});
-
-        if (cat) {
-            //updating only
-            cat = this.merge(cat, {title, suffix, extraRef});
-            return await this.save(cat);
-        }
-
-        const subcategory = this.create({category, title, suffix, ref, extraRef});
-        return await this.save(subcategory);
-    }
-
     async findEligibleElectionSubcategories(electionId: number, userId: number): Promise<Subcategory[]> {
         const subcategories: Subcategory[] = [];
         const user = await this.userRepository.findUserInfo(userId);
@@ -230,5 +214,21 @@ export class SubcategoryRepository extends Repository<Subcategory> {
             }
         }
         return subcategories;
+    }
+
+    private async saveSubcategory({categoryId, title, suffix, ref, extraRef}: SaveCategoryInterface) {
+        const category = new Category();
+        category.id = categoryId;
+
+        let cat = await this.findOne({where: {category, ref}});
+
+        if (cat) {
+            //updating only
+            cat = this.merge(cat, {title, suffix, extraRef});
+            return await this.save(cat);
+        }
+
+        const subcategory = this.create({category, title, suffix, ref, extraRef});
+        return await this.save(subcategory);
     }
 }

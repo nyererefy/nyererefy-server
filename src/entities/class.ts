@@ -14,6 +14,40 @@ export class Class {
     @Field(() => ID)
     @PrimaryGeneratedColumn()
     id: number;
+    @Column({length: 20})
+    abbreviation: string;
+    /**
+     * This can also be generated on fly!! Basing on below years right?
+     */
+    @Column({type: "tinyint", default: Year.COMPLETED})
+    year: Year;
+    /**
+     * Year this class started.
+     */
+    @Column('datetime', {nullable: true})
+    startedAt: Date;
+    /**
+     * Year this class ends.
+     */
+    @Column('datetime', {nullable: true})
+    endedAt: Date;
+    /**
+     * ManyToOne
+     */
+
+    @ManyToOne(() => School, f => f.classes)
+    school: School;
+    /**
+     * Program can be shared by many classes from different universities.
+     */
+    @Field(() => Program)
+    @ManyToOne(() => Program, f => f.classes)
+    program: Program;
+    /**
+     * OneToMany
+     */
+    @OneToMany(() => User, user => user.class)
+    users: User[];
 
     /**
      * Resolved from School abbreviation and year.
@@ -23,45 +57,4 @@ export class Class {
     get title(): string {
         return `${this.abbreviation} ${this.year}`;
     }
-
-    @Column({length: 20})
-    abbreviation: string;
-
-    /**
-     * This can also be generated on fly!! Basing on below years right?
-     */
-    @Column({type: "tinyint", default: Year.COMPLETED})
-    year: Year;
-
-    /**
-     * Year this class started.
-     */
-    @Column('datetime', {nullable: true})
-    startedAt: Date;
-
-    /**
-     * Year this class ends.
-     */
-    @Column('datetime', {nullable: true})
-    endedAt: Date;
-
-    /**
-     * ManyToOne
-     */
-
-    @ManyToOne(() => School, f => f.classes)
-    school: School;
-
-    /**
-     * Program can be shared by many classes from different universities.
-     */
-    @Field(() => Program)
-    @ManyToOne(() => Program, f => f.classes)
-    program: Program;
-
-    /**
-     * OneToMany
-     */
-    @OneToMany(() => User, user => user.class)
-    users: User[];
 }

@@ -3,6 +3,7 @@ import {getCustomRepository} from "typeorm";
 import {ProgramRepository} from "../../repositories/program/programRepository";
 import {Program, ProgramInput} from "../../entities/program";
 import {SchoolProgramRepository} from "../../repositories/schoolProgram/schoolProgramRepository";
+import {SchoolProgram, SchoolProgramInput} from "../../entities/schoolProgram";
 
 const programRepository = getCustomRepository(ProgramRepository);
 const schoolProgramRepository = getCustomRepository(SchoolProgramRepository);
@@ -14,12 +15,9 @@ export class ProgramResolver {
         return await programRepository.createProgram(input);
     }
 
-    @Mutation(() => Boolean)
-    async registerProgram(
-        @Arg('schoolId', () => ID) schoolId: number,
-        @Arg('programId', () => ID) programId: number
-    ): Promise<Boolean> {
-        return await !!schoolProgramRepository.registerProgram({schoolId, programId});
+    @Mutation(() => SchoolProgram)
+    async registerProgram(@Arg('input') input: SchoolProgramInput): Promise<SchoolProgram> {
+        return await schoolProgramRepository.registerProgram(input);
     }
 
     @Mutation(() => Program)
