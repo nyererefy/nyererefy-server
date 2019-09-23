@@ -24,7 +24,7 @@ import {SchoolProgram} from "../../entities/schoolProgram";
 import {ClassRepository} from "../../repositories/class/classRepository";
 import {Class} from "../../entities/class";
 import moment from "moment";
-import {TEST_PROGRAM_IDENTIFIER} from "../consts";
+import {TEST_PROGRAM_IDENTIFIER, TEST_UNIVERSITY_ID} from "../consts";
 
 export async function createUniversity(): Promise<University> {
     const universityRepository = getCustomRepository(UniversityRepository);
@@ -135,7 +135,7 @@ export async function createUser(programIdentifier: string, year: Year = Year.FO
         programIdentifier
     };
 
-    return await userRepository.registerUser(input);
+    return await userRepository.registrationByProgram(TEST_UNIVERSITY_ID, input);
 }
 
 export async function createCandidate(userId: number, subcategoryId: number) {

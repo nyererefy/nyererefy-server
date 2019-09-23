@@ -91,5 +91,11 @@ export enum State {
 }
 
 export enum Topic {
-    VOTING = 'voting'
+    VOTING = 'voting',
+    REVIEWING = 'reviewing'
+}
+
+export enum OrderBy {
+    ASC = 'ASC',
+    DESC = 'DESC'
 }
