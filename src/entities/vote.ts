@@ -1,9 +1,10 @@
-import {Field, ID, InputType, ObjectType} from "type-graphql";
+import {ArgsType, Field, ID, InputType, Int, ObjectType} from "type-graphql";
 import {Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 import {User} from "./user";
 import {Candidate} from "./candidate";
-import {IsUUID} from "class-validator";
+import {IsInt, IsUUID} from "class-validator";
 import {Subcategory} from "./subcategory";
+import {PaginationArgs} from "../utils/query";
 
 @ObjectType()
 @Entity('votes')
@@ -61,5 +62,12 @@ export class VoteInput {
     @IsUUID('4')
     @Field({description: 'UUID of a candidate'})
     uuid: string;
+}
+
+@ArgsType()
+export class GetVotesArgs extends PaginationArgs {
+    @Field(() => Int)
+    @IsInt()
+    subcategoryId: number;
 }
 

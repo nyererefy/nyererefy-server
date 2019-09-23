@@ -39,7 +39,7 @@ export class ReviewRepository extends Repository<Review> {
         return review;
     }
 
-    async findReviews({subcategoryId, offset = 0, limit = 10, orderBy = OrderBy.ASC}: GetReviewsArgs): Promise<Review[]> {
+    async findReviews({subcategoryId, offset = 0, limit = 10, orderBy = OrderBy.DESC}: GetReviewsArgs): Promise<Review[]> {
         return this.createQueryBuilder('review')
             .innerJoinAndSelect('review.user', 'user')
             .where('review.subcategory = :subcategoryId', {subcategoryId})

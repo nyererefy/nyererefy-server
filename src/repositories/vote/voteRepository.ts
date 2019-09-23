@@ -1,11 +1,12 @@
 import {EntityRepository, getCustomRepository, Repository} from "typeorm";
-import {Vote, VoteInput} from "../../entities/vote";
+import {GetVotesArgs, Vote, VoteInput} from "../../entities/vote";
 import {User} from "../../entities/user";
 import {CandidateRepository} from "../candidate/candidateRepository";
 import {SubcategoryRepository} from "../subcategory/subcategoryRepository";
 import {Subcategory} from "../../entities/subcategory";
 import {Candidate} from "../../entities/candidate";
 import {CACHE_CANDIDATE_VOTES} from "../../utils/consts";
+import {OrderBy} from "../../utils/enums";
 
 interface VoteInterface {
     userId: number,
@@ -78,11 +79,13 @@ export class VoteRepository extends Repository<Vote> {
         return await this.save(vote);
     }
 
-    findSubcategoryVotes(subcategoryId: number) {
-        const subcategory = new Subcategory();
-        subcategory.id = subcategoryId;
-
-        return this.find({where: {subcategory}})
+    findSubcategoryVotes({subcategoryId, offset = 0, limit = 10, orderBy = OrderBy.DESC}: GetVotesArgs) {
+        return this.createQueryBuilder('vote')
+            .where('vote.subcategory = :subcategoryId', {subcategoryId})
+            .limit(limit)
+            .offset(offset)
+            .orderBy('vote.id', orderBy)
+            .getMany();
     }
 
     countCandidateVotes(candidateId: number): Promise<number> {
@@ -110,5 +113,4 @@ export class VoteRepository extends Repository<Vote> {
             }
         });
     }
-
 }

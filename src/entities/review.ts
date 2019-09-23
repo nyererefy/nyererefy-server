@@ -2,8 +2,9 @@ import {ArgsType, Field, ID, InputType, Int, ObjectType, registerEnumType} from 
 import {Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 import {User} from "./user";
 import {Subcategory} from "./subcategory";
-import {IsInt, Length, Max, Min} from "class-validator";
+import {IsInt, Length} from "class-validator";
 import {OrderBy} from "../utils/enums";
+import {PaginationArgs} from "../utils/query";
 
 registerEnumType(OrderBy, {name: "OrderBy"});
 
@@ -42,20 +43,8 @@ export class ReviewInput implements Partial<Review> {
 }
 
 @ArgsType()
-export class GetReviewsArgs {
+export class GetReviewsArgs extends PaginationArgs {
     @Field(() => Int)
     @IsInt()
     subcategoryId: number;
-
-    @Field(() => Int, {defaultValue: 0, nullable: true})
-    @Min(0)
-    offset: number;
-
-    @Field(() => Int, {defaultValue: 10, nullable: true})
-    @Min(1)
-    @Max(20)
-    limit: number;
-
-    @Field(() => OrderBy, {nullable: true, defaultValue: OrderBy.ASC})
-    orderBy: OrderBy;
 }
