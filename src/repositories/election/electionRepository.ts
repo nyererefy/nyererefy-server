@@ -3,7 +3,7 @@ import {Election, ElectionEditInput, ElectionInput} from "../../entities/electio
 import {University} from "../../entities/university";
 import _ from "lodash";
 import moment from "moment";
-import {CACHE_SCHEDULED_ELECTIONS} from "../../utils/consts";
+import {CACHE_SCHEDULED_ELECTIONS_ID} from "../../utils/consts";
 
 /**
  * useful for bringing feedback of what action has been taken.
@@ -81,7 +81,7 @@ export class ElectionRepository extends Repository<Election> {
         //Finding all elections that are uncompleted.
         let elections = await this.find({
             where: {isCompleted: false},
-            cache: {id: CACHE_SCHEDULED_ELECTIONS, milliseconds: 10 * 60 * 1000} //10 minutes
+            cache: {id: CACHE_SCHEDULED_ELECTIONS_ID, milliseconds: 10 * 60 * 1000} //10 minutes
         });
 
         for (let i = 0; i < elections.length; i++) {
