@@ -14,3 +14,4 @@ export const CACHE_MAX_TIME = 60 * 60 * 1000; //60 minutes
 export const CACHE_SCHEDULED_ELECTIONS = 'scheduled_elections';
 export const CACHE_CANDIDATE_VOTES = 'candidate_votes';
 export const CACHE_REVIEW_ID = 'review';
+export const CACHE_VOTE_ID = 'review';

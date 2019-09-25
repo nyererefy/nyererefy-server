@@ -5,7 +5,7 @@ import {CandidateRepository} from "../candidate/candidateRepository";
 import {SubcategoryRepository} from "../subcategory/subcategoryRepository";
 import {Subcategory} from "../../entities/subcategory";
 import {Candidate} from "../../entities/candidate";
-import {CACHE_CANDIDATE_VOTES} from "../../utils/consts";
+import {CACHE_CANDIDATE_VOTES, CACHE_MID_TIME, CACHE_VOTE_ID} from "../../utils/consts";
 import {OrderBy} from "../../utils/enums";
 
 interface VoteInterface {
@@ -77,6 +77,23 @@ export class VoteRepository extends Repository<Vote> {
         const vote = this.create({user, subcategory, candidate, guard, ip, ip_guard, device});
 
         return await this.save(vote);
+    }
+
+    /**
+     * We are caching result so as it wont slow us down in subscription.
+     * @param voteId
+     */
+    async findVote(voteId: number): Promise<Vote> {
+        const vote = await this.findOne(voteId, {
+            cache: {
+                id: `${CACHE_VOTE_ID}:${voteId}`,
+                milliseconds: CACHE_MID_TIME,
+            }
+        });
+
+        if (!vote) throw new Error('Vote was not found');
+
+        return vote;
     }
 
     findSubcategoryVotes({subcategoryId, offset = 0, limit = 10, orderBy = OrderBy.DESC}: GetVotesArgs) {

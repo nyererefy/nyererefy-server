@@ -5,7 +5,7 @@ import {VoteRepository} from "./voteRepository";
 import {VoteInput} from "../../entities/vote";
 import {createCandidate, createUser} from "../../utils/test/initDummyData";
 import {Candidate} from "../../entities/candidate";
-import {TEST_CATEGORY_ID, TEST_ELECTION_ID, TEST_VOTER_ID} from "../../utils/consts";
+import {TEST_CATEGORY_ID, TEST_ELECTION_ID, TEST_PROGRAM_IDENTIFIER, TEST_VOTER_ID} from "../../utils/consts";
 import {ElectionRepository} from "../election/electionRepository";
 import {ElectionEditInput} from "../../entities/election";
 
@@ -35,14 +35,17 @@ beforeAll(async () => {
 
 describe('Vote', () => {
     it('should create a new vote and fail to vote twice', async () => {
-        const result1 = await voteRepository.createVote({
+        const vote = await voteRepository.createVote({
             userId: TEST_VOTER_ID,
             input: input1,
             device: faker.random.words(2),
             ip: faker.internet.ip()
         });
 
-        expect(result1).toMatchObject({
+        expect(vote.candidate.id).toEqual(candidate1.id);
+        expect(vote.subcategory.id).toEqual(candidate1.subcategory.id);
+
+        expect(vote).toMatchObject({
             candidate: {id: candidate1.id},
             user: {id: TEST_VOTER_ID}
         });
@@ -70,7 +73,7 @@ describe('Vote', () => {
     }, 10000);
 
     it('should count candidate\'s votes', async function () {
-        const user = await createUser(1);
+        const user = await createUser(TEST_PROGRAM_IDENTIFIER);
         const candidate = await createCandidate(user.id, 2);
 
         const input = {uuid: candidate.uuid};

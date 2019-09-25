@@ -12,7 +12,7 @@ export const registerCronJobs = () => {
             const state = states[i];
 
             if (state.isStarted) {
-                //todo send notification.
+                //todo send notification. publish election
                 console.info(`Started ${state.election.title}`)
             }
 

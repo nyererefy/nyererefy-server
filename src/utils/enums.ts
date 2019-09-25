@@ -91,7 +91,9 @@ export enum State {
 }
 
 export enum Topic {
-    VOTING = 'voting',
+    VOTE_ADDED = 'vote_added',
+    CANDIDATE_VOTE_ADDED = 'candidate_vote_added',
+    SUBCATEGORY_VOTE_ADDED = 'subcategory_vote_added',
     REVIEW_ADDED = 'review_added'
 }
 
