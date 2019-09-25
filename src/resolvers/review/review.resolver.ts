@@ -29,8 +29,8 @@ export class ReviewResolver {
         return await reviewRepository.findReviews(args);
     }
 
-    @Subscription(() => Review, {topics: Topic.REVIEWING, name: 'reviews'})
-    async reviewsSubscription(
+    @Subscription(() => Review, {topics: Topic.REVIEWING, name: 'review'})
+    async reviewSubscription(
         @Arg('subcategoryId', () => Int,) subcategoryId: number,
         @Root() review: Review
     ) {
