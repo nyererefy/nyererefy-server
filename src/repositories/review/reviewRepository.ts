@@ -3,6 +3,7 @@ import {GetReviewsArgs, Review, ReviewInput} from "../../entities/review";
 import {Subcategory} from "../../entities/subcategory";
 import {User} from "../../entities/user";
 import {OrderBy} from "../../utils/enums";
+import {CACHE_MID_TIME, CACHE_REVIEW_ID} from "../../utils/consts";
 
 
 @EntityRepository(Review)
@@ -35,6 +36,23 @@ export class ReviewRepository extends Repository<Review> {
             .delete()
             .where("id = :reviewId", {reviewId})
             .execute();
+
+        return review;
+    }
+
+    /**
+     * We are caching result so as it wont slow us down in subscription.
+     * @param reviewId
+     */
+    async findReview(reviewId: number): Promise<Review> {
+        const review = await this.findOne(reviewId, {
+            cache: {
+                id: `${CACHE_REVIEW_ID}:${reviewId}`,
+                milliseconds: CACHE_MID_TIME,
+            }
+        });
+
+        if (!review) throw new Error('Review was not found');
 
         return review;
     }
