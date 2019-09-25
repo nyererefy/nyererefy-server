@@ -4,6 +4,7 @@ import {Arg, Args, Int, Mutation, PubSub, Query, Resolver, Root, Subscription} f
 import {TEST_VOTER_ID} from "../../utils/consts";
 import {getCustomRepository} from "typeorm";
 import {PubSubEngine} from "apollo-server-express";
+import {Topic} from "../../utils/enums";
 
 const reviewRepository = getCustomRepository(ReviewRepository);
 
@@ -20,20 +21,20 @@ export class ReviewResolver {
         @PubSub() pubSub: PubSubEngine,
     ): Promise<Review> {
         const review = await reviewRepository.createReview(TEST_VOTER_ID, input);
-        await pubSub.publish(`${input.subcategoryId}`, review.id);
+        await pubSub.publish(`${Topic.REVIEW_ADDED}:${input.subcategoryId}`, review.id);
         return review;
     }
 
     /**
-     * subcategoryId is Int so we parse it to string to avoid error.
      * @param _subcategoryId
      * @param reviewId
      */
-    @Subscription(() => Review, {topics: ({args}) => args.subcategoryId.toString(), name: 'review'})
+    @Subscription(() => Review, {topics: ({args}) => `${Topic.REVIEW_ADDED}:${args.subcategoryId}`, name: 'review'})
     async reviewSubscription(
         @Arg('subcategoryId', () => Int) _subcategoryId: number,
         @Root() reviewId: number
     ): Promise<Review> {
+        //todo check if subcategoryId is valid. or leave them waiting for boat at airport.
         return reviewRepository.findReview(reviewId);
     }
 

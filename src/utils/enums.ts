@@ -92,7 +92,7 @@ export enum State {
 
 export enum Topic {
     VOTING = 'voting',
-    REVIEWING = 'reviewing'
+    REVIEW_ADDED = 'review_added'
 }
 
 export enum OrderBy {
