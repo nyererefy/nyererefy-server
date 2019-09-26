@@ -1,4 +1,4 @@
-import {Arg, ID, Mutation, Query, Resolver} from "type-graphql";
+import {Arg, Int, Mutation, Query, Resolver} from "type-graphql";
 import {getCustomRepository} from "typeorm";
 import {ProgramRepository} from "../../repositories/program/programRepository";
 import {Program, ProgramInput} from "../../entities/program";
@@ -22,14 +22,14 @@ export class ProgramResolver {
 
     @Mutation(() => Program)
     async updateProgram(
-        @Arg('id', () => ID) id: number,
+        @Arg('id', () => Int) id: number, //todo merge these into one.
         @Arg('input') input: ProgramInput
     ): Promise<Program> {
         return await programRepository.editProgram(id, input);
     }
 
     @Query(() => Program)
-    async program(@Arg('id', () => ID) id: number): Promise<Program> {
+    async program(@Arg('id', () => Int) id: number): Promise<Program> {
         return await programRepository.findProgram(id);
     }
 

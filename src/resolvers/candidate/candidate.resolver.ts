@@ -1,4 +1,4 @@
-import {Arg, ID, Mutation, Query, Resolver} from "type-graphql";
+import {Arg, Int, Mutation, Query, Resolver} from "type-graphql";
 import {getCustomRepository} from "typeorm";
 import {CandidateRepository} from "../../repositories/candidate/candidateRepository";
 import {Candidate, CandidateInput} from "../../entities/candidate";
@@ -13,12 +13,12 @@ export class CandidateResolver {
     }
 
     @Query(() => Candidate)
-    async candidate(@Arg('id', () => ID) id: number): Promise<Candidate> {
+    async candidate(@Arg('id', () => Int) id: number): Promise<Candidate> {
         return await candidateRepository.findCandidate(id);
     }
 
     @Query(() => [Candidate])
-    async candidates(@Arg('subcategoryId', () => ID) subcategoryId: number): Promise<Candidate[]> {
+    async candidates(@Arg('subcategoryId', () => Int) subcategoryId: number): Promise<Candidate[]> {
         return await candidateRepository.findCandidates(subcategoryId);
     }
 }

@@ -1,4 +1,4 @@
-import {Arg, ID, Mutation, Query, Resolver} from "type-graphql";
+import {Arg, Int, Mutation, Query, Resolver} from "type-graphql";
 import {getCustomRepository} from "typeorm";
 import {BranchRepository} from "../../repositories/branch/branchRepository";
 import {Branch, BranchInput} from "../../entities/branch";
@@ -14,13 +14,13 @@ export class BranchResolver {
 
     @Mutation(() => Branch)
     async updateBranch(
-        @Arg('id', () => ID) id: number,
+        @Arg('id', () => Int) id: number,
         @Arg('input') input: BranchInput): Promise<Branch> {
         return await branchRepository.editBranch(id, input);
     }
 
     @Query(() => Branch)
-    async branch(@Arg('id', () => ID) id: number): Promise<Branch> {
+    async branch(@Arg('id', () => Int) id: number): Promise<Branch> {
         return await branchRepository.findBranch(id);
     }
 

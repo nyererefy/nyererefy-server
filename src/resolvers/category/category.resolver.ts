@@ -1,4 +1,4 @@
-import {Arg, ID, Mutation, Query, Resolver} from "type-graphql";
+import {Arg, Int, Mutation, Query, Resolver} from "type-graphql";
 import {getCustomRepository} from "typeorm";
 import {CategoryRepository} from "../../repositories/category/categoryRepository";
 import {Category, CategoryEditInput, CategoryInput} from "../../entities/category";
@@ -18,17 +18,17 @@ export class CategoryResolver {
     }
 
     @Mutation(() => Category)
-    async deleteCategory(@Arg('id', () => ID) id: number): Promise<Category> {
+    async deleteCategory(@Arg('id', () => Int) id: number): Promise<Category> {
         return await categoryRepository.deleteCategory(id);
     }
 
     @Query(() => Category)
-    async category(@Arg('id', () => ID) id: number): Promise<Category> {
+    async category(@Arg('id', () => Int) id: number): Promise<Category> {
         return await categoryRepository.findCategory(id);
     }
 
     @Query(() => [Category])
-    async categories(@Arg('electionId', () => ID) electionId: number): Promise<Category[]> {
+    async categories(@Arg('electionId', () => Int) electionId: number): Promise<Category[]> {
         return await categoryRepository.findCategories(electionId);
     }
 }
