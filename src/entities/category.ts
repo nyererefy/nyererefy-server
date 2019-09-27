@@ -1,9 +1,11 @@
-import {Field, ID, InputType, ObjectType} from "type-graphql";
+import {Field, ID, InputType, Int, ObjectType, registerEnumType} from "type-graphql";
 import {Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {Election} from "./election";
 import {Eligible} from "../utils/enums";
 import {IsAlpha, IsNumber, Length} from "class-validator";
 import {Subcategory} from "./subcategory";
+
+registerEnumType(Eligible, {name: 'Eligible'});
 
 @ObjectType()
 @Entity('categories')
@@ -16,7 +18,7 @@ export class Category {
     @Column({length: 100})
     title: string;
 
-    @Field({defaultValue: Eligible.ALL})
+    @Field(() => Eligible, {defaultValue: Eligible.ALL})
     @Column({type: "tinyint", default: Eligible.ALL})
     eligible: Eligible;
 
@@ -40,11 +42,11 @@ export class CategoryInput implements Partial<Category> {
     @Field({description: 'a-zA-Z only'})
     title: string;
 
-    @Field()
+    @Field(() => Eligible)
     eligible: Eligible;
 
     @IsNumber()
-    @Field()
+    @Field(() => Int)
     electionId: number
 }
 
