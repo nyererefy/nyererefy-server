@@ -11,7 +11,7 @@ import {BranchRepository} from "../branch/branchRepository";
 
 interface SaveCategoryInterface {
     categoryId: number
-    ref?: number | undefined
+    ref: number
     extraRef?: number | undefined
     title: string
     suffix: string
@@ -50,6 +50,7 @@ export class SubcategoryRepository extends Repository<Subcategory> {
                 subcategory = await this.saveSubcategory({
                     title: category.title,
                     suffix: 'All',
+                    ref: universityId,
                     categoryId: category.id
                 });
 
@@ -177,7 +178,7 @@ export class SubcategoryRepository extends Repository<Subcategory> {
 
             //all students in the university will see this subcategory.
             if (sub.category.eligible === Eligible.ALL &&
-                sub.category.election.university.id === user.class.school.branch.university.id) {
+                sub.ref === user.class.school.branch.university.id) {
                 subcategories.push(sub)
             }
 
@@ -225,7 +226,8 @@ export class SubcategoryRepository extends Repository<Subcategory> {
         if (cat) {
             //updating only
             cat = this.merge(cat, {title, suffix, extraRef});
-            return await this.save(cat);
+            await this.update(cat.id, cat);
+            return cat;
         }
 
         const subcategory = this.create({category, title, suffix, ref, extraRef});

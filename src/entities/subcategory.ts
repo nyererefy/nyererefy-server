@@ -54,13 +54,13 @@ export class Subcategory {
     /**
      * For intelligence.
      */
-    @Column({nullable: true})
-    ref?: number;
+    @Column()
+    ref: number;
 
     /**
      * For sex specifically
      */
     @Column({nullable: true})
-    extraRef: number;
+    extraRef?: number;
 }
 
