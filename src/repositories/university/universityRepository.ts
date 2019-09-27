@@ -1,10 +1,16 @@
 import {EntityRepository, Repository} from "typeorm";
 import {University, UniversityEditInput, UniversityInput} from "../../entities/university";
+import {Branch} from "../../entities/branch";
 
 @EntityRepository(University)
 export class UniversityRepository extends Repository<University> {
     createUniversity(input: UniversityInput) {
         const university = this.create(input);
+
+        //default branch..
+        const branch = new Branch();
+        branch.title = "Main";
+        university.branches = [branch];
 
         return this.save(university);
     }

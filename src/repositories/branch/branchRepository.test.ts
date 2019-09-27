@@ -4,6 +4,7 @@ import {getCustomRepository} from "typeorm";
 import faker from "faker";
 import {BranchInput} from "../../entities/branch";
 import {createBranch} from "../../utils/test/initDummyData";
+import {TEST_UNIVERSITY_ID} from "../../utils/consts";
 
 let repository: BranchRepository;
 
@@ -44,7 +45,7 @@ describe('Branch', () => {
     });
 
     it('should find elections', async () => {
-        const results = await repository.findUniversities();
+        const results = await repository.findUniversityBranches(TEST_UNIVERSITY_ID);
 
         expect(results).toContainEqual(
             expect.objectContaining({

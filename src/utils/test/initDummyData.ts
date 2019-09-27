@@ -42,11 +42,11 @@ export async function createUniversity(): Promise<University> {
     return await universityRepository.createUniversity(input);
 }
 
-export async function createBranch(universityId: number, title?: string): Promise<Branch> {
+export async function createBranch(universityId: number): Promise<Branch> {
     const repository = getCustomRepository(BranchRepository);
 
     const input: BranchInput = {
-        title: title ? title : faker.company.companyName(),
+        title: faker.company.companyName(),
         abbreviation: faker.random.word(),
     };
 
@@ -153,9 +153,7 @@ export const insertDummyData = async () => {
 
     const university = await createUniversity();
 
-    const branch = await createBranch(university.id, 'Main'); //todo main should be created when university is.
-
-    const school = await createSchool(branch.id, 'School of Medicine', 'SM');
+    const school = await createSchool(1, 'School of Medicine', 'SM');
 
     const registeredProgram = await registerProgram(school.id, program.id);
 
