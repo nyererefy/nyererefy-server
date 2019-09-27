@@ -14,6 +14,11 @@ export class SubcategoryResolver {
 
     @Query(() => [Subcategory])
     async subcategories(@Arg('electionId', () => Int) electionId: number): Promise<Subcategory[]> {
-        return await categoryRepository.findEligibleElectionSubcategories(electionId, 1); //todo
+        //If user is logged in we just return Subcategories he deserves.
+        //todo do the same to elections. Show all if user has not login and filters otherwise.
+        if (1 === 1) {
+            return await categoryRepository.findEligibleElectionSubcategories(electionId, 1);
+        }
+        return await categoryRepository.findElectionSubcategories(electionId);
     }
 }

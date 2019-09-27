@@ -160,17 +160,31 @@ export class SubcategoryRepository extends Repository<Subcategory> {
         return subcategories;
     }
 
-    async findEligibleElectionSubcategories(electionId: number, userId: number): Promise<Subcategory[]> {
-        const subcategories: Subcategory[] = [];
-        const user = await this.userRepository.findUserInfo(userId);
-
-        const subs = await this
+    /**
+     * Finds all election's subcategories
+     * @param electionId
+     * todo test.
+     */
+    async findElectionSubcategories(electionId: number): Promise<Subcategory[]> {
+        return await this
             .createQueryBuilder('subcategory')
             .innerJoinAndSelect('subcategory.category', 'category')
             .innerJoinAndSelect('category.election', 'election')
             .innerJoinAndSelect('election.university', 'university')
             .where("election.id = :electionId", {electionId})
             .getMany();
+    }
+
+    /**
+     * This filters subcategories basing on user info.
+     * @param electionId
+     * @param userId
+     */
+    async findEligibleElectionSubcategories(electionId: number, userId: number): Promise<Subcategory[]> {
+        const subcategories: Subcategory[] = [];
+        const user = await this.userRepository.findUserInfo(userId);
+
+        const subs = await this.findElectionSubcategories(electionId);
 
         //For now we just deal with single university. That's is the reality.
         for (let i = 0; i < subs.length; i++) {
