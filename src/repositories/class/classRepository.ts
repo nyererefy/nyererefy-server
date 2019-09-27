@@ -104,7 +104,8 @@ export class ClassRepository extends Repository<Class> {
         if (klass) {
             //updating abbreviation
             klass = this.merge(klass, {abbreviation});
-            return await this.save(klass);
+            await this.update(klass.id, klass);
+            return klass;
         }
 
         klass = this.create({school, program, year, abbreviation, startedAt, endedAt});

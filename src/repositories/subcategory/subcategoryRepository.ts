@@ -221,6 +221,7 @@ export class SubcategoryRepository extends Repository<Subcategory> {
         const category = new Category();
         category.id = categoryId;
 
+        //todo extraRef doesn't work right now. it keeps duplicating
         let cat = await this.findOne({where: {category, ref}});
 
         if (cat) {
