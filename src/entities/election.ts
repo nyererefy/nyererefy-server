@@ -1,5 +1,7 @@
 import {Field, ID, InputType, ObjectType} from "type-graphql";
 import {
+    BeforeInsert,
+    BeforeUpdate,
     Column,
     CreateDateColumn,
     Entity,
@@ -10,7 +12,7 @@ import {
 } from "typeorm";
 import {Category} from "./category";
 import {University} from "./university";
-import {IsAlphanumeric, IsDate, IsOptional} from "class-validator";
+import {IsDate, IsOptional, Length} from "class-validator";
 
 @ObjectType()
 @Entity('elections')
@@ -91,12 +93,22 @@ export class Election {
      */
 
     @ManyToOne(() => University, u => u.elections)
-    university: University
+    university: University;
+
+    @BeforeInsert()
+    onInsert() {
+        this.title = this.title.toUpperCase()
+    }
+
+    @BeforeUpdate()
+    onUpdate() {
+        this.title = this.title.toUpperCase()
+    }
 }
 
 @InputType()
 export class ElectionInput implements Partial<Election> {
-    @IsAlphanumeric()
+    @Length(10, 100)
     @Field({description: 'Name of election. a-zA-Z only'})
     title: string;
 
@@ -111,8 +123,8 @@ export class ElectionInput implements Partial<Election> {
 
 @InputType()
 export class ElectionEditInput implements Partial<Election> {
-    @IsAlphanumeric()
     @IsOptional()
+    @Length(10, 100)
     @Field({nullable: true, description: 'Name of election. a-zA-Z0-9 only'})
     title?: string;
 

@@ -1,6 +1,6 @@
 import {getCustomRepository} from "typeorm";
 import {ElectionRepository} from "../../repositories/election/electionRepository";
-import {Election} from "../../entities/election";
+import {Election, ElectionInput} from "../../entities/election";
 import {Arg, Int, Mutation, Query, Resolver} from "type-graphql";
 
 const electionRepository = getCustomRepository(ElectionRepository);
@@ -20,5 +20,10 @@ export class ElectionResolver {
     @Mutation(() => Election)
     async deleteElection(@Arg('id', () => Int) id: number): Promise<Election> {
         return await electionRepository.deleteElection(id);
+    }
+
+    @Mutation(() => Election)
+    async createElection(@Arg('input') input: ElectionInput): Promise<Election> {
+        return await electionRepository.createElection(1, input); //todo
     }
 }
