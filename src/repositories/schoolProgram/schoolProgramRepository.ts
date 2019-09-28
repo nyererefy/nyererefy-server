@@ -6,14 +6,19 @@ import {School} from "../../entities/school";
 @EntityRepository(SchoolProgram)
 export class SchoolProgramRepository extends Repository<SchoolProgram> {
 
-    registerProgram(input: SchoolProgramInput): Promise<SchoolProgram> {
+    async registerProgram(input: SchoolProgramInput): Promise<SchoolProgram> {
         const school = new School();
         school.id = input.schoolId;
 
         const program = new Program();
         program.id = input.programId;
 
-        const schoolProgram = new SchoolProgram();
+        let schoolProgram = await this.findOne({where: {school, program}});
+        if (schoolProgram) {
+            throw new Error('Program is already registered')
+        }
+
+        schoolProgram = new SchoolProgram();
         schoolProgram.program = program;
         schoolProgram.school = school;
         schoolProgram.identifier = input.identifier;
