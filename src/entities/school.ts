@@ -32,7 +32,8 @@ export class School {
      * Why ManyToOne?
      * -Because School of Pharmacy offers two schoolPrograms BPHARM and DPS
      */
-    @OneToMany(() => SchoolProgram, s => s.school)
+    @Field(() => [SchoolProgram])
+    @OneToMany(() => SchoolProgram, s => s.school, {eager: true})
     schoolPrograms: SchoolProgram[];
 
     /* ManyToOne */
