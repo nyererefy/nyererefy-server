@@ -76,5 +76,5 @@ export class GetProgramsArgs extends PaginationArgs {
         description: 'If this is true then only university\'s registered programs will be returned'
     })
     @IsBoolean()
-    filter: number;
+    filter: boolean;
 }
