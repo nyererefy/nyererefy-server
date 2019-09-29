@@ -2,10 +2,16 @@ import '../../utils/test/initTestDb'
 import {UserRepository} from "./userRepository";
 import {getCustomRepository} from "typeorm";
 import faker from "faker";
-import {RegistrationByProgramInput, User} from "../../entities/user";
-import {TEST_BRANCH_ID, TEST_UNIVERSITY_ID, TEST_VOTER_ID} from "../../utils/consts";
-import {Duration, Year} from "../../utils/enums";
-import {createProgram, createSchool, generateClasses, registerProgram} from "../../utils/test/initDummyData";
+import {GetUsersArgs, RegistrationByProgramInput, User} from "../../entities/user";
+import {TEST_BRANCH_ID, TEST_PROGRAM_IDENTIFIER, TEST_UNIVERSITY_ID, TEST_VOTER_ID} from "../../utils/consts";
+import {Duration, OrderBy, Year} from "../../utils/enums";
+import {
+    createProgram,
+    createSchool,
+    createUser,
+    generateClasses,
+    registerProgram
+} from "../../utils/test/initDummyData";
 
 let repository: UserRepository;
 
@@ -61,7 +67,28 @@ describe('User', () => {
     });
 
     it('should find users', async () => {
-        const results = await repository.findUsers();
+        const args: GetUsersArgs = {
+            offset : 0, limit : 10, query : '', orderBy: OrderBy.DESC
+        };
+        const results = await repository.findUsers(args);
+
+        expect(results).toContainEqual(
+            expect.objectContaining({
+                id: expect.any(Number),
+                email: expect.any(String)
+            })
+        )
+    });
+
+    it('should search user', async () => {
+        const user = await createUser(TEST_PROGRAM_IDENTIFIER);
+
+        const args: GetUsersArgs = {
+            offset : 0, limit : 10, query : user.regNo, orderBy: OrderBy.DESC
+        };
+        const results = await repository.findUsers(args);
+
+        expect(results.length).toEqual(1);
 
         expect(results).toContainEqual(
             expect.objectContaining({

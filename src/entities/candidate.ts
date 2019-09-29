@@ -38,6 +38,7 @@ export class Candidate {
     /**
      * ManyToOne
      */
+    @Field(() => User)
     @ManyToOne(() => User, s => s.candidates, {eager: true})
     user: User;
 

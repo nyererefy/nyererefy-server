@@ -7,6 +7,11 @@ const categoryRepository = getCustomRepository(SubcategoryRepository);
 
 @Resolver(() => Subcategory)
 export class SubcategoryResolver {
+    @Query(() => Subcategory)
+    async subcategory(@Arg('id', () => Int) id: number): Promise<Subcategory> {
+        return await categoryRepository.findSubcategory(id);
+    }
+
     @Mutation(() => [Subcategory])
     async generateSubcategories(@Arg('electionId', () => Int) electionId: number): Promise<Subcategory[]> {
         return await categoryRepository.generateSubcategories(1, electionId); //todo

@@ -160,6 +160,12 @@ export class SubcategoryRepository extends Repository<Subcategory> {
         return subcategories;
     }
 
+    async findSubcategory(id: number): Promise<Subcategory> {
+        const sub = await this.findOne(id);
+        if (!sub) throw new Error('Subcategory was not found');
+        return sub;
+    }
+
     /**
      * Finds all election's subcategories
      * @param electionId
