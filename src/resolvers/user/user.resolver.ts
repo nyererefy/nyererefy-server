@@ -1,5 +1,5 @@
-import {Arg, Args, FieldResolver, Int, Mutation, Query, Resolver, Root} from "type-graphql";
-import {GetUsersArgs, RegistrationByProgramInput, User} from "../../entities/user";
+import {Arg, Args, FieldResolver, Int, Query, Resolver, Root} from "type-graphql";
+import {GetUsersArgs, User} from "../../entities/user";
 import {getCustomRepository} from "typeorm";
 import {UserRepository} from "../../repositories/user/userRepository";
 
@@ -10,11 +10,6 @@ export class UserResolver {
     @FieldResolver(() => User)
     async resolveUser(@Root() user: User): Promise<User> {
         return await userRepository.findUser(user.id);
-    }
-
-    @Mutation(() => User)
-    async registerUserByProgram(@Arg('input') input: RegistrationByProgramInput): Promise<User> {
-        return await userRepository.registrationByProgram(1, input); //Todo
     }
 
     @Query(() => User)

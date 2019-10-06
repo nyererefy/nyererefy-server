@@ -1,4 +1,4 @@
-import {ArgsType, Field, ID, InputType, ObjectType, registerEnumType} from "type-graphql";
+import {ArgsType, Field, ID, ObjectType, registerEnumType} from "type-graphql";
 import {
     BeforeInsert,
     Column,
@@ -69,6 +69,14 @@ export class User {
     isVerified: boolean;
 
     /**
+     * If data is correct then student data won't be updated from bridge calls.
+     * We should check this before user starts using our app.
+     */
+    @Field()
+    @Column()
+    isDataCorrect: boolean;
+
+    /**
      * Google picture url. Can be updated manually.
      */
     @Field({nullable: true})
@@ -135,6 +143,8 @@ export class User {
     }
 }
 
+//todo these dont validate inputs.
+
 /**
  * This one checks reg no patterns to match with what student is studying.
  * We can find who is student from registration number.
@@ -152,11 +162,17 @@ export class RegistrationInput implements Partial<User> {
  * This is should contain year and program abbreviation.
  * Like I am Sylvanus taking bachelor in Pharmacy should bring BPHARM
  */
-@InputType()
 export class RegistrationByProgramInput extends RegistrationInput {
     year: Year;
 
     @Length(1, 50)
+    programIdentifier: string;
+}
+
+export interface RegistrationByProgramInputInterface {
+    regNo: string;
+    email: string;
+    year: Year;
     programIdentifier: string;
 }
 

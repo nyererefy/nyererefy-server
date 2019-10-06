@@ -37,6 +37,6 @@ export class SchoolProgramRepository extends Repository<SchoolProgram> {
 
         if (sp) return sp;
 
-        throw new Error('Class not found')
+        throw new Error('School not found')
     }
 }

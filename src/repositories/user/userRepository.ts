@@ -28,10 +28,26 @@ export class UserRepository extends Repository<User> {
             user.email = input.email;
             user.class = klass;
 
+            const student = await this.findOne({
+                where: {
+                    regNo: input.regNo,
+                    email: input.email
+                }
+            });
+
+            if (student) {
+                //This means students have not verified their data so we can just update them.
+                if (!student.isDataCorrect) {
+                    await this.update(student.id, user);
+                }
+
+                return student;
+            }
+
             return await this.save(user);
         }
 
-        throw new Error('Invalid data'); //todo be careful with this error.
+        throw new Error('Invalid data, Please contact your bridge administrator'); //todo be careful with this error.
     }
 
     editUser(input: RegistrationInput) {

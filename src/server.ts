@@ -5,6 +5,8 @@ import express from "express";
 import {createSchema} from "./utils/createSchema";
 import {createConnection} from "typeorm";
 import {registerCronJobs} from "./helpers/cronJob";
+import {registrationRouter} from "./routes/register";
+import bodyParser from "body-parser";
 //todo disable mysqli erroes in production.
 const bootstrap = async () => {
     //Db connection.
@@ -18,6 +20,9 @@ const bootstrap = async () => {
     });
 
     const app = express();
+    app.use(bodyParser.urlencoded({extended: false}));
+    app.use(bodyParser.json());
+    app.use(registrationRouter);
     const httpServer = http.createServer(app);
     const PORT = process.env.port || 2000;
 
