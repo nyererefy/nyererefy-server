@@ -1,0 +1,13 @@
+{
+  "mysql_port": 3306,
+  "mysql_db": "nyererefy",
+  "mysql_username": "root",
+  "mysql_password": "",
+  "logging": true,
+  "synchronize": true,
+  "trace": true,
+  "redis_host": "127.0.0.1",
+  "redis_port": 6379,
+  "redis_password": "",
+  "redis_db": 1
+}

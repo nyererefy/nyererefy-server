@@ -137,13 +137,10 @@ export class User {
  * We can find who is student from registration number.
  * number should be split  by dashes like uuid.
  */
-@InputType()
 export class RegistrationInput implements Partial<User> {
-    @Field()
     @Length(1, 50)
     regNo: string;
 
-    @Field()
     @IsEmail()
     email: string;
 }
@@ -154,10 +151,8 @@ export class RegistrationInput implements Partial<User> {
  */
 @InputType()
 export class RegistrationByProgramInput extends RegistrationInput {
-    @Field()
     year: Year;
 
-    @Field()
     @Length(1, 50)
     programIdentifier: string;
 }
