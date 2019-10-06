@@ -1,35 +1,72 @@
-import {Arg, Int, Mutation, Query, Resolver, Subscription} from "type-graphql";
+import {Arg, Args, Int, Mutation, PubSub, Query, Resolver, Root, Subscription} from "type-graphql";
 import {getCustomRepository} from "typeorm";
 import {VoteRepository} from "../../repositories/vote/voteRepository";
-import {Vote, VoteInput} from "../../entities/vote";
+import {GetVotesArgs, Vote, VoteInput} from "../../entities/vote";
 import {Topic} from "../../utils/enums";
+import {PubSubEngine} from "apollo-server-express";
+import {TEST_VOTER_ID} from "../../utils/consts";
 
 const voteRepository = getCustomRepository(VoteRepository);
 
 @Resolver(() => Vote)
 export class VoteResolver {
     @Mutation(() => Vote)
-    async createVote(@Arg('input') input: VoteInput): Promise<Vote> {
-        return await voteRepository.createVote({userId: 1, input}); //todo
+    async createVote(
+        @Arg('input') input: VoteInput,
+        @PubSub() pubSub: PubSubEngine
+    ): Promise<Vote> {
+        const vote = await voteRepository.createVote({userId: TEST_VOTER_ID, input}); //todo
+
+        //notifying subscribers about added vote.
+        await pubSub.publish(
+            `${Topic.VOTE_ADDED}:${vote.subcategory.id}`,
+            vote.id
+        );
+
+        //In order to recount candidate's votes.
+        await pubSub.publish(
+            `${Topic.CANDIDATE_VOTE_ADDED}:${vote.candidate.id}`,
+            vote.candidate.id
+        );
+
+        //In order to recount all subcategory's vote.
+        await pubSub.publish(
+            `${Topic.SUBCATEGORY_VOTE_ADDED}:${vote.subcategory.id}`,
+            vote.subcategory.id
+        );
+
+        return vote;
     }
 
-    @Query(() => [Vote], {name: 'votes'})
-    async votesQuery(@Arg('subcategoryId', () => Int) id: number): Promise<Vote[]> {
-        return await voteRepository.findSubcategoryVotes(id);
+    @Subscription(() => Vote, {
+        topics: ({args}) => `${Topic.VOTE_ADDED}:${args.subcategoryId}`,
+        name: 'vote'
+    })
+    async voteSubscription(
+        @Arg('subcategoryId', () => Int) _subcategoryId: number,
+        @Root() voteId: number
+    ): Promise<Vote> {
+        return await voteRepository.findVote(voteId)
     }
 
-    @Subscription(() => Vote, {topics: [Topic.VOTING], name: 'votes'})
-    async votesSubscription(@Arg('subcategoryId', () => Int) id: number): Promise<Vote[]> {
-        return await voteRepository.findSubcategoryVotes(id);
+    @Subscription(() => Int, {
+        topics: ({args}) => `${Topic.CANDIDATE_VOTE_ADDED}:${args.candidateId}`,
+        name: 'candidateVotesCount'
+    })
+    async candidateVotesSubscription(@Arg('candidateId', () => Int) candidateId: number): Promise<number> {
+        return await voteRepository.countCandidateVotes(candidateId);
+    }
+
+    @Subscription(() => Int, {
+        topics: ({args}) => `${Topic.SUBCATEGORY_VOTE_ADDED}:${args.subcategoryId}`,
+        name: 'subcategoryVotesCount'
+    })
+    async subcategoryVotesSubscription(@Arg('subcategoryId', () => Int) subcategoryId: number): Promise<number> {
+        return await voteRepository.countSubcategoryVotes(subcategoryId);
     }
 
     @Query(() => Int, {name: 'candidateVotesCount'})
     async candidateVotesQuery(@Arg('candidateId', () => Int) id: number): Promise<number> {
-        return await voteRepository.countCandidateVotes(id);
-    }
-
-    @Subscription(() => Int, {topics: [Topic.VOTING], name: 'candidateVotesCount'})
-    async candidateVotesSubscription(@Arg('candidateId', () => Int) id: number): Promise<number> {
         return await voteRepository.countCandidateVotes(id);
     }
 
@@ -38,8 +75,8 @@ export class VoteResolver {
         return await voteRepository.countSubcategoryVotes(id);
     }
 
-    @Subscription(() => Int, {topics: [Topic.VOTING], name: 'subcategoryVotesCount'})
-    async subcategoryVotesSubscription(@Arg('candidateId', () => Int) id: number): Promise<number> {
-        return await voteRepository.countSubcategoryVotes(id);
+    @Query(() => [Vote], {name: 'votes'})
+    async votesQuery(@Args() args: GetVotesArgs): Promise<Vote[]> {
+        return await voteRepository.findSubcategoryVotes(args);
     }
 }

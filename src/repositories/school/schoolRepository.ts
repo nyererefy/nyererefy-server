@@ -10,7 +10,6 @@ export class SchoolRepository extends Repository<School> {
 
         school.title = input.title;
         school.abbreviation = input.abbreviation;
-        school.identifier = input.identifier;
 
         const branch = new Branch();
         branch.id = input.branchId;

@@ -1,9 +1,10 @@
-import {Field, ID, InputType, ObjectType, registerEnumType} from "type-graphql";
+import {ArgsType, Field, ID, InputType, ObjectType, registerEnumType} from "type-graphql";
 import {
     BeforeInsert,
     Column,
     CreateDateColumn,
     Entity,
+    Index,
     ManyToOne,
     OneToMany,
     PrimaryGeneratedColumn,
@@ -13,9 +14,10 @@ import {Class} from "./class";
 import {Candidate} from "./candidate";
 import {Sex, State, Year} from "../utils/enums";
 import {Vote} from "./vote";
-import {IsEmail, Length} from "class-validator";
+import {IsEmail, IsString, Length} from "class-validator";
 import {Review} from "./review";
 import {Residence} from "./residence";
+import {PaginationArgs} from "../utils/query";
 
 registerEnumType(State, {name: 'State'});
 registerEnumType(Sex, {name: 'Sex'});
@@ -46,6 +48,7 @@ export class User {
     /**
      * We take this name from email when use social login.
      */
+    @Index()
     @Field({nullable: true})
     @Column({nullable: true})
     name?: string;
@@ -157,5 +160,11 @@ export class RegistrationByProgramInput extends RegistrationInput {
     programIdentifier: string;
 }
 
+@ArgsType()
+export class GetUsersArgs extends PaginationArgs {
+    @Field({nullable: true, description: 'for searching'})
+    @IsString()
+    query?: string;
+}
 
 

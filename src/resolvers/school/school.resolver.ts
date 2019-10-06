@@ -1,4 +1,4 @@
-import {Arg, ID, Mutation, Query, Resolver} from "type-graphql";
+import {Arg, Int, Mutation, Query, Resolver} from "type-graphql";
 import {getCustomRepository} from "typeorm";
 import {SchoolRepository} from "../../repositories/school/schoolRepository";
 import {School, SchoolInput} from "../../entities/school";
@@ -14,13 +14,13 @@ export class SchoolResolver {
 
     @Mutation(() => School)
     async updateSchool(
-        @Arg('id', () => ID) id: number,
+        @Arg('id', () => Int) id: number,
         @Arg('input') input: SchoolInput): Promise<School> {
         return await schoolRepository.editSchool(id, input);
     }
 
     @Query(() => School)
-    async school(@Arg('id', () => ID) id: number): Promise<School> {
+    async school(@Arg('id', () => Int) id: number): Promise<School> {
         return await schoolRepository.findSchool(id);
     }
 

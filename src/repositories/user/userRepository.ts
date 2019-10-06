@@ -1,7 +1,8 @@
 import {EntityRepository, getCustomRepository, Repository} from "typeorm";
-import {RegistrationByProgramInput, RegistrationInput, User} from "../../entities/user";
+import {GetUsersArgs, RegistrationByProgramInput, RegistrationInput, User} from "../../entities/user";
 import {SchoolProgramRepository} from "../schoolProgram/schoolProgramRepository";
 import {ClassRepository} from "../class/classRepository";
+import {OrderBy} from "../../utils/enums";
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -63,7 +64,19 @@ export class UserRepository extends Repository<User> {
         return user;
     }
 
-    findUsers() {
-        return this.find();
+    findUsers({query, offset = 0, limit = 10, orderBy = OrderBy.DESC}: GetUsersArgs): Promise<User[]> {
+        const q = this.createQueryBuilder('user')
+            .skip(offset)
+            .limit(limit)
+            .orderBy('user.id', orderBy);
+
+        if (query) {
+            q
+                .where('user.name like :query', {query: `%${query}%`})
+                .orWhere('user.regNo like :query', {query: `%${query}%`})
+        }
+
+        return q.getMany()
+
     }
 }

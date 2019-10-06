@@ -24,7 +24,7 @@ import {SchoolProgram} from "../../entities/schoolProgram";
 import {ClassRepository} from "../../repositories/class/classRepository";
 import {Class} from "../../entities/class";
 import moment from "moment";
-import {TEST_PROGRAM_IDENTIFIER} from "../consts";
+import {TEST_PROGRAM_IDENTIFIER, TEST_UNIVERSITY_ID} from "../consts";
 
 export async function createUniversity(): Promise<University> {
     const universityRepository = getCustomRepository(UniversityRepository);
@@ -42,11 +42,11 @@ export async function createUniversity(): Promise<University> {
     return await universityRepository.createUniversity(input);
 }
 
-export async function createBranch(universityId: number, title?: string): Promise<Branch> {
+export async function createBranch(universityId: number): Promise<Branch> {
     const repository = getCustomRepository(BranchRepository);
 
     const input: BranchInput = {
-        title: title ? title : faker.company.companyName(),
+        title: faker.company.companyName(),
         abbreviation: faker.random.word(),
     };
 
@@ -135,7 +135,7 @@ export async function createUser(programIdentifier: string, year: Year = Year.FO
         programIdentifier
     };
 
-    return await userRepository.registerUser(input);
+    return await userRepository.registrationByProgram(TEST_UNIVERSITY_ID, input);
 }
 
 export async function createCandidate(userId: number, subcategoryId: number) {
@@ -153,9 +153,7 @@ export const insertDummyData = async () => {
 
     const university = await createUniversity();
 
-    const branch = await createBranch(university.id, 'Main'); //todo main should be created when university is.
-
-    const school = await createSchool(branch.id, 'School of Medicine', 'SM');
+    const school = await createSchool(1, 'School of Medicine', 'SM');
 
     const registeredProgram = await registerProgram(school.id, program.id);
 

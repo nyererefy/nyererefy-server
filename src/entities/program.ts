@@ -1,9 +1,10 @@
-import {Field, ID, InputType, ObjectType, registerEnumType} from "type-graphql";
+import {ArgsType, Field, ID, InputType, ObjectType, registerEnumType} from "type-graphql";
 import {BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {Duration} from "../utils/enums";
 import {Class} from "./class";
-import {Length} from "class-validator";
+import {IsBoolean, Length} from "class-validator";
 import {SchoolProgram} from "./schoolProgram";
+import {PaginationArgs} from "../utils/query";
 
 registerEnumType(Duration, {name: 'Duration'});
 
@@ -65,4 +66,15 @@ export class ProgramInput implements Partial<Program> {
 
     @Field()
     duration: Duration;
+}
+
+@ArgsType()
+export class GetProgramsArgs extends PaginationArgs {
+    @Field({
+        nullable: true,
+        defaultValue: true,
+        description: 'If this is true then only university\'s registered programs will be returned'
+    })
+    @IsBoolean()
+    filter: boolean;
 }

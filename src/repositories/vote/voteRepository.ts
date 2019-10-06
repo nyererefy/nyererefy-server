@@ -1,11 +1,17 @@
 import {EntityRepository, getCustomRepository, Repository} from "typeorm";
-import {Vote, VoteInput} from "../../entities/vote";
+import {GetVotesArgs, Vote, VoteInput} from "../../entities/vote";
 import {User} from "../../entities/user";
 import {CandidateRepository} from "../candidate/candidateRepository";
 import {SubcategoryRepository} from "../subcategory/subcategoryRepository";
 import {Subcategory} from "../../entities/subcategory";
 import {Candidate} from "../../entities/candidate";
-import {CACHE_CANDIDATE_VOTES} from "../../utils/consts";
+import {
+    CACHE_CANDIDATE_VOTES_COUNT_ID,
+    CACHE_MID_TIME,
+    CACHE_SUBCATEGORY_VOTES_COUNT_ID,
+    CACHE_VOTE_ID
+} from "../../utils/consts";
+import {OrderBy} from "../../utils/enums";
 
 interface VoteInterface {
     userId: number,
@@ -73,16 +79,56 @@ export class VoteRepository extends Repository<Vote> {
 
         const guard = parseInt(`${user.id}${candidate.subcategory.id}`);
 
-        const vote = this.create({user, subcategory, candidate, guard, ip, ip_guard, device});
+        let vote = this.create({user, subcategory, candidate, guard, ip, ip_guard, device});
 
-        return await this.save(vote);
+        vote = await this.save(vote);
+
+        if (!vote) {
+            //todo record this using winston
+            throw new Error('Ooops! Something went wrong!');
+        }
+
+        try {
+            //Removing candidate's votes count from cache as well as subcategory's
+            await this.manager.connection.queryResultCache!.remove([
+                `${CACHE_SUBCATEGORY_VOTES_COUNT_ID}:${subcategory.id}`,
+                `${CACHE_CANDIDATE_VOTES_COUNT_ID}:${candidate.id}`
+            ]);
+        } catch (e) {
+            console.error(e) //todo winston.
+        }
+
+        return vote;
     }
 
-    findSubcategoryVotes(subcategoryId: number) {
-        const subcategory = new Subcategory();
-        subcategory.id = subcategoryId;
+    /**
+     * We are caching result so as it wont slow us down in subscription.
+     * @param voteId
+     */
+    async findVote(voteId: number): Promise<Vote> {
+        const vote = await this.findOne(voteId, {
+            cache: {
+                id: `${CACHE_VOTE_ID}:${voteId}`,
+                milliseconds: CACHE_MID_TIME
+            }
+        });
 
-        return this.find({where: {subcategory}})
+        if (!vote) throw new Error('Vote was not found');
+
+        return vote;
+    }
+
+    findSubcategoryVotes({subcategoryId, offset = 0, limit = 10, orderBy = OrderBy.DESC}: GetVotesArgs) {
+        return this.createQueryBuilder('vote')
+            .where('vote.subcategory = :subcategoryId', {subcategoryId})
+            .limit(limit)
+            .offset(offset)
+            .orderBy('vote.id', orderBy)
+            .cache({
+                id: `${CACHE_SUBCATEGORY_VOTES_COUNT_ID}:${subcategoryId}`,
+                milliseconds: CACHE_MID_TIME
+            })
+            .getMany();
     }
 
     countCandidateVotes(candidateId: number): Promise<number> {
@@ -92,8 +138,8 @@ export class VoteRepository extends Repository<Vote> {
         return this.count({
             where: {candidate},
             cache: {
-                id: CACHE_CANDIDATE_VOTES,
-                milliseconds: 10 * 60 * 1000 //10 minutes
+                id: `${CACHE_CANDIDATE_VOTES_COUNT_ID}:${candidateId}`,
+                milliseconds: CACHE_MID_TIME
             }
         });
     }
@@ -105,10 +151,9 @@ export class VoteRepository extends Repository<Vote> {
         return this.count({
             where: {subcategory},
             cache: {
-                id: CACHE_CANDIDATE_VOTES,
+                id: `${CACHE_SUBCATEGORY_VOTES_COUNT_ID}:${subcategoryId}`,
                 milliseconds: 10 * 60 * 1000 //10 minutes
             }
         });
     }
-
 }

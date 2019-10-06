@@ -11,7 +11,7 @@ import {BranchRepository} from "../branch/branchRepository";
 
 interface SaveCategoryInterface {
     categoryId: number
-    ref?: number | undefined
+    ref: number
     extraRef?: number | undefined
     title: string
     suffix: string
@@ -50,6 +50,7 @@ export class SubcategoryRepository extends Repository<Subcategory> {
                 subcategory = await this.saveSubcategory({
                     title: category.title,
                     suffix: 'All',
+                    ref: universityId,
                     categoryId: category.id
                 });
 
@@ -159,17 +160,37 @@ export class SubcategoryRepository extends Repository<Subcategory> {
         return subcategories;
     }
 
-    async findEligibleElectionSubcategories(electionId: number, userId: number): Promise<Subcategory[]> {
-        const subcategories: Subcategory[] = [];
-        const user = await this.userRepository.findUserInfo(userId);
+    async findSubcategory(id: number): Promise<Subcategory> {
+        const sub = await this.findOne(id);
+        if (!sub) throw new Error('Subcategory was not found');
+        return sub;
+    }
 
-        const subs = await this
+    /**
+     * Finds all election's subcategories
+     * @param electionId
+     * todo test.
+     */
+    async findElectionSubcategories(electionId: number): Promise<Subcategory[]> {
+        return await this
             .createQueryBuilder('subcategory')
             .innerJoinAndSelect('subcategory.category', 'category')
             .innerJoinAndSelect('category.election', 'election')
             .innerJoinAndSelect('election.university', 'university')
             .where("election.id = :electionId", {electionId})
             .getMany();
+    }
+
+    /**
+     * This filters subcategories basing on user info.
+     * @param electionId
+     * @param userId
+     */
+    async findEligibleElectionSubcategories(electionId: number, userId: number): Promise<Subcategory[]> {
+        const subcategories: Subcategory[] = [];
+        const user = await this.userRepository.findUserInfo(userId);
+
+        const subs = await this.findElectionSubcategories(electionId);
 
         //For now we just deal with single university. That's is the reality.
         for (let i = 0; i < subs.length; i++) {
@@ -177,7 +198,7 @@ export class SubcategoryRepository extends Repository<Subcategory> {
 
             //all students in the university will see this subcategory.
             if (sub.category.eligible === Eligible.ALL &&
-                sub.category.election.university.id === user.class.school.branch.university.id) {
+                sub.ref === user.class.school.branch.university.id) {
                 subcategories.push(sub)
             }
 
@@ -220,12 +241,14 @@ export class SubcategoryRepository extends Repository<Subcategory> {
         const category = new Category();
         category.id = categoryId;
 
+        //todo extraRef doesn't work right now. it keeps duplicating
         let cat = await this.findOne({where: {category, ref}});
 
         if (cat) {
             //updating only
             cat = this.merge(cat, {title, suffix, extraRef});
-            return await this.save(cat);
+            await this.update(cat.id, cat);
+            return cat;
         }
 
         const subcategory = this.create({category, title, suffix, ref, extraRef});

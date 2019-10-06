@@ -52,7 +52,7 @@ export class University {
     /**
      * OneToMany
      */
-    @OneToMany(() => Branch, s => s.university)
+    @OneToMany(() => Branch, s => s.university, {cascade: ['insert']})
     branches: Branch[];
 
     @OneToMany(() => Election, s => s.university)

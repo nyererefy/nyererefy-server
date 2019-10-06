@@ -61,7 +61,7 @@ export class CategoryRepository extends Repository<Category> {
         const election = new Election();
         election.id = electionId;
 
-        return this.find({where: {election}})
+        return this.find({where: {election}, order: {id: 'DESC'}})
     }
 
 }

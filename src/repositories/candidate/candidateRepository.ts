@@ -6,6 +6,7 @@ import {User} from "../../entities/user";
 @EntityRepository(Candidate)
 export class CandidateRepository extends Repository<Candidate> {
     async createCandidate(input: CandidateInput): Promise<Candidate> {
+        //Todo checking if user shares any eligibility with category, otherwise admin should enable isAbnormal
         //Associated user.
         const user = new User();
         user.id = input.userId;

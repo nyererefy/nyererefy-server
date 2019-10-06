@@ -5,7 +5,7 @@ import express from "express";
 import {createSchema} from "./utils/createSchema";
 import {createConnection} from "typeorm";
 import {registerCronJobs} from "./helpers/cronJob";
-
+//todo disable mysqli erroes in production.
 const bootstrap = async () => {
     //Db connection.
     await createConnection();

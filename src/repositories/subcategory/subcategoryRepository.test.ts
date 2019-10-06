@@ -17,18 +17,15 @@ import {Duration, Eligible} from "../../utils/enums";
 import {User} from "../../entities/user";
 import {School} from "../../entities/school";
 import {Program} from "../../entities/program";
-import {Class} from "../../entities/class";
 import {Branch} from "../../entities/branch";
 import {University} from "../../entities/university";
-import {TEST_BRANCH_ID, TEST_UNIVERSITY_ID} from "../../utils/consts";
+import {TEST_BRANCH_ID, TEST_PROGRAM_IDENTIFIER, TEST_UNIVERSITY_ID} from "../../utils/consts";
 
 let repository: SubcategoryRepository;
 let election: Election;
 let school: School;
 let user: User;
 let branch: Branch;
-let classes: Class[];
-let klass: Class;
 let program: Program;
 let university: University;
 
@@ -41,10 +38,9 @@ beforeAll(async () => {
     program = await createProgram();
     await registerProgram(school.id, program.id);
 
-    classes = await generateClasses(university.id);
-    klass = classes[0];
+    await generateClasses(university.id);
 
-    user = await createUser(klass.id);
+    user = await createUser(TEST_PROGRAM_IDENTIFIER);
 
     election = await createElection(university.id);
 });

@@ -1,4 +1,4 @@
-import {Field, ID, InputType, ObjectType} from "type-graphql";
+import {Field, ID, InputType, Int, ObjectType} from "type-graphql";
 import {Column, Entity, Generated, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {User} from "./user";
 import {Vote} from "./vote";
@@ -38,6 +38,7 @@ export class Candidate {
     /**
      * ManyToOne
      */
+    @Field(() => User)
     @ManyToOne(() => User, s => s.candidates, {eager: true})
     user: User;
 
@@ -50,10 +51,10 @@ export class Candidate {
 
 @InputType()
 export class CandidateInput {
-    @Field(() => ID)
+    @Field(() => Int)
     userId: number;
 
-    @Field(() => ID)
+    @Field(() => Int)
     subcategoryId: number;
 }
 

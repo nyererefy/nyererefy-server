@@ -27,7 +27,8 @@ export class Subcategory {
     /**
      * OneToMany
      */
-    @OneToMany(() => Candidate, s => s.subcategory, {onDelete: "CASCADE"})
+    @Field(() => [Candidate]) //todo use field resolver.
+    @OneToMany(() => Candidate, s => s.subcategory, {onDelete: "CASCADE", eager: true})
     candidates: Candidate[];
 
     //If there are votes then we should restrict.
@@ -54,13 +55,13 @@ export class Subcategory {
     /**
      * For intelligence.
      */
-    @Column({nullable: true})
-    ref?: number;
+    @Column()
+    ref: number;
 
     /**
      * For sex specifically
      */
     @Column({nullable: true})
-    extraRef: number;
+    extraRef?: number;
 }
 
