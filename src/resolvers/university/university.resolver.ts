@@ -12,11 +12,15 @@ export class UniversityResolver {
         return await universityRepository.createUniversity(input);
     }
 
+    @Mutation(() => String)
+    async regenerateSecret(): Promise<string> {
+        return await universityRepository.regenerateSecret(1);
+    }
+
     @Mutation(() => University)
     async updateUniversity(
-        @Arg('id', () => Int) id: number,
         @Arg('input') input: UniversityInput): Promise<University> {
-        return await universityRepository.editUniversity(id, input);
+        return await universityRepository.editUniversity(1, input);
     }
 
     @Query(() => University)
