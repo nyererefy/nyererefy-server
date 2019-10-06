@@ -151,7 +151,7 @@ export class VoteRepository extends Repository<Vote> {
         return this.count({
             where: {subcategory},
             cache: {
-                id: CACHE_CANDIDATE_VOTES_COUNT_ID,
+                id: `${CACHE_SUBCATEGORY_VOTES_COUNT_ID}:${subcategoryId}`,
                 milliseconds: 10 * 60 * 1000 //10 minutes
             }
         });
