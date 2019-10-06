@@ -2,18 +2,32 @@ import {Request, Response, Router} from "express";
 import {RegistrationByProgramInput, RegistrationByProgramInputInterface} from "../entities/user";
 import {getCustomRepository} from "typeorm";
 import {UserRepository} from "../repositories/user/userRepository";
+import {UniversityRepository} from "../repositories/university/universityRepository";
 
 const registrationRouter = Router();
 
 registrationRouter.post('/api/v1/register', async (req: Request, res: Response) => {
     try {
         const userRepository = getCustomRepository(UserRepository);
+        const universityRepository = getCustomRepository(UniversityRepository);
 
         const CLIENT_ID = req.header('CLIENT_ID');
         const CLIENT_SECRET = req.header('CLIENT_SECRET');
 
-        console.log('CLIENT_ID', CLIENT_ID);
-        console.log('CLIENT_SECRET', CLIENT_SECRET);
+        if (!CLIENT_ID || !CLIENT_SECRET) {
+            res.sendStatus(401);
+            return;
+        }
+
+        if (CLIENT_ID.length !== 36 || CLIENT_SECRET.length !== 64) {
+            res.sendStatus(403);
+            return;
+        }
+
+        universityRepository.validateUniversity(CLIENT_ID, CLIENT_SECRET).catch(e => {
+            res.status(401).send(e);
+            return;
+        });
 
         const body: RegistrationByProgramInputInterface = req.body;
         const input = new RegistrationByProgramInput();

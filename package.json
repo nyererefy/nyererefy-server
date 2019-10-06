@@ -26,6 +26,7 @@
     "connect-redis": "^3.4.2",
     "cors": "^2.8.5",
     "cron": "^1.7.2",
+    "crypto-random-string": "^3.0.1",
     "express": "^4.17.1",
     "express-session": "^1.16.2",
     "faker": "^4.1.0",

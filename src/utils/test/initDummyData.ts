@@ -62,7 +62,6 @@ export async function createSchool(
 
     const input: SchoolInput = {
         title,
-        identifier: faker.internet.userName(),
         abbreviation,
         branchId
     };

@@ -4,6 +4,7 @@ import {Election} from "./election";
 import {IsEmail, IsUrl, Length} from "class-validator";
 import {Branch} from "./branch";
 import {Residence} from "./residence";
+import {ColumnEncryptionTransformer} from "../utils/ColumnEncryptionTransformer";
 
 @ObjectType()
 @Entity('universities')
@@ -38,8 +39,8 @@ export class University {
     bridgeUrl: string;
 
     @Field()
-    @Column({nullable: true})
-    secret?: string;
+    @Column({transformer: new ColumnEncryptionTransformer('1234567890123456')}) //todo use keys.
+    secret: string;
 
     @Field({description: 'Month new semester starts'})
     @Column("tinyint")
