@@ -24,10 +24,7 @@ registrationRouter.post('/api/v1/register', async (req: Request, res: Response) 
             return;
         }
 
-        universityRepository.validateUniversity(CLIENT_ID, CLIENT_SECRET).catch(e => {
-            res.status(401).send(e);
-            return;
-        });
+        const university = await universityRepository.validateUniversity(CLIENT_ID, CLIENT_SECRET);
 
         const body: RegistrationByProgramInputInterface = req.body;
         const input = new RegistrationByProgramInput();
@@ -37,7 +34,7 @@ registrationRouter.post('/api/v1/register', async (req: Request, res: Response) 
         input.programIdentifier = body.programIdentifier;
         input.year = body.year;
 
-        const user = await userRepository.registrationByProgram(1, input);
+        const user = await userRepository.registrationByProgram(university.id, input);
 
         if (user) {
             res.send({

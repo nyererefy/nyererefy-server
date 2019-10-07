@@ -64,12 +64,12 @@ export class UniversityRepository extends Repository<University> {
         return university;
     }
 
-    async validateUniversity(uuid: string, secret: string): Promise<boolean> {
+    async validateUniversity(uuid: string, secret: string): Promise<University> {
         let university = await this.findUniversityByUUId(uuid);
 
-        if (university.secret === secret) return true;
+        if (university.secret === secret) return university;
 
-        throw new Error('Invalid university/college credentials')
+        throw new Error('Invalid university/college credentials');
     }
 
     findUniversities() {
