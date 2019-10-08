@@ -1,4 +1,4 @@
-import {ArgsType, Field, ID, ObjectType, registerEnumType} from "type-graphql";
+import {ArgsType, Field, ID, InputType, ObjectType, registerEnumType} from "type-graphql";
 import {
     BeforeInsert,
     Column,
@@ -12,7 +12,7 @@ import {
 } from "typeorm";
 import {Class} from "./class";
 import {Candidate} from "./candidate";
-import {Sex, State, Year} from "../utils/enums";
+import {Role, Sex, State, Strategy, Year} from "../utils/enums";
 import {Vote} from "./vote";
 import {IsEmail, IsString, Length} from "class-validator";
 import {Review} from "./review";
@@ -21,6 +21,7 @@ import {PaginationArgs} from "../utils/query";
 
 registerEnumType(State, {name: 'State'});
 registerEnumType(Sex, {name: 'Sex'});
+registerEnumType(Role, {name: 'Role'});
 
 @ObjectType()
 @Entity('users')
@@ -56,7 +57,7 @@ export class User {
     /**
      * Email token
      */
-    @Column({nullable: true})
+    @Column({nullable: true, type: "text"})
     token?: string;
 
     /**
@@ -75,6 +76,13 @@ export class User {
     @Field()
     @Column()
     isDataCorrect: boolean;
+
+    /**
+     * If true we won't take google data any longer.
+     */
+    @Field()
+    @Column({default: false})
+    isProfileSet: boolean;
 
     /**
      * Google picture url. Can be updated manually.
@@ -138,8 +146,8 @@ export class User {
 
     @BeforeInsert()
     cleanData() {
-        this.regNo = this.regNo.toUpperCase();
-        this.email = this.email.toLowerCase();
+        this.regNo = this.regNo.toUpperCase().trim();
+        this.email = this.email.toLowerCase().trim();
     }
 }
 
@@ -181,6 +189,19 @@ export class GetUsersArgs extends PaginationArgs {
     @Field({nullable: true, description: 'for searching'})
     @IsString()
     query?: string;
+}
+
+@InputType()
+export class LoginInput {
+    @Field(() => String)
+    @Length(30)
+    token: string;
+
+    @Field(() => Strategy)
+    strategy: Strategy;
+
+    @Field(() => Role, {nullable: true, defaultValue: Role.STUDENT})
+    role: Role;
 }
 
 

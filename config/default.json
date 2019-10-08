@@ -9,5 +9,12 @@
   "redis_host": "127.0.0.1",
   "redis_port": 6379,
   "redis_password": "",
-  "redis_db": 1
+  "redis_db": 1,
+  "session_secret": "uVyUm4Q81M_l3e3HAZTlzTGL",
+  "auth": {
+    "google": {
+      "clientId": "888907700282-akq10n9hvdrft4e7pnsj3fqrs73ar9f1.apps.googleusercontent.com",
+      "secret": "uVyUm4Q81M_l3e3HAZTlzTGL"
+    }
+  }
 }

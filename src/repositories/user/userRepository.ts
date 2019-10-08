@@ -4,6 +4,12 @@ import {SchoolProgramRepository} from "../schoolProgram/schoolProgramRepository"
 import {ClassRepository} from "../class/classRepository";
 import {OrderBy} from "../../utils/enums";
 
+interface PassportDataInterface {
+    accessToken: string,
+    refreshToken: string,
+    profile: any
+}
+
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
 
@@ -53,6 +59,26 @@ export class UserRepository extends Repository<User> {
     editUser(input: RegistrationInput) {
         const user = this.create(input);
         return this.save(user);
+    }
+
+    async loginWithGoogle({profile, accessToken}: PassportDataInterface) {
+        const email = profile.emails[0].value || profile._json.email;
+
+        const user = await this.findOne({where: {email}});
+
+        if (!user) {
+            throw new Error(`account associated with this email: ${email} was not found!`)
+        }
+
+        //If user has already accepts how his data looks like, there is no need to update it.
+        if (!user.isProfileSet) {
+            await this.update(user.id, {
+                name: profile.displayName || `${profile.familyName} ${profile.givenName}`,
+                token: accessToken,
+                avatar: profile._json.picture
+            });
+        }
+        return user;
     }
 
     async findUser(id: number) {

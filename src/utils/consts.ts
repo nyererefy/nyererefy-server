@@ -27,3 +27,6 @@ export const MYSQL_DB = 'mysql_db';
 export const MYSQL_USERNAME = 'mysql_username';
 export const MYSQL_PASSWORD = 'mysql_password';
 
+
+export const COOKIE_NAME = 'nid';
+

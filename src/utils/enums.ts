@@ -101,3 +101,21 @@ export enum OrderBy {
     ASC = 'ASC',
     DESC = 'DESC'
 }
+
+/**
+ * We work with email providers only.
+ */
+export enum Strategy {
+    GOOGLE,
+    OUTLOOK,
+    YAHOO
+}
+
+/**
+ * We work with email providers only.
+ */
+export enum Role {
+    STUDENT,
+    MANAGER,
+    //ADMIN
+}
