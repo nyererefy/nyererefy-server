@@ -12,6 +12,7 @@ import {
     generateClasses,
     registerProgram
 } from "../../utils/test/initDummyData";
+import {formatRegNo} from "../../helpers/regNo";
 
 let repository: UserRepository;
 
@@ -38,7 +39,7 @@ describe('User', () => {
 
         expect(user).toMatchObject({
             email: input.email.toLowerCase(),
-            regNo: input.regNo.toUpperCase()
+            regNo: formatRegNo(input.regNo.toUpperCase())
         });
 
         //Checking if info used to register matches saved ones.

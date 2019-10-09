@@ -3,6 +3,7 @@ import {GetUsersArgs, RegistrationByProgramInput, RegistrationInput, User} from 
 import {SchoolProgramRepository} from "../schoolProgram/schoolProgramRepository";
 import {ClassRepository} from "../class/classRepository";
 import {OrderBy} from "../../utils/enums";
+import {formatRegNo} from "../../helpers/regNo";
 
 interface PassportDataInterface {
     accessToken: string,
@@ -29,31 +30,34 @@ export class UserRepository extends Repository<User> {
         if (sp && klass) {
             const user = new User();
 
-            //user.university = university;
-            user.regNo = input.regNo;
+            const regNo = formatRegNo(input.regNo);
+
+            user.regNo = regNo;
             user.email = input.email;
             user.class = klass;
 
+            //Just regNo because email could change. So regNo is the one maintaining student identity.
             const student = await this.findOne({
-                where: {
-                    regNo: input.regNo,
-                    email: input.email
-                }
+                where: {regNo}
             });
 
-            if (student) {
-                //This means students have not verified their data so we can just update them.
-                if (!student.isDataCorrect) {
-                    await this.update(student.id, user);
+            //Try & catch because email can be duplicated and throw mysql error.
+            try {
+                if (student) {
+                    //This means students have not verified their data so we can just update them.
+                    if (!student.isDataCorrect) {
+                        await this.update(student.id, user);
+                    }
+                    return student;
                 }
-
-                return student;
+                return await this.save(user);
+            } catch (e) {
+                //todo use logger here.
+                throw new Error('Change your email address please!');
             }
-
-            return await this.save(user);
         }
 
-        throw new Error('Invalid data, Please contact your bridge administrator'); //todo be careful with this error.
+        throw new Error('Invalid data, Please contact your bridge administrator');
     }
 
     editUser(input: RegistrationInput) {

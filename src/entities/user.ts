@@ -147,7 +147,6 @@ export class User {
 
     @BeforeInsert()
     cleanData() {
-        this.regNo = this.regNo.toUpperCase().trim();
         this.email = this.email.toLowerCase().trim();
     }
 }
