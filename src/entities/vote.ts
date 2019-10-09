@@ -1,10 +1,11 @@
-import {ArgsType, Field, ID, InputType, Int, ObjectType} from "type-graphql";
+import {ArgsType, Authorized, Field, ID, InputType, Int, ObjectType} from "type-graphql";
 import {Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 import {User} from "./user";
 import {Candidate} from "./candidate";
 import {IsInt, IsUUID} from "class-validator";
 import {Subcategory} from "./subcategory";
 import {PaginationArgs} from "../utils/query";
+import {Role} from "../utils/enums";
 
 @ObjectType()
 @Entity('votes')
@@ -17,8 +18,8 @@ export class Vote {
     @Column({nullable: true})
     device?: string;
 
-    //todo this should not be shown to all people. either trim some number and show full only to the owner.
-    @Field({nullable: true})
+    @Authorized(Role.ADMIN)
+    @Field({nullable: true, description: 'Not public'})
     @Column({nullable: true})
     ip?: string;
     /**
@@ -27,11 +28,13 @@ export class Vote {
      */
     @Column({type: "int", unique: true})
     guard: number;
+
     /**
      * If strict mode is on we keep track of ip address per category.
      */
     @Column({type: "varchar", nullable: true, unique: true})
     ip_guard?: string;
+
     @Field()
     @CreateDateColumn()
     createdAt: string;
@@ -40,9 +43,11 @@ export class Vote {
      */
     @ManyToOne(() => User, s => s.votes, {eager: true})
     user: User;
+
     @Field(() => Candidate, {complexity: 5})
     @ManyToOne(() => Candidate, s => s.votes, {eager: true})
     candidate: Candidate;
+
     @ManyToOne(() => Subcategory, s => s.votes, {onDelete: "CASCADE"})
     subcategory: Subcategory;
 
