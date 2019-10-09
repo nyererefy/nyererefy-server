@@ -64,7 +64,7 @@ export class ProgramInput implements Partial<Program> {
     @Length(2, 10)
     abbreviation: string;
 
-    @Field()
+    @Field(() => Duration)
     duration: Duration;
 }
 

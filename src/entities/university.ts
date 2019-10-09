@@ -1,4 +1,4 @@
-import {Authorized, Field, ID, InputType, ObjectType} from "type-graphql";
+import {Authorized, Field, ID, InputType, Int, ObjectType} from "type-graphql";
 import {Column, Entity, Generated, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {Election} from "./election";
 import {IsEmail, IsUrl, Length} from "class-validator";
@@ -46,11 +46,11 @@ export class University {
     @Column({transformer: new ColumnEncryptionTransformer('1234567890123456')}) //todo use keys.
     secret: string;
 
-    @Field({description: 'Month new semester starts'})
+    @Field(() => Int,{description: 'Month new semester starts'})
     @Column("tinyint")
     semesterStartsIn: number;
 
-    @Field({description: 'Month new semester ends'})
+    @Field(() => Int,{description: 'Month new semester ends'})
     @Column("tinyint")
     semesterEndsIn: number;
 
@@ -91,11 +91,11 @@ export class UniversityInput implements Partial<University> {
     @Length(5, 100)
     bridgeUrl: string;
 
-    @Field({description: 'Month new semester starts'})
+    @Field(() => Int,{description: 'Month new semester starts'})
     @Column()
     semesterStartsIn: number;
 
-    @Field({description: 'Month new semester ends'})
+    @Field(() => Int,{description: 'Month new semester ends'})
     @Column()
     semesterEndsIn: number;
 }

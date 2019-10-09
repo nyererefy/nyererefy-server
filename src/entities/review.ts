@@ -38,7 +38,7 @@ export class ReviewInput implements Partial<Review> {
     content: string;
 
     @IsInt()
-    @Field()
+    @Field(() => Int)
     subcategoryId: number;
 }
 

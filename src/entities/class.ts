@@ -14,6 +14,7 @@ export class Class {
     @Field(() => ID)
     @PrimaryGeneratedColumn()
     id: number;
+
     @Column({length: 20})
     abbreviation: string;
     /**

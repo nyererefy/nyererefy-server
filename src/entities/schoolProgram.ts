@@ -1,13 +1,13 @@
 import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 import {Program} from "./program";
 import {School} from "./school";
-import {Field, InputType, ObjectType} from "type-graphql";
+import {Field, ID, InputType, Int, ObjectType} from "type-graphql";
 import {IsAlphanumeric, IsInt} from "class-validator";
 
 @ObjectType()
 @Entity('school_programs')
 export class SchoolProgram {
-    @Field()
+    @Field(() => ID)
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -26,11 +26,11 @@ export class SchoolProgram {
 
 @InputType()
 export class SchoolProgramInput {
-    @Field()
+    @Field(() => Int)
     @IsInt()
     schoolId: number;
 
-    @Field()
+    @Field(() => Int)
     @IsInt()
     programId: number;
 

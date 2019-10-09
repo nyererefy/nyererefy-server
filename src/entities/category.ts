@@ -57,11 +57,11 @@ export class CategoryEditInput implements Partial<Category> {
     @Field({description: 'a-zA-Z only'})
     title: string;
 
-    @Field()
+    @Field(() => Eligible)
     eligible: Eligible;
 
     @IsNumber()
-    @Field()
+    @Field(() => Int)
     categoryId: number
 }
 
