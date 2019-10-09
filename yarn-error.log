@@ -1,11 +1,11 @@
 Arguments: 
-  C:\Program Files\nodejs\node.exe C:\Users\TEMBO MTOTO\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js add @types/passport-token-google --dev
+  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js add --dev @types/lodash
 
 PATH: 
-  C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Program Files\MongoDB\Server\4.0\bin;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\PuTTY\;C:\Program Files\Memurai\;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Program Files (x86)\Yarn\bin\;C:\xampp\php;C:\ProgramData\ComposerSetup\bin;C:\Users\TEMBO MTOTO\.windows-build-tools\python27\;C:\Users\TEMBO MTOTO\AppData\Roaming\npm\node_modules\npm\node_modules\npm-lifecycle\node-gyp-bin;C:\Users\TEMBO MTOTO\AppData\Roaming\npm\node_modules\windows-build-tools\node_modules\.bin;C:\Users\TEMBO MTOTO\AppData\Roaming\npm\node_modules\.bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Program Files\PuTTY\;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Program Files\MongoDB\Server\4.0\bin;C:\Users\TEMBO MTOTO\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\TEMBO MTOTO\AppData\Local\Google\Cloud SDK\google-cloud-sdk\bin;C:\Users\TEMBO MTOTO\AppData\Local\Microsoft\WindowsApps;C:\Users\TEMBO MTOTO\AppData\Roaming\npm;C:\Users\TEMBO MTOTO\AppData\Local\Yarn\bin;C:\Users\TEMBO MTOTO\AppData\Roaming\Composer\vendor\bin
+  E:\_Projects\Nyererefy\nyererefy_server\node_modules\.bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Program Files\MongoDB\Server\4.0\bin;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\PuTTY\;C:\Program Files\Memurai\;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Program Files (x86)\Yarn\bin\;C:\xampp\php;C:\ProgramData\ComposerSetup\bin;C:\Users\TEMBO MTOTO\.windows-build-tools\python27\;C:\Users\TEMBO MTOTO\AppData\Roaming\npm\node_modules\npm\node_modules\npm-lifecycle\node-gyp-bin;C:\Users\TEMBO MTOTO\AppData\Roaming\npm\node_modules\windows-build-tools\node_modules\.bin;C:\Users\TEMBO MTOTO\AppData\Roaming\npm\node_modules\.bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Program Files\PuTTY\;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Program Files\MongoDB\Server\4.0\bin;C:\Users\TEMBO MTOTO\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\TEMBO MTOTO\AppData\Local\Google\Cloud SDK\google-cloud-sdk\bin;C:\Users\TEMBO MTOTO\AppData\Local\Microsoft\WindowsApps;C:\Users\TEMBO MTOTO\AppData\Roaming\npm;C:\Users\TEMBO MTOTO\AppData\Local\Yarn\bin;C:\Users\TEMBO MTOTO\AppData\Roaming\Composer\vendor\bin
 
 Yarn version: 
-  1.16.0
+  1.17.3
 
 Node version: 
   10.16.1
@@ -14,17 +14,8 @@ Platform:
   win32 x64
 
 Trace: 
-  Error: https://registry.yarnpkg.com/@types%2fpassport-token-google: Not found
-      at Request.params.callback [as _callback] (C:\Users\TEMBO MTOTO\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:66091:18)
-      at Request.self.callback (C:\Users\TEMBO MTOTO\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:129590:22)
-      at Request.emit (events.js:198:13)
-      at Request.<anonymous> (C:\Users\TEMBO MTOTO\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:130562:10)
-      at Request.emit (events.js:198:13)
-      at IncomingMessage.<anonymous> (C:\Users\TEMBO MTOTO\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:130484:12)
-      at Object.onceWrapper (events.js:286:20)
-      at IncomingMessage.emit (events.js:203:15)
-      at endReadableNT (_stream_readable.js:1145:12)
-      at process._tickCallback (internal/process/next_tick.js:63:19)
+  Error: getaddrinfo ENOTFOUND registry.yarnpkg.com registry.yarnpkg.com:443
+      at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:56:26)
 
 npm manifest: 
   {
@@ -45,7 +36,6 @@ npm manifest:
     "author": "",
     "license": "ISC",
     "dependencies": {
-      "@types/lodash": "^4.14.138",
       "apollo-server-express": "^2.7.0",
       "axios": "^0.19.0",
       "bcryptjs": "^2.4.3",
@@ -67,6 +57,7 @@ npm manifest:
       "mysql": "^2.17.1",
       "passport": "^0.4.0",
       "passport-token-google": "^0.1.2",
+      "passport-yahoo-token": "^2.1.0",
       "random-string-generator": "^1.0.0",
       "reflect-metadata": "^0.1.13",
       "type-graphql": "^0.17.4",
@@ -676,11 +667,6 @@ Lockfile:
       "@types/keygrip" "*"
       "@types/koa-compose" "*"
       "@types/node" "*"
-  
-  "@types/lodash@^4.14.138":
-    version "4.14.138"
-    resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.138.tgz#34f52640d7358230308344e579c15b378d91989e"
-    integrity sha512-A4uJgHz4hakwNBdHNPdxOTkYmXNgmUAKLbXZ7PKGslgeV0Mb8P3BlbYfPovExek1qnod4pDfRbxuzcVs3dlFLg==
   
   "@types/long@^4.0.0":
     version "4.0.0"
@@ -4180,7 +4166,7 @@ Lockfile:
       uid2 "0.0.x"
       utils-merge "1.x.x"
   
-  passport-oauth@^1.0.0:
+  passport-oauth@1.0.0, passport-oauth@^1.0.0:
     version "1.0.0"
     resolved "https://registry.yarnpkg.com/passport-oauth/-/passport-oauth-1.0.0.tgz#90aff63387540f02089af28cdad39ea7f80d77df"
     integrity sha1-kK/2M4dUDwIImvKM2tOep/gNd98=
@@ -4200,6 +4186,13 @@ Lockfile:
     dependencies:
       passport-oauth "^1.0.0"
       pkginfo "0.2.x"
+  
+  passport-yahoo-token@^2.1.0:
+    version "2.1.0"
+    resolved "https://registry.yarnpkg.com/passport-yahoo-token/-/passport-yahoo-token-2.1.0.tgz#b848b8c702a9b7b9f8a712382e07f445415c8243"
+    integrity sha1-uEi4xwKpt7n4pxI4Lgf0RUFcgkM=
+    dependencies:
+      passport-oauth "1.0.0"
   
   passport@^0.4.0:
     version "0.4.0"
