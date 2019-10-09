@@ -4078,7 +4078,7 @@ passport-oauth2@1.x.x:
     uid2 "0.0.x"
     utils-merge "1.x.x"
 
-passport-oauth@^1.0.0:
+passport-oauth@1.0.0, passport-oauth@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/passport-oauth/-/passport-oauth-1.0.0.tgz#90aff63387540f02089af28cdad39ea7f80d77df"
   integrity sha1-kK/2M4dUDwIImvKM2tOep/gNd98=
@@ -4098,6 +4098,13 @@ passport-token-google@^0.1.2:
   dependencies:
     passport-oauth "^1.0.0"
     pkginfo "0.2.x"
+
+passport-yahoo-token@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/passport-yahoo-token/-/passport-yahoo-token-2.1.0.tgz#b848b8c702a9b7b9f8a712382e07f445415c8243"
+  integrity sha1-uEi4xwKpt7n4pxI4Lgf0RUFcgkM=
+  dependencies:
+    passport-oauth "1.0.0"
 
 passport@^0.4.0:
   version "0.4.0"

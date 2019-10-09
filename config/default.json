@@ -15,6 +15,10 @@
     "google": {
       "clientId": "888907700282-akq10n9hvdrft4e7pnsj3fqrs73ar9f1.apps.googleusercontent.com",
       "secret": "uVyUm4Q81M_l3e3HAZTlzTGL"
+    },
+    "yahoo": {
+      "clientId": "dj0yJmk9S0ZuenBZS0JxYXFEJmQ9WVdrOVZWUjFiakJsTldVbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmc3Y9MCZ4PTNi",
+      "secret": "736ca59199b7482ec6649825c0aff720e3726078"
     }
   }
 }
