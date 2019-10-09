@@ -1,4 +1,4 @@
-import {ArgsType, Field, ID, InputType, ObjectType, registerEnumType} from "type-graphql";
+import {ArgsType, Authorized, Field, ID, InputType, ObjectType, registerEnumType} from "type-graphql";
 import {
     BeforeInsert,
     Column,
@@ -18,6 +18,7 @@ import {IsEmail, IsString, Length} from "class-validator";
 import {Review} from "./review";
 import {Residence} from "./residence";
 import {PaginationArgs} from "../utils/query";
+import {CURRENT_USER} from "../utils/consts";
 
 registerEnumType(State, {name: 'State'});
 registerEnumType(Sex, {name: 'Sex'});
@@ -31,6 +32,8 @@ export class User {
     @PrimaryGeneratedColumn()
     id: number;
 
+    //Only logged in users can see.
+    @Authorized() //todo SAME_UNIVERSITY
     @Field()
     @Column({unique: true})
     regNo: string;
@@ -39,7 +42,8 @@ export class User {
      * User can use only one email at a time.
      * This is not social network so we don't need too many ways of login in.
      */
-    @Field() //todo hide email and show it to its owner only.
+    @Authorized(CURRENT_USER)
+    @Field()
     @Column({unique: true})
     email: string;
 

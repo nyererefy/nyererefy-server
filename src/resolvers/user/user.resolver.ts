@@ -78,7 +78,6 @@ export class UserResolver {
         );
     }
 
-    @Authorized(Role.MANAGER)
     @Query(() => User)
     async user(@Arg('id', () => Int) id: number): Promise<User> {
         return await userRepository.findUser(id);

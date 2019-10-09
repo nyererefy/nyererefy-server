@@ -1,10 +1,11 @@
-import {Field, ID, InputType, ObjectType} from "type-graphql";
+import {Authorized, Field, ID, InputType, ObjectType} from "type-graphql";
 import {Column, Entity, Generated, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {Election} from "./election";
 import {IsEmail, IsUrl, Length} from "class-validator";
 import {Branch} from "./branch";
 import {Residence} from "./residence";
 import {ColumnEncryptionTransformer} from "../utils/ColumnEncryptionTransformer";
+import {CURRENT_UNIVERSITY_MANAGER} from "../utils/consts";
 
 @ObjectType()
 @Entity('universities')
@@ -13,7 +14,9 @@ export class University {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Field(() => ID)
+    // so that other manager won't see other university stuff.
+    @Authorized(CURRENT_UNIVERSITY_MANAGER)
+    @Field(() => ID, {description: 'Requires authentication'})
     @Generated('uuid')
     @Column({unique: true})
     uuid: string;
@@ -38,7 +41,8 @@ export class University {
     @Column()
     bridgeUrl: string;
 
-    @Field()
+    @Authorized(CURRENT_UNIVERSITY_MANAGER)
+    @Field({nullable: true, description: 'Requires authentication'})
     @Column({transformer: new ColumnEncryptionTransformer('1234567890123456')}) //todo use keys.
     secret: string;
 
