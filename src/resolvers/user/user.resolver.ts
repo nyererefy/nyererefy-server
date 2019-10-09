@@ -1,4 +1,4 @@
-import {Arg, Args, Authorized, Ctx, FieldResolver, Int, Mutation, Query, Resolver, Root} from "type-graphql";
+import {Arg, Args, Authorized, Ctx, Int, Mutation, Query, Resolver} from "type-graphql";
 import {GetUsersArgs, LoginInput, User} from "../../entities/user";
 import {getCustomRepository} from "typeorm";
 import {UserRepository} from "../../repositories/user/userRepository";
@@ -11,11 +11,6 @@ const userRepository = getCustomRepository(UserRepository);
 
 @Resolver(() => User)
 export class UserResolver {
-    @FieldResolver(() => User)
-    async resolveUser(@Root() user: User): Promise<User> {
-        return await userRepository.findUser(user.id);
-    }
-
     @Mutation(() => User)
     async login(
         @Arg('input') input: LoginInput,
