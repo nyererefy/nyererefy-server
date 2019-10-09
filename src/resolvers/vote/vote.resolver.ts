@@ -1,21 +1,23 @@
-import {Arg, Args, Int, Mutation, PubSub, Query, Resolver, Root, Subscription} from "type-graphql";
+import {Arg, Args, Authorized, Int, Mutation, PubSub, Query, Resolver, Root, Subscription} from "type-graphql";
 import {getCustomRepository} from "typeorm";
 import {VoteRepository} from "../../repositories/vote/voteRepository";
 import {GetVotesArgs, Vote, VoteInput} from "../../entities/vote";
 import {Topic} from "../../utils/enums";
 import {PubSubEngine} from "apollo-server-express";
-import {TEST_VOTER_ID} from "../../utils/consts";
+import {CurrentStudent} from "../../utils/currentAccount";
 
 const voteRepository = getCustomRepository(VoteRepository);
 
 @Resolver(() => Vote)
 export class VoteResolver {
+    @Authorized()
     @Mutation(() => Vote)
     async createVote(
         @Arg('input') input: VoteInput,
-        @PubSub() pubSub: PubSubEngine
+        @PubSub() pubSub: PubSubEngine,
+        @CurrentStudent() userId: number
     ): Promise<Vote> {
-        const vote = await voteRepository.createVote({userId: TEST_VOTER_ID, input}); //todo
+        const vote = await voteRepository.createVote({userId, input});
 
         //notifying subscribers about added vote.
         await pubSub.publish(

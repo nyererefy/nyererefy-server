@@ -1,4 +1,4 @@
-import {Arg, Args, Ctx, FieldResolver, Int, Mutation, Query, Resolver, Root} from "type-graphql";
+import {Arg, Args, Authorized, Ctx, FieldResolver, Int, Mutation, Query, Resolver, Root} from "type-graphql";
 import {GetUsersArgs, LoginInput, User} from "../../entities/user";
 import {getCustomRepository} from "typeorm";
 import {UserRepository} from "../../repositories/user/userRepository";
@@ -37,6 +37,7 @@ export class UserResolver {
                         if (user) {
                             // Setting session.
                             req.session.studentId = user.id;
+                            req.session.universityId = user.id; //Todo universityId.
 
                             //resolving user.
                             resolve(user);
@@ -63,6 +64,7 @@ export class UserResolver {
         }));
     }
 
+    @Authorized()
     @Mutation(() => Boolean)
     async logout(@Ctx() {req, res}: TheContext): Promise<Boolean> {
         return new Promise((resolve, reject) =>
@@ -76,11 +78,13 @@ export class UserResolver {
         );
     }
 
+    @Authorized(Role.MANAGER)
     @Query(() => User)
     async user(@Arg('id', () => Int) id: number): Promise<User> {
         return await userRepository.findUser(id);
     }
 
+    @Authorized(Role.MANAGER)
     @Query(() => [User])
     async users(@Args() args: GetUsersArgs): Promise<User[]> {
         return await userRepository.findUsers(args);

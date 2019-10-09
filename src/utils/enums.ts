@@ -115,7 +115,7 @@ export enum Strategy {
  * We work with email providers only.
  */
 export enum Role {
-    STUDENT,
-    MANAGER,
-    //ADMIN
+    STUDENT = 'STUDENT',
+    MANAGER = 'MANAGER',
+    ADMIN = 'ADMIN'
 }

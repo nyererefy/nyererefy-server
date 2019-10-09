@@ -1,7 +1,9 @@
-import {Arg, Int, Mutation, Query, Resolver} from "type-graphql";
+import {Arg, Authorized, Int, Mutation, Query, Resolver} from "type-graphql";
 import {getCustomRepository} from "typeorm";
 import {Subcategory} from "../../entities/subcategory";
 import {SubcategoryRepository} from "../../repositories/subcategory/subcategoryRepository";
+import {Role} from "../../utils/enums";
+import {CurrentStudent, CurrentUniversity} from "../../utils/currentAccount";
 
 const categoryRepository = getCustomRepository(SubcategoryRepository);
 
@@ -12,17 +14,23 @@ export class SubcategoryResolver {
         return await categoryRepository.findSubcategory(id);
     }
 
+    @Authorized(Role.MANAGER)
     @Mutation(() => [Subcategory])
-    async generateSubcategories(@Arg('electionId', () => Int) electionId: number): Promise<Subcategory[]> {
-        return await categoryRepository.generateSubcategories(1, electionId); //todo
+    async generateSubcategories(
+        @Arg('electionId', () => Int) electionId: number,
+        @CurrentUniversity() universityId: number
+    ): Promise<Subcategory[]> {
+        return await categoryRepository.generateSubcategories(universityId, electionId);
     }
 
     @Query(() => [Subcategory])
-    async subcategories(@Arg('electionId', () => Int) electionId: number): Promise<Subcategory[]> {
+    async subcategories(
+        @Arg('electionId', () => Int) electionId: number,
+        @CurrentStudent() studentId: number
+    ): Promise<Subcategory[]> {
         //If user is logged in we just return Subcategories he deserves.
-        //todo do the same to elections. Show all if user has not login and filters otherwise.
-        if (false) {
-            return await categoryRepository.findEligibleElectionSubcategories(electionId, 1);
+        if (studentId) {
+            return await categoryRepository.findEligibleElectionSubcategories(electionId, studentId);
         }
         return await categoryRepository.findElectionSubcategories(electionId);
     }

@@ -22,6 +22,7 @@ import {PaginationArgs} from "../utils/query";
 registerEnumType(State, {name: 'State'});
 registerEnumType(Sex, {name: 'Sex'});
 registerEnumType(Role, {name: 'Role'});
+registerEnumType(Strategy, {name: 'Strategy'});
 
 @ObjectType()
 @Entity('users')

@@ -1,12 +1,14 @@
-import {Arg, Int, Mutation, Query, Resolver} from "type-graphql";
+import {Arg, Authorized, Int, Mutation, Query, Resolver} from "type-graphql";
 import {getCustomRepository} from "typeorm";
 import {CandidateRepository} from "../../repositories/candidate/candidateRepository";
 import {Candidate, CandidateInput} from "../../entities/candidate";
+import {Role} from "../../utils/enums";
 
 const candidateRepository = getCustomRepository(CandidateRepository);
 
 @Resolver(() => Candidate)
 export class CandidateResolver {
+    @Authorized(Role.MANAGER)
     @Mutation(() => Candidate)
     async createCandidate(@Arg('input') input: CandidateInput): Promise<Candidate> {
         return await candidateRepository.createCandidate(input);

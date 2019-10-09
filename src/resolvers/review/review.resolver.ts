@@ -1,10 +1,10 @@
 import {ReviewRepository} from "../../repositories/review/reviewRepository";
 import {GetReviewsArgs, Review, ReviewInput} from "../../entities/review";
-import {Arg, Args, Int, Mutation, PubSub, Query, Resolver, Root, Subscription} from "type-graphql";
-import {TEST_VOTER_ID} from "../../utils/consts";
+import {Arg, Args, Authorized, Int, Mutation, PubSub, Query, Resolver, Root, Subscription} from "type-graphql";
 import {getCustomRepository} from "typeorm";
 import {PubSubEngine} from "apollo-server-express";
 import {Topic} from "../../utils/enums";
+import {CurrentStudent} from "../../utils/currentAccount";
 
 const reviewRepository = getCustomRepository(ReviewRepository);
 
@@ -14,13 +14,16 @@ export class ReviewResolver {
      * We are using subcategoryId as topic/trigger name
      * @param input
      * @param pubSub
+     * @param studentId
      */
+    @Authorized()
     @Mutation(() => Review)
     async createReview(
         @Arg('input') input: ReviewInput,
         @PubSub() pubSub: PubSubEngine,
+        @CurrentStudent() studentId: number
     ): Promise<Review> {
-        const review = await reviewRepository.createReview(TEST_VOTER_ID, input);
+        const review = await reviewRepository.createReview(studentId, input);
         await pubSub.publish(`${Topic.REVIEW_ADDED}:${input.subcategoryId}`, review.id);
         return review;
     }
@@ -38,9 +41,13 @@ export class ReviewResolver {
         return reviewRepository.findReview(reviewId);
     }
 
+    @Authorized()
     @Mutation(() => Review)
-    async deleteReview(@Arg('id', () => Int) id: number): Promise<Review> {
-        return await reviewRepository.deleteReview(TEST_VOTER_ID, id);
+    async deleteReview(
+        @Arg('id', () => Int) id: number,
+        @CurrentStudent() studentId: number
+    ): Promise<Review> {
+        return await reviewRepository.deleteReview(studentId, id);
     }
 
     @Query(() => [Review], {name: 'reviews'})

@@ -108,4 +108,11 @@ export class ElectionRepository extends Repository<Election> {
     findElections(): Promise<Election[]> {
         return this.find()
     }
+
+    findUniversityElections(universityId: number): Promise<Election[]> {
+        const university = new University();
+        university.id = universityId;
+
+        return this.find({where: {university}})
+    }
 }

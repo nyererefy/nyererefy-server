@@ -12,10 +12,11 @@ import connectRedis from "connect-redis";
 import {redis} from "./utils/redis";
 import {COOKIE_NAME} from "./utils/consts";
 import config from "config";
+import cors from "cors";
 
 const RedisStore = connectRedis(session);
 
-//todo disable mysqli erroes in production.
+//todo disable mysqli errors in production.
 const bootstrap = async () => {
     //Db connection.
     await createConnection();
@@ -33,6 +34,11 @@ const bootstrap = async () => {
     });
 
     const app = express();
+
+    app.use(cors({
+        credentials: true,
+        origin: 'http://localhost:3000' //React app.
+    }));
 
     app.use(session({
         store,
@@ -53,7 +59,8 @@ const bootstrap = async () => {
     const httpServer = http.createServer(app);
     const PORT = process.env.port || 2000;
 
-    apolloServer.applyMiddleware({app});
+    // ref : https://dev.to/tmns/session-handling-in-react-with-redux-express-session-and-apollo-18j8
+    apolloServer.applyMiddleware({app, cors: false});
     apolloServer.installSubscriptionHandlers(httpServer);
 
     //`listen` on the http server variable, and not on `app`.

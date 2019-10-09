@@ -1,17 +1,21 @@
-import {Arg, Int, Mutation, Query, Resolver} from "type-graphql";
+import {Arg, Authorized, Int, Mutation, Query, Resolver} from "type-graphql";
 import {getCustomRepository} from "typeorm";
 import {SchoolRepository} from "../../repositories/school/schoolRepository";
 import {School, SchoolInput} from "../../entities/school";
+import {Role} from "../../utils/enums";
+import {CurrentUniversity} from "../../utils/currentAccount";
 
 const schoolRepository = getCustomRepository(SchoolRepository);
 
 @Resolver(() => School)
 export class SchoolResolver {
+    @Authorized(Role.MANAGER)
     @Mutation(() => School)
     async createSchool(@Arg('input') input: SchoolInput): Promise<School> {
         return await schoolRepository.createSchool(input);
     }
 
+    @Authorized(Role.MANAGER)
     @Mutation(() => School)
     async updateSchool(
         @Arg('id', () => Int) id: number,
@@ -25,7 +29,7 @@ export class SchoolResolver {
     }
 
     @Query(() => [School])
-    async schools(): Promise<School[]> {
-        return await schoolRepository.findSchools(1); //todo
+    async schools(@CurrentUniversity() universityId: number): Promise<School[]> {
+        return await schoolRepository.findSchools(universityId);
     }
 }
