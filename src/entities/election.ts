@@ -1,4 +1,4 @@
-import {Field, ID, InputType, ObjectType} from "type-graphql";
+import {ArgsType, Field, ID, InputType, ObjectType} from "type-graphql";
 import {
     BeforeInsert,
     BeforeUpdate,
@@ -12,7 +12,8 @@ import {
 } from "typeorm";
 import {Category} from "./category";
 import {University} from "./university";
-import {IsDate, IsOptional, Length} from "class-validator";
+import {IsDate, IsOptional, IsString, Length} from "class-validator";
+import {PaginationArgs} from "../utils/query";
 
 @ObjectType()
 @Entity('elections')
@@ -149,4 +150,11 @@ export class ElectionEditInput implements Partial<Election> {
 
     @Field({nullable: true, defaultValue: false})
     isAbnormal?: boolean;
+}
+
+@ArgsType()
+export class GetElectionsArgs extends PaginationArgs {
+    @Field(() => String, {nullable: true})
+    @IsString()
+    query?: string;
 }

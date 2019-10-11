@@ -1,5 +1,5 @@
 import {EntityRepository, Repository} from "typeorm";
-import {Election, ElectionEditInput, ElectionInput} from "../../entities/election";
+import {Election, ElectionEditInput, ElectionInput, GetElectionsArgs} from "../../entities/election";
 import {University} from "../../entities/university";
 import _ from "lodash";
 import moment from "moment";
@@ -105,14 +105,23 @@ export class ElectionRepository extends Repository<Election> {
         return electionsState;
     }
 
-    findElections(): Promise<Election[]> {
-        return this.find()
+    findElections({limit, offset, orderBy}: GetElectionsArgs): Promise<Election[]> {
+        return this.find({
+            order: {id: orderBy},
+            skip: offset,
+            take: limit
+        })
     }
 
-    findUniversityElections(universityId: number): Promise<Election[]> {
+    findUniversityElections(universityId: number, {limit, offset, orderBy}: GetElectionsArgs): Promise<Election[]> {
         const university = new University();
         university.id = universityId;
 
-        return this.find({where: {university}})
+        return this.find({
+            where: {university},
+            order: {id: orderBy},
+            skip: offset,
+            take: limit
+        })
     }
 }

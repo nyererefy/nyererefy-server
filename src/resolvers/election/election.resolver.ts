@@ -1,7 +1,7 @@
 import {getCustomRepository} from "typeorm";
 import {ElectionRepository} from "../../repositories/election/electionRepository";
-import {Election, ElectionInput} from "../../entities/election";
-import {Arg, Authorized, Int, Mutation, Query, Resolver} from "type-graphql";
+import {Election, ElectionInput, GetElectionsArgs} from "../../entities/election";
+import {Arg, Args, Authorized, Int, Mutation, Query, Resolver} from "type-graphql";
 import {Role} from "../../utils/enums";
 import {CurrentUniversity} from "../../utils/currentAccount";
 
@@ -16,13 +16,13 @@ export class ElectionResolver {
 
     @Query(() => [Election])
     async elections(
-        @CurrentUniversity() universityId: number
+        @CurrentUniversity() universityId: number,
+        @Args() args: GetElectionsArgs,
     ): Promise<Election[]> {
-        //todo use args.
         if (universityId) {
-            return await electionRepository.findUniversityElections(universityId);
+            return await electionRepository.findUniversityElections(universityId, args);
         }
-        return await electionRepository.findElections();
+        return await electionRepository.findElections(args);
     }
 
     @Authorized(Role.MANAGER)
