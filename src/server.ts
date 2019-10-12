@@ -37,7 +37,7 @@ const bootstrap = async () => {
 
     app.use(cors({
         credentials: true,
-        origin: 'http://localhost:3000' //React app.
+        origin: ['http://localhost:3000', ' http://192.168.43.228:2000'] //React app.
     }));
 
     app.use(session({

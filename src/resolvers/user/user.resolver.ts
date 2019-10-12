@@ -32,7 +32,7 @@ export class UserResolver {
                         if (user) {
                             // Setting session.
                             req.session.studentId = user.id;
-                            req.session.universityId = user.id; //Todo universityId.
+                            req.session.universityId = 1; //Todo universityId.
 
                             //resolving user.
                             resolve(user);
