@@ -52,6 +52,23 @@ describe('User', () => {
                 program: {id: program.id},
             }
         });
+
+        //finding user by email
+        const userByEmail = await repository.findStudentByEmail(input.email);
+
+        console.log(userByEmail);
+        expect(userByEmail).toMatchObject({
+            id: user.id,
+            class: {
+                school: {
+                    branch: {
+                        university: {
+                            id: TEST_UNIVERSITY_ID
+                        }
+                    }
+                }
+            }
+        });
     });
 
     it('should find user', async () => {
@@ -69,7 +86,7 @@ describe('User', () => {
 
     it('should find users', async () => {
         const args: GetUsersArgs = {
-            offset : 0, limit : 10, query : '', orderBy: OrderBy.DESC
+            offset: 0, limit: 10, query: '', orderBy: OrderBy.DESC
         };
         const results = await repository.findUsers(args);
 
@@ -85,7 +102,7 @@ describe('User', () => {
         const user = await createUser(TEST_PROGRAM_IDENTIFIER);
 
         const args: GetUsersArgs = {
-            offset : 0, limit : 10, query : user.regNo, orderBy: OrderBy.DESC
+            offset: 0, limit: 10, query: user.regNo, orderBy: OrderBy.DESC
         };
         const results = await repository.findUsers(args);
 

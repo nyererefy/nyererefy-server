@@ -68,11 +68,7 @@ export class UserRepository extends Repository<User> {
     async loginWithGoogle({profile, accessToken}: PassportDataInterface) {
         const email = profile.emails[0].value || profile._json.email;
 
-        const user = await this.findOne({where: {email}});
-
-        if (!user) {
-            throw new Error(`account associated with this email: ${email} was not found!`)
-        }
+        const user = await this.findStudentByEmail(email);
 
         //If user has already accepts how his data looks like, there is no need to update it.
         if (!user.isProfileSet) {
@@ -82,6 +78,23 @@ export class UserRepository extends Repository<User> {
                 avatar: profile._json.picture
             });
         }
+        return user;
+    }
+
+    async findStudentByEmail(email: string): Promise<User> {
+        const user = await this
+            .createQueryBuilder('user')
+            .innerJoinAndSelect('user.class', 'class')
+            .innerJoinAndSelect('class.school', 'school')
+            .innerJoinAndSelect('school.branch', 'branch')
+            .innerJoinAndSelect('branch.university', 'university')
+            .where("user.email = :email", {email})
+            .getOne();
+
+        if (!user) {
+            throw new Error(`account associated with this email: ${email} was not found!`)
+        }
+
         return user;
     }
 
