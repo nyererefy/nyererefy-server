@@ -1,4 +1,4 @@
-import {Field, ID, InputType, Int, ObjectType} from "type-graphql";
+import {Authorized, Field, ID, InputType, Int, ObjectType} from "type-graphql";
 import {Column, Entity, Generated, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {User} from "./user";
 import {Vote} from "./vote";
@@ -19,7 +19,8 @@ export class Candidate {
     /**
      * Not meant to be human readable...
      */
-    @Field(() => ID)
+    @Authorized()
+    @Field(() => ID, {nullable: true})
     @Column({unique: true})
     @Generated("uuid")
     uuid: string;

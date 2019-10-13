@@ -16,7 +16,7 @@ export class University {
 
     // so that other manager won't see other university stuff.
     @Authorized(CURRENT_UNIVERSITY_MANAGER)
-    @Field(() => ID, {description: 'Requires authentication'})
+    @Field(() => ID, {description: 'Requires authentication', nullable: true})
     @Generated('uuid')
     @Column({unique: true})
     uuid: string;
@@ -46,11 +46,11 @@ export class University {
     @Column({transformer: new ColumnEncryptionTransformer('1234567890123456')}) //todo use keys.
     secret: string;
 
-    @Field(() => Int,{description: 'Month new semester starts'})
+    @Field(() => Int, {description: 'Month new semester starts'})
     @Column("tinyint")
     semesterStartsIn: number;
 
-    @Field(() => Int,{description: 'Month new semester ends'})
+    @Field(() => Int, {description: 'Month new semester ends'})
     @Column("tinyint")
     semesterEndsIn: number;
 
@@ -91,11 +91,11 @@ export class UniversityInput implements Partial<University> {
     @Length(5, 100)
     bridgeUrl: string;
 
-    @Field(() => Int,{description: 'Month new semester starts'})
+    @Field(() => Int, {description: 'Month new semester starts'})
     @Column()
     semesterStartsIn: number;
 
-    @Field(() => Int,{description: 'Month new semester ends'})
+    @Field(() => Int, {description: 'Month new semester ends'})
     @Column()
     semesterEndsIn: number;
 }

@@ -34,7 +34,7 @@ export class User {
 
     //Only logged in users can see.
     @Authorized() //todo SAME_UNIVERSITY
-    @Field()
+    @Field({nullable: true})
     @Column({unique: true})
     regNo: string;
 
@@ -43,7 +43,7 @@ export class User {
      * This is not social network so we don't need too many ways of login in.
      */
     @Authorized(CURRENT_USER)
-    @Field()
+    @Field({nullable: true})
     @Column({unique: true})
     email: string;
 

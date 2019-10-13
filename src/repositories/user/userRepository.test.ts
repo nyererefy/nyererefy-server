@@ -56,7 +56,6 @@ describe('User', () => {
         //finding user by email
         const userByEmail = await repository.findStudentByEmail(input.email);
 
-        console.log(userByEmail);
         expect(userByEmail).toMatchObject({
             id: user.id,
             class: {

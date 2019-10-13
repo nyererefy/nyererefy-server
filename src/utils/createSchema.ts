@@ -8,4 +8,5 @@ export const createSchema = () => buildSchema({
     pubSub: pubSub,
     authChecker: Guard,
     dateScalarMode: "timestamp", // "timestamp" or "isoDate"
+    //authMode: "null" //Not trowing error.
 });
