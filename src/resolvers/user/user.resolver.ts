@@ -32,6 +32,7 @@ export class UserResolver {
                         if (user) {
                             // Setting session.
                             req.session.studentId = user.id;
+                            req.session.classId = user.class.id;
                             req.session.universityId = user.class.school.branch.university.id;
 
                             //resolving user.

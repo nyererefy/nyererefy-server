@@ -1,7 +1,7 @@
 import {AuthChecker} from "type-graphql";
 import {TheContext} from "./TheContext";
 import {Role} from "./enums";
-import {CURRENT_UNIVERSITY_MANAGER, CURRENT_USER} from "./consts";
+import {CURRENT_UNIVERSITY_MANAGER, CURRENT_USER, SAME_CLASS} from "./consts";
 
 export const Guard: AuthChecker<TheContext> = ({context: {req, res}, root}, roles: string[]) => {
     if (roles.includes(Role.MANAGER)) {
@@ -30,23 +30,15 @@ export const Guard: AuthChecker<TheContext> = ({context: {req, res}, root}, role
     else if (roles.includes(CURRENT_USER)) {
         const studentId = req.session.studentId;
 
-        if (!studentId) {
-            res.status(401);
-        }
-
         return studentId === root.id;
     }
 
-    // //Only they share the same university.
-    // else if (roles.includes(SAME_UNIVERSITY)) {
-    //     const universityId = req.session.universityId;
-    //
-    //     if (!universityId) {
-    //         res.status(401);
-    //     }
-    //
-    //     return !!universityId; //Todo do comparing universityId here
-    // }
+    //Only they share the same class.
+    else if (roles.includes(SAME_CLASS)) {
+        const classId = req.session.classId;
+
+        return classId === root.class.id;
+    }
 
     //Student is default role.
     else {

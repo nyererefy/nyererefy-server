@@ -18,7 +18,7 @@ import {IsEmail, IsString, Length} from "class-validator";
 import {Review} from "./review";
 import {Residence} from "./residence";
 import {PaginationArgs} from "../utils/query";
-import {CURRENT_USER} from "../utils/consts";
+import {CURRENT_UNIVERSITY_MANAGER, CURRENT_USER, SAME_CLASS} from "../utils/consts";
 
 registerEnumType(State, {name: 'State'});
 registerEnumType(Sex, {name: 'Sex'});
@@ -32,8 +32,8 @@ export class User {
     @PrimaryGeneratedColumn()
     id: number;
 
-    //Only logged in users can see.
-    @Authorized() //todo SAME_UNIVERSITY
+    //Only same class can see.
+    @Authorized(SAME_CLASS)
     @Field({nullable: true})
     @Column({unique: true})
     regNo: string;
@@ -130,7 +130,8 @@ export class User {
      * ManyToOne
      * Eager just for showing class snippet Sylvanus Kateile BPHARM 4.
      */
-    @Field(() => Class)
+    @Authorized([CURRENT_USER, SAME_CLASS, CURRENT_UNIVERSITY_MANAGER])
+    @Field(() => Class, {nullable: true})
     @ManyToOne(() => Class, c => c.users, {eager: true})
     class: Class;
 

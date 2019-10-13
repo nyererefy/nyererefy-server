@@ -32,5 +32,5 @@ export const COOKIE_NAME = 'nid';
 
 export const CURRENT_USER = 'current_user';
 export const CURRENT_UNIVERSITY_MANAGER = 'current_university_manager';
-export const SAME_UNIVERSITY = 'same_university';
+export const SAME_CLASS = 'same_class';
 
