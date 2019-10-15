@@ -4,6 +4,7 @@ import {getCustomRepository} from "typeorm";
 import {Candidate, CandidateEditInput, CandidateInput} from "../../entities/candidate";
 import faker from 'faker';
 import {createCandidate, createUser} from "../../utils/test/initDummyData";
+import {TEST_PROGRAM_IDENTIFIER} from "../../utils/consts";
 
 let repository: CandidateRepository;
 let candidate: Candidate;
@@ -11,13 +12,13 @@ const subcategoryId = 1;
 
 beforeAll(async () => {
     repository = getCustomRepository(CandidateRepository);
-    const user = await createUser(1);
+    const user = await createUser(TEST_PROGRAM_IDENTIFIER);
     candidate = await createCandidate(user.id, 1)
 });
 
 describe('CandidateRepository', () => {
     it('should create a new candidate', async () => {
-        const user = await createUser(1);
+        const user = await createUser(TEST_PROGRAM_IDENTIFIER);
 
         const input: CandidateInput = {
             userId: user.id,
@@ -29,11 +30,12 @@ describe('CandidateRepository', () => {
     });
 
     it('should edit a candidate', async () => {
-
         const input: CandidateEditInput = {
-            bio: faker.random.words(2),
+            id:candidate.id,
+            bio: faker.lorem.paragraphs(5),
         };
-        const result = await repository.editCandidate(candidate.id, input);
+
+        const result = await repository.editCandidate(candidate.user.id, input);
 
         await expect(result).toMatchObject(input)
     });

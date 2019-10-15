@@ -28,8 +28,16 @@ export class CandidateRepository extends Repository<Candidate> {
         return await this.save(candidate);
     }
 
-    async editCandidate(id: number, input: CandidateEditInput) {
-        let candidate = await this.findOne(id);
+    async editCandidate(userId: number, input: CandidateEditInput) {
+        const user = new User();
+        user.id = userId;
+
+        let candidate = await this.findOne({
+            where: {
+                id: input.id,
+                user
+            }
+        });
 
         if (!candidate) throw new Error('Candidate was not found');
 

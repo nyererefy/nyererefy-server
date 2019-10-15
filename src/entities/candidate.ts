@@ -1,4 +1,4 @@
-import {Authorized, Field, ID, InputType, Int, ObjectType} from "type-graphql";
+import {Field, ID, InputType, Int, ObjectType} from "type-graphql";
 import {Column, Entity, Generated, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {User} from "./user";
 import {Vote} from "./vote";
@@ -19,7 +19,7 @@ export class Candidate {
     /**
      * Not meant to be human readable...
      */
-    @Authorized()
+        // @Authorized() //todo
     @Field(() => ID, {nullable: true})
     @Column({unique: true})
     @Generated("uuid")
@@ -61,7 +61,10 @@ export class CandidateInput {
 
 @InputType()
 export class CandidateEditInput implements Partial<Candidate> {
-    @Field(() => ID)
+    @Field(() => Int)
+    id: number;
+
+    @Field(() => String)
     bio: string;
 }
 
