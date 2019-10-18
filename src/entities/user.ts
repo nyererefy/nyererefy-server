@@ -231,12 +231,15 @@ export class UserSetupInput implements Partial<User> {
     @Length(6, 64)
     password: string;
 
-    @Field(() => Int, {nullable: true})
-    @IsInt()
-    residenceId?: number;
-
     @Field(() => Sex)
     sex: Sex;
+}
+
+@InputType()
+export class UserResidenceInput {
+    @Field(() => Int)
+    @IsInt()
+    residenceId: number;
 }
 
 

@@ -4,7 +4,6 @@ import {SchoolProgramRepository} from "../schoolProgram/schoolProgramRepository"
 import {ClassRepository} from "../class/classRepository";
 import {OrderBy} from "../../utils/enums";
 import {formatRegNo} from "../../helpers/regNo";
-import {Residence} from "../../entities/residence";
 import bcrypt from "bcryptjs"
 
 interface PassportDataInterface {
@@ -88,15 +87,11 @@ export class UserRepository extends Repository<User> {
             throw new Error('Profile is already set!')
         }
 
-        const residence = new Residence();
-        residence.id = input.residenceId!; //todo check how this behaves
-
         const password = await bcrypt.hash(input.password, 8);
 
         user.name = input.name;
         user.username = input.username;
         user.sex = input.sex;
-        user.residence = residence;
         user.password = password;
         user.isAccountSet = true;
 
