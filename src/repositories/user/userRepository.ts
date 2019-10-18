@@ -1,9 +1,11 @@
 import {EntityRepository, getCustomRepository, Repository} from "typeorm";
-import {GetUsersArgs, RegistrationByProgramInput, RegistrationInput, User} from "../../entities/user";
+import {GetUsersArgs, RegistrationByProgramInput, RegistrationInput, User, UserSetupInput} from "../../entities/user";
 import {SchoolProgramRepository} from "../schoolProgram/schoolProgramRepository";
 import {ClassRepository} from "../class/classRepository";
 import {OrderBy} from "../../utils/enums";
 import {formatRegNo} from "../../helpers/regNo";
+import {Residence} from "../../entities/residence";
+import bcrypt from "bcryptjs"
 
 interface PassportDataInterface {
     accessToken: string,
@@ -45,7 +47,7 @@ export class UserRepository extends Repository<User> {
             try {
                 if (student) {
                     //This means students have not verified their data so we can just update them.
-                    if (!student.isDataCorrect) {
+                    if (!student.isDataConfirmed) {
                         await this.update(student.id, user);
                     }
                     return student;
@@ -65,13 +67,49 @@ export class UserRepository extends Repository<User> {
         return this.save(user);
     }
 
+    async confirmData(id: number) {
+        let user = await this.findUser(id);
+
+        user.isDataConfirmed = true;
+
+        return await this.save(user);
+    }
+
+    async setupUser(id: number, input: UserSetupInput) {
+        let user = await this.findUser(id);
+
+        // Student must confirm if their data is correct.
+        if (!user.isDataConfirmed) {
+            throw new Error('You have not confirmed your data yet!')
+        }
+
+        // If profile is set we can't set it up.
+        if (user.isAccountSet) {
+            throw new Error('Profile is already set!')
+        }
+
+        const residence = new Residence();
+        residence.id = input.residenceId!; //todo check how this behaves
+
+        const password = await bcrypt.hash(input.password, 8);
+
+        user.name = input.name;
+        user.username = input.username;
+        user.sex = input.sex;
+        user.residence = residence;
+        user.password = password;
+        user.isAccountSet = true;
+
+        return await this.save(user);
+    }
+
     async loginWithGoogle({profile, accessToken}: PassportDataInterface) {
         const email = profile.emails[0].value || profile._json.email;
 
         const user = await this.findStudentByEmail(email);
 
         //If user has already accepts how his data looks like, there is no need to update it.
-        if (!user.isProfileSet) {
+        if (!user.isAccountSet) {
             await this.update(user.id, {
                 name: profile.displayName || `${profile.familyName} ${profile.givenName}`,
                 token: accessToken,

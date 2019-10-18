@@ -40,7 +40,7 @@
     "passport-yahoo-token": "^2.1.0",
     "random-string-generator": "^1.0.0",
     "reflect-metadata": "^0.1.13",
-    "type-graphql": "^0.17.4",
+    "type-graphql": "^0.17.5",
     "typeorm": "^0.2.18",
     "winston": "^3.2.1"
   },

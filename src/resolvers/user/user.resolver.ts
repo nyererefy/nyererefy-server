@@ -1,11 +1,12 @@
 import {Arg, Args, Authorized, Ctx, Int, Mutation, Query, Resolver} from "type-graphql";
-import {GetUsersArgs, LoginInput, User} from "../../entities/user";
+import {GetUsersArgs, LoginInput, User, UserSetupInput} from "../../entities/user";
 import {getCustomRepository} from "typeorm";
 import {UserRepository} from "../../repositories/user/userRepository";
 import {Role} from "../../utils/enums";
 import {TheContext} from "../../utils/TheContext";
 import {authenticateWithGoogle} from "../../helpers/auth";
 import {COOKIE_NAME} from "../../utils/consts";
+import {CurrentStudent} from "../../utils/currentAccount";
 
 const userRepository = getCustomRepository(UserRepository);
 
@@ -60,7 +61,6 @@ export class UserResolver {
         }));
     }
 
-    @Authorized()
     @Mutation(() => Boolean)
     async logout(@Ctx() {req, res}: TheContext): Promise<Boolean> {
         return new Promise((resolve, reject) =>
@@ -77,6 +77,27 @@ export class UserResolver {
     @Query(() => User)
     async user(@Arg('id', () => Int) id: number): Promise<User> {
         return await userRepository.findUser(id);
+    }
+
+    @Authorized()
+    @Query(() => User)
+    async me(@CurrentStudent() userId: number): Promise<User> {
+        return await userRepository.findUser(userId);
+    }
+
+    @Authorized()
+    @Mutation(() => User)
+    async confirmData(@CurrentStudent() userId: number): Promise<User> {
+        return await userRepository.confirmData(userId);
+    }
+
+    @Authorized()
+    @Mutation(() => User)
+    async setupAccount(
+        @CurrentStudent() userId: number,
+        @Arg('input') input: UserSetupInput
+    ): Promise<User> {
+        return await userRepository.setupUser(userId, input);
     }
 
     @Authorized(Role.MANAGER)

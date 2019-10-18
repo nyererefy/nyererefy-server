@@ -2,9 +2,9 @@ import '../../utils/test/initTestDb'
 import {UserRepository} from "./userRepository";
 import {getCustomRepository} from "typeorm";
 import faker from "faker";
-import {GetUsersArgs, RegistrationByProgramInput, User} from "../../entities/user";
+import {GetUsersArgs, RegistrationByProgramInput, User, UserSetupInput} from "../../entities/user";
 import {TEST_BRANCH_ID, TEST_PROGRAM_IDENTIFIER, TEST_UNIVERSITY_ID, TEST_VOTER_ID} from "../../utils/consts";
-import {Duration, OrderBy, Year} from "../../utils/enums";
+import {Duration, OrderBy, Sex, Year} from "../../utils/enums";
 import {
     createProgram,
     createSchool,
@@ -73,6 +73,27 @@ describe('User', () => {
     it('should find user', async () => {
         const result = await repository.findUser(TEST_VOTER_ID);
         expect(result).toBeDefined();
+    });
+
+    it('should setup user', async () => {
+        const user = await createUser(TEST_PROGRAM_IDENTIFIER);
+
+        const input: UserSetupInput = {
+            name: "Natalia Kateile",
+            username: "Naa",
+            password: "password",
+            sex: Sex.FEMALE
+        };
+
+        const confirmDataResult = await repository.confirmData(user.id);
+        expect(confirmDataResult).toMatchObject({
+            isDataConfirmed: true
+        });
+
+        const result = await repository.setupUser(user.id, input);
+        expect(result).toMatchObject({
+            id: user.id
+        });
     });
 
     it('should find user with voting info', async () => {

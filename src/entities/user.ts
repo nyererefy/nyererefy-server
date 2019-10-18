@@ -1,4 +1,4 @@
-import {ArgsType, Authorized, Field, ID, InputType, ObjectType, registerEnumType} from "type-graphql";
+import {ArgsType, Authorized, Field, ID, InputType, Int, ObjectType, registerEnumType} from "type-graphql";
 import {
     BeforeInsert,
     Column,
@@ -14,7 +14,7 @@ import {Class} from "./class";
 import {Candidate} from "./candidate";
 import {Role, Sex, State, Strategy, Year} from "../utils/enums";
 import {Vote} from "./vote";
-import {IsEmail, IsString, Length} from "class-validator";
+import {IsAlphanumeric, IsEmail, IsInt, IsString, Length} from "class-validator";
 import {Review} from "./review";
 import {Residence} from "./residence";
 import {PaginationArgs} from "../utils/query";
@@ -66,6 +66,12 @@ export class User {
     token?: string;
 
     /**
+     * Email token
+     */
+    @Column({nullable: true})
+    password?: string;
+
+    /**
      * Despite from bridge-registration but is this user verified
      * This is useful when we verify them all. We can trust everyone who brings members.
      * - Once verified can not be deleted with api calls.
@@ -80,14 +86,14 @@ export class User {
      */
     @Field()
     @Column()
-    isDataCorrect: boolean;
+    isDataConfirmed: boolean;
 
     /**
      * If true we won't take google data any longer.
      */
     @Field()
     @Column({default: false})
-    isProfileSet: boolean;
+    isAccountSet: boolean;
 
     /**
      * Google picture url. Can be updated manually.
@@ -124,7 +130,7 @@ export class User {
      */
     @Field(() => Sex, {nullable: true})
     @Column({type: "tinyint", nullable: true})
-    sex: State;
+    sex: Sex;
 
     /**
      * ManyToOne
@@ -135,8 +141,8 @@ export class User {
     @ManyToOne(() => Class, c => c.users, {eager: true})
     class: Class;
 
-    @ManyToOne(() => Residence, c => c.users)
-    residence: Residence;
+    @ManyToOne(() => Residence, c => c.users, {nullable: true})
+    residence?: Residence;
 
     /**
      * OneToMany
@@ -207,6 +213,30 @@ export class LoginInput {
 
     @Field(() => Role, {nullable: true, defaultValue: Role.STUDENT})
     role: Role;
+}
+
+@InputType()
+export class UserSetupInput implements Partial<User> {
+    @Field()
+    @IsAlphanumeric()
+    @Length(1, 20)
+    username: string;
+
+    @Field()
+    @IsAlphanumeric()
+    @Length(1, 20)
+    name: string;
+
+    @Field()
+    @Length(6, 64)
+    password: string;
+
+    @Field(() => Int, {nullable: true})
+    @IsInt()
+    residenceId?: number;
+
+    @Field(() => Sex)
+    sex: Sex;
 }
 
 
