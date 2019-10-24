@@ -18,7 +18,7 @@ import {IsAlphanumeric, IsEmail, IsInt, IsString, Length} from "class-validator"
 import {Review} from "./review";
 import {Residence} from "./residence";
 import {PaginationArgs} from "../utils/query";
-import {CURRENT_UNIVERSITY_MANAGER, CURRENT_USER, SAME_CLASS} from "../utils/consts";
+import {CURRENT_USER} from "../utils/consts";
 
 registerEnumType(State, {name: 'State'});
 registerEnumType(Sex, {name: 'Sex'});
@@ -33,7 +33,7 @@ export class User {
     id: number;
 
     //Only same class can see.
-    @Authorized(SAME_CLASS)
+    // @Authorized(SAME_CLASS)
     @Field({nullable: true})
     @Column({unique: true})
     regNo: string;
@@ -136,7 +136,7 @@ export class User {
      * ManyToOne
      * Eager just for showing class snippet Sylvanus Kateile BPHARM 4.
      */
-    @Authorized([CURRENT_USER, SAME_CLASS, CURRENT_UNIVERSITY_MANAGER])
+        // @Authorized([CURRENT_USER, SAME_CLASS, CURRENT_UNIVERSITY_MANAGER])
     @Field(() => Class, {nullable: true})
     @ManyToOne(() => Class, c => c.users, {eager: true})
     class: Class;
@@ -223,7 +223,7 @@ export class UserSetupInput implements Partial<User> {
     username: string;
 
     @Field()
-    @IsAlphanumeric()
+    @IsString()
     @Length(1, 20)
     name: string;
 

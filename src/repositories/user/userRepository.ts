@@ -87,10 +87,18 @@ export class UserRepository extends Repository<User> {
             throw new Error('Profile is already set!')
         }
 
+        const username = input.username;
+
+        const existing = await this.findOne({where: {username}});
+
+        if (existing && existing.id !== user.id) {
+            throw new Error(`${username} is taken!, Please choose another one`)
+        }
+
         const password = await bcrypt.hash(input.password, 8);
 
         user.name = input.name;
-        user.username = input.username;
+        user.username = username;
         user.sex = input.sex;
         user.password = password;
         user.isAccountSet = true;
