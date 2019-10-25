@@ -5,7 +5,13 @@ import {VoteRepository} from "./voteRepository";
 import {VoteInput} from "../../entities/vote";
 import {createCandidate, createUser} from "../../utils/test/initDummyData";
 import {Candidate} from "../../entities/candidate";
-import {TEST_CATEGORY_ID, TEST_ELECTION_ID, TEST_PROGRAM_IDENTIFIER, TEST_VOTER_ID} from "../../utils/consts";
+import {
+    TEST_CATEGORY_ID,
+    TEST_ELECTION_ID,
+    TEST_PASSWORD,
+    TEST_PROGRAM_IDENTIFIER,
+    TEST_VOTER_ID
+} from "../../utils/consts";
 import {ElectionRepository} from "../election/electionRepository";
 import {ElectionEditInput} from "../../entities/election";
 
@@ -29,8 +35,8 @@ beforeAll(async () => {
     candidate1 = await createCandidate(2, TEST_CATEGORY_ID);
     candidate2 = await createCandidate(3, 2);
 
-    input1 = {uuid: candidate1.uuid};
-    input2 = {uuid: candidate2.uuid};
+    input1 = {uuid: candidate1.uuid, password: TEST_PASSWORD};
+    input2 = {uuid: candidate2.uuid, password: TEST_PASSWORD};
 });
 
 describe('Vote', () => {
@@ -76,7 +82,7 @@ describe('Vote', () => {
         const user = await createUser(TEST_PROGRAM_IDENTIFIER);
         const candidate = await createCandidate(user.id, 2);
 
-        const input = {uuid: candidate.uuid};
+        const input = {uuid: candidate.uuid, password: TEST_PASSWORD};
 
         const result = await voteRepository.createVote({
             userId: user.id,

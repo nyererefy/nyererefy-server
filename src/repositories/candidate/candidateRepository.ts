@@ -71,4 +71,12 @@ export class CandidateRepository extends Repository<Candidate> {
 
         return this.find({where: {subcategory}})
     }
+
+    async findCandidatesAndCountVotes(subcategoryId: number): Promise<Candidate[]> {
+        return await this.createQueryBuilder('candidate')
+            .innerJoinAndSelect('candidate.user', 'user')
+            .where("candidate.subcategoryId = :subcategoryId", {subcategoryId})
+            .loadRelationCountAndMap('candidate.votesCount', 'candidate.votes')
+            .getMany()
+    }
 }

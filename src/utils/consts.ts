@@ -6,6 +6,7 @@ export const TEST_CATEGORY_ID = 1;
 export const TEST_SUBCATEGORY_ID = 1;
 
 export const TEST_PROGRAM_IDENTIFIER = '12231';
+export const TEST_PASSWORD = 'password';
 
 export const CACHE_MIN_TIME = 10 * 60 * 1000; //10 minutes
 export const CACHE_MID_TIME = 30 * 60 * 1000; //30 minutes

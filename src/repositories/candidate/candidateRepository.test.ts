@@ -4,16 +4,27 @@ import {getCustomRepository} from "typeorm";
 import {Candidate, CandidateEditInput, CandidateInput} from "../../entities/candidate";
 import faker from 'faker';
 import {createCandidate, createUser} from "../../utils/test/initDummyData";
-import {TEST_PROGRAM_IDENTIFIER} from "../../utils/consts";
+import {TEST_ELECTION_ID, TEST_PASSWORD, TEST_PROGRAM_IDENTIFIER} from "../../utils/consts";
+import {VoteRepository} from "../vote/voteRepository";
+import {VoteInput} from "../../entities/vote";
+import {User} from "../../entities/user";
+import {ElectionRepository} from "../election/electionRepository";
+import {ElectionEditInput} from "../../entities/election";
 
 let repository: CandidateRepository;
+let voteRepository: VoteRepository;
+let electionRepository: ElectionRepository;
 let candidate: Candidate;
+let user: User;
 const subcategoryId = 1;
 
 beforeAll(async () => {
     repository = getCustomRepository(CandidateRepository);
-    const user = await createUser(TEST_PROGRAM_IDENTIFIER);
-    candidate = await createCandidate(user.id, 1)
+    voteRepository = getCustomRepository(VoteRepository);
+    electionRepository = getCustomRepository(ElectionRepository);
+
+    user = await createUser(TEST_PROGRAM_IDENTIFIER);
+    candidate = await createCandidate(user.id, subcategoryId)
 });
 
 describe('CandidateRepository', () => {
@@ -31,7 +42,7 @@ describe('CandidateRepository', () => {
 
     it('should edit a candidate', async () => {
         const input: CandidateEditInput = {
-            id:candidate.id,
+            id: candidate.id,
             bio: faker.lorem.paragraphs(5),
         };
 
@@ -71,5 +82,23 @@ describe('CandidateRepository', () => {
                 uuid: expect.any(String)
             })
         )
+    });
+
+    it('should find candidates and count their votes', async () => {
+        //Opening election.
+        const electionInput: ElectionEditInput = {
+            isOpen: true
+        };
+
+        await electionRepository.editElection(TEST_ELECTION_ID, electionInput);
+
+        const input: VoteInput = {uuid: candidate.uuid, password: TEST_PASSWORD};
+
+        await voteRepository.createVote({userId: user.id, input});
+
+        const results = await repository.findCandidatesAndCountVotes(subcategoryId);
+
+        expect(results[0].votesCount).toBe(0);
+        expect(results[1].votesCount).toBe(1);
     });
 });

@@ -48,6 +48,9 @@ export class Candidate {
 
     @OneToMany(() => Vote, s => s.candidate, {onDelete: "RESTRICT"})
     votes: Vote[];
+
+    @Field(() => Int, {description: 'Not to be used in every query'})
+    votesCount: number;
 }
 
 @InputType()

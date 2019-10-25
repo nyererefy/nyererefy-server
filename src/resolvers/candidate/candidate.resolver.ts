@@ -47,7 +47,26 @@ export class CandidateResolver {
     }
 
     @Query(() => [Candidate])
-    async candidates(@Arg('subcategoryId', () => Int) subcategoryId: number): Promise<Candidate[]> {
+    async candidates(
+        @Arg('subcategoryId', () => Int) subcategoryId: number
+    ): Promise<Candidate[]> {
         return await candidateRepository.findCandidates(subcategoryId);
+    }
+
+    @Query(() => [Candidate])
+    async candidatesAndVotesCount(
+        @Arg('subcategoryId', () => Int) subcategoryId: number
+    ): Promise<Candidate[]> {
+        return await candidateRepository.findCandidatesAndCountVotes(subcategoryId);
+    }
+
+    @Subscription(() => [Candidate], {
+        topics: ({args}) => `${Topic.SUBCATEGORY_VOTE_ADDED}:${args.subcategoryId}`,
+        name: 'candidatesAndVotesCount'
+    })
+    async candidatesAndVotesCountSubscription(
+        @Arg('subcategoryId', () => Int) subcategoryId: number
+    ): Promise<Candidate[]> {
+        return await candidateRepository.findCandidatesAndCountVotes(subcategoryId);
     }
 }
