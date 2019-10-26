@@ -37,6 +37,12 @@ export class VoteResolver {
             vote.subcategory.id
         );
 
+        //So that we may recount just one candidate with his details
+        await pubSub.publish(
+            `${Topic.SUBCATEGORY_VOTE_ADDED_PLUS}:${vote.subcategory.id}`,
+            vote.candidate.id
+        );
+
         return vote;
     }
 

@@ -94,6 +94,7 @@ export enum Topic {
     VOTE_ADDED = 'vote_added',
     CANDIDATE_VOTE_ADDED = 'candidate_vote_added',
     SUBCATEGORY_VOTE_ADDED = 'subcategory_vote_added',
+    SUBCATEGORY_VOTE_ADDED_PLUS = 'subcategory_vote_added_plus',
     REVIEW_ADDED = 'review_added',
     CANDIDATE_PROFILE_EDITED = 'candidate_profile_edited'
 }

@@ -1,4 +1,4 @@
-import {Arg, Authorized, Int, Mutation, PubSub, PubSubEngine, Query, Resolver, Subscription} from "type-graphql";
+import {Arg, Authorized, Int, Mutation, PubSub, PubSubEngine, Query, Resolver, Root, Subscription} from "type-graphql";
 import {getCustomRepository} from "typeorm";
 import {CandidateRepository} from "../../repositories/candidate/candidateRepository";
 import {Candidate, CandidateEditInput, CandidateInput} from "../../entities/candidate";
@@ -60,13 +60,13 @@ export class CandidateResolver {
         return await candidateRepository.findCandidatesAndCountVotes(subcategoryId);
     }
 
-    @Subscription(() => [Candidate], {
-        topics: ({args}) => `${Topic.SUBCATEGORY_VOTE_ADDED}:${args.subcategoryId}`,
-        name: 'candidatesAndVotesCount'
+    @Subscription(() => Candidate, {
+        topics: ({args}) => `${Topic.SUBCATEGORY_VOTE_ADDED_PLUS}:${args.subcategoryId}`
     })
-    async candidatesAndVotesCountSubscription(
-        @Arg('subcategoryId', () => Int) subcategoryId: number
-    ): Promise<Candidate[]> {
-        return await candidateRepository.findCandidatesAndCountVotes(subcategoryId);
+    async candidateAndVotesCount(
+        @Arg('subcategoryId', () => Int) _subcategoryId: number,
+        @Root() candidateId: number
+    ): Promise<Candidate> {
+        return await candidateRepository.findCandidateAndCountVotes(candidateId);
     }
 }

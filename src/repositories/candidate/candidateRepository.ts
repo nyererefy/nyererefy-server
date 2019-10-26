@@ -79,4 +79,16 @@ export class CandidateRepository extends Repository<Candidate> {
             .loadRelationCountAndMap('candidate.votesCount', 'candidate.votes')
             .getMany()
     }
+
+    async findCandidateAndCountVotes(candidateId: number): Promise<Candidate> {
+        const candidate = await this.createQueryBuilder('candidate')
+            .innerJoinAndSelect('candidate.user', 'user')
+            .where("candidate.id = :candidateId", {candidateId})
+            .loadRelationCountAndMap('candidate.votesCount', 'candidate.votes')
+            .getOne();
+
+        if (candidate) return candidate;
+
+        throw new Error('Candidate was not found')
+    }
 }
