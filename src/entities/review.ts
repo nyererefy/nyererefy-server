@@ -27,7 +27,7 @@ export class Review {
     subcategory: Subcategory;
 
     @Field(() => User)
-    @ManyToOne(() => User, u => u.reviews, {nullable: false})
+    @ManyToOne(() => User, u => u.reviews, {eager: true, nullable: false})
     user: User
 }
 
