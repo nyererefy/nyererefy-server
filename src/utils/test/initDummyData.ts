@@ -124,11 +124,15 @@ export async function generateSubcategories(universityId: number, electionId: nu
     return await subcategoryRepository.generateSubcategories(universityId, electionId);
 }
 
-export async function createUser(programIdentifier: string, year: Year = Year.FOURTH_YEAR) {
+export async function createUser(
+    programIdentifier: string,
+    year: Year = Year.FOURTH_YEAR,
+    email: string = faker.internet.email()
+) {
     const userRepository = getCustomRepository(UserRepository);
 
     const input: RegistrationByProgramInput = {
-        email: faker.internet.email(),
+        email,
         regNo: faker.internet.userName(),
         year,
         programIdentifier
@@ -159,8 +163,8 @@ export const insertDummyData = async () => {
     await generateClasses(university.id);
 
     const user1 = await createUser(registeredProgram.identifier);
-    await createUser(registeredProgram.identifier, Year.THIRD_YEAR);
-    await createUser(registeredProgram.identifier, Year.FIFTH_YEAR);
+    await createUser(registeredProgram.identifier, Year.THIRD_YEAR, 'mbwamwizi@gmail.com');
+    await createUser(registeredProgram.identifier, Year.FIFTH_YEAR, 'sylvakateile@gmail.com');
 
     const election = await createElection(university.id);
     await createCategory(election.id);
