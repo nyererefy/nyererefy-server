@@ -49,7 +49,7 @@ const bootstrap = async () => {
         cookie: {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            maxAge: 1000 * 60 * 60 * 24 * 365 // 1 year
+            maxAge: 1000 * 60 * 60 * 24 * 30 // 1 month
         }
     }));
 
