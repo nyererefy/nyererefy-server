@@ -105,4 +105,13 @@ export class UserResolver {
     async users(@Args() args: GetUsersArgs): Promise<User[]> {
         return await userRepository.findUsers(args);
     }
+
+    @Authorized()
+    @Mutation(() => User)
+    async updateResidence(
+        @CurrentStudent() userId: number,
+        @Arg('residenceId', () => Int) residenceId: number
+    ): Promise<User> {
+        return await userRepository.updateResidence(userId, residenceId);
+    }
 }

@@ -25,6 +25,8 @@ import {ClassRepository} from "../../repositories/class/classRepository";
 import {Class} from "../../entities/class";
 import moment from "moment";
 import {TEST_PROGRAM_IDENTIFIER, TEST_UNIVERSITY_ID} from "../consts";
+import {ResidenceInput} from "../../entities/residence";
+import {ResidenceRepository} from "../../repositories/residence/residenceRepository";
 
 export async function createUniversity(): Promise<University> {
     const universityRepository = getCustomRepository(UniversityRepository);
@@ -149,6 +151,14 @@ export async function createCandidate(userId: number, subcategoryId: number) {
         subcategoryId
     };
     return await candidateRepository.createCandidate(input);
+}
+
+export async function createResidence(title: string = faker.lorem.word()) {
+    const repository = getCustomRepository(ResidenceRepository);
+    const input: ResidenceInput = {
+        title
+    };
+    return await repository.createResidence(TEST_UNIVERSITY_ID, input);
 }
 
 export const insertDummyData = async () => {

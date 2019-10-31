@@ -1,41 +1,30 @@
 import '../../utils/test/initTestDb'
 import {ResidenceRepository} from "./residenceRepository";
 import {getCustomRepository} from "typeorm";
-import faker from "faker";
-import {Residence, ResidenceInput} from "../../entities/residence";
 import {TEST_UNIVERSITY_ID} from "../../utils/consts";
+import {createResidence} from "../../utils/test/initDummyData";
 
 let repository: ResidenceRepository;
 
-let input: ResidenceInput;
-
 beforeEach(async () => {
     repository = getCustomRepository(ResidenceRepository);
-
-    input = {
-        title: faker.lorem.word()
-    };
 });
-
-async function createResidence(): Promise<Residence> {
-    return await repository.createResidence(TEST_UNIVERSITY_ID, input);
-}
 
 describe('Residence', () => {
     it('should create a new residence', async () => {
-        const residence = await createResidence();
-        expect(residence.title).toMatch(input.title)
+        const title = "Bugarika";
+        const residence = await createResidence(title);
+        expect(residence.title).toMatch(title)
     });
 
     it('should edit an residence', async () => {
-        const residence = await repository.createResidence(TEST_UNIVERSITY_ID, {
-            title: "title"
-        });
-        const result = await repository.editResidence(residence.id, TEST_UNIVERSITY_ID, input);
+        const title = "Bugarika edited";
+        const residence = await createResidence();
+        const result = await repository.editResidence(residence.id, TEST_UNIVERSITY_ID, {title});
 
         await expect(result).toMatchObject({
             id: residence.id,
-            title: input.title
+            title: title
         })
     });
 

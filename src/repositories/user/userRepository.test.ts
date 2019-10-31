@@ -6,7 +6,7 @@ import {GetUsersArgs, RegistrationByProgramInput, User, UserSetupInput} from "..
 import {TEST_BRANCH_ID, TEST_PROGRAM_IDENTIFIER, TEST_UNIVERSITY_ID, TEST_VOTER_ID} from "../../utils/consts";
 import {Duration, OrderBy, Sex, Year} from "../../utils/enums";
 import {
-    createProgram,
+    createProgram, createResidence,
     createSchool,
     createUser,
     generateClasses,
@@ -135,4 +135,12 @@ describe('User', () => {
             })
         )
     });
+
+
+    it('should update user\'s residence', async () => {
+        const residence = await createResidence();
+        const result = await repository.updateResidence(TEST_VOTER_ID,residence.id);
+        expect(result.residence!.id).toEqual(residence.id);
+    });
+
 });

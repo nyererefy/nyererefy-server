@@ -5,6 +5,7 @@ import {ClassRepository} from "../class/classRepository";
 import {OrderBy} from "../../utils/enums";
 import {formatRegNo} from "../../helpers/regNo";
 import bcrypt from "bcryptjs"
+import {ResidenceRepository} from "../residence/residenceRepository";
 
 interface PassportDataInterface {
     accessToken: string,
@@ -17,11 +18,13 @@ export class UserRepository extends Repository<User> {
 
     private schoolProgramRepository: SchoolProgramRepository;
     private classRepository: ClassRepository;
+    private residenceRepository: ResidenceRepository;
 
     constructor() {
         super();
         this.schoolProgramRepository = getCustomRepository(SchoolProgramRepository);
         this.classRepository = getCustomRepository(ClassRepository);
+        this.residenceRepository = getCustomRepository(ResidenceRepository);
     }
 
     async registrationByProgram(universityId: number, input: RegistrationByProgramInput): Promise<User> {
@@ -178,5 +181,12 @@ export class UserRepository extends Repository<User> {
 
         return q.getMany()
 
+    }
+
+    async updateResidence(userId: number, residenceId: number) {
+        const user = await this.findUser(userId);
+        user.residence = await this.residenceRepository.findResidence(residenceId);
+
+        return await this.save(user);
     }
 }
