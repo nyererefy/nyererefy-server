@@ -1,7 +1,8 @@
 import {Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
-import {Field, ID, ObjectType} from "type-graphql";
+import {Field, ID, InputType, ObjectType} from "type-graphql";
 import {User} from "./user";
 import {University} from "./university";
+import {Length} from "class-validator";
 
 /**
  * todo Can be changed but not during election. Some people may use this feature to misuse the system
@@ -14,7 +15,7 @@ export class Residence {
     id: number;
 
     @Field()
-    @Column({length: 100})
+    @Column({length: 50})
     title: string;
 
     /**
@@ -25,4 +26,11 @@ export class Residence {
 
     @ManyToOne(() => University, u => u.residences)
     university: University;
+}
+
+@InputType()
+export class ResidenceInput implements Partial<Residence> {
+    @Field()
+    @Length(1, 50)
+    title: string;
 }
