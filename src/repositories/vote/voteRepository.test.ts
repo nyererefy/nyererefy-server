@@ -13,7 +13,6 @@ import {
     TEST_VOTER_ID
 } from "../../utils/consts";
 import {ElectionRepository} from "../election/electionRepository";
-import {ElectionEditInput} from "../../entities/election";
 
 let voteRepository: VoteRepository;
 let electionRepository: ElectionRepository;
@@ -27,10 +26,7 @@ beforeAll(async () => {
     electionRepository = getCustomRepository(ElectionRepository);
 
     //Opening election.
-    const electionInput: ElectionEditInput = {
-        isOpen: true
-    };
-    await electionRepository.editElection(TEST_ELECTION_ID, electionInput);
+    await electionRepository.openElection(TEST_ELECTION_ID);
 
     candidate1 = await createCandidate(2, TEST_CATEGORY_ID);
     candidate2 = await createCandidate(3, 2);

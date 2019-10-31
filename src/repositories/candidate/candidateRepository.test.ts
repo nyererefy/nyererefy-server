@@ -9,7 +9,6 @@ import {VoteRepository} from "../vote/voteRepository";
 import {VoteInput} from "../../entities/vote";
 import {User} from "../../entities/user";
 import {ElectionRepository} from "../election/electionRepository";
-import {ElectionEditInput} from "../../entities/election";
 
 let repository: CandidateRepository;
 let voteRepository: VoteRepository;
@@ -86,11 +85,7 @@ describe('CandidateRepository', () => {
 
     it('should find candidates and count their votes', async () => {
         //Opening election.
-        const electionInput: ElectionEditInput = {
-            isOpen: true
-        };
-
-        await electionRepository.editElection(TEST_ELECTION_ID, electionInput);
+        await electionRepository.openElection(TEST_ELECTION_ID);
 
         const input: VoteInput = {uuid: candidate.uuid, password: TEST_PASSWORD};
 

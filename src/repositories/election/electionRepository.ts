@@ -124,4 +124,22 @@ export class ElectionRepository extends Repository<Election> {
             take: limit
         })
     }
+
+    countOpenedElections(universityId: number): Promise<number> {
+        const university = new University();
+        university.id = universityId;
+
+        return this.count({where: {university, isOpen: true}})
+    }
+
+    /**
+     * For testing only, otherwise time will be used.
+     * @param id
+     */
+    async openElection(id: number) {
+        let election = await this.findElection(id);
+        election.isOpen = true;
+
+        return await this.save(election);
+    }
 }

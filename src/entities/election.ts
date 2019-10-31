@@ -140,9 +140,6 @@ export class ElectionEditInput implements Partial<Election> {
     endAt?: Date;
 
     @Field({nullable: true, defaultValue: false})
-    isOpen?: boolean;
-
-    @Field({nullable: true, defaultValue: false})
     isStrict?: boolean;
 
     @Field({nullable: true, defaultValue: false})

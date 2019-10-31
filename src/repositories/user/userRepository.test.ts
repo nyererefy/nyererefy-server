@@ -6,18 +6,23 @@ import {GetUsersArgs, RegistrationByProgramInput, User, UserSetupInput} from "..
 import {TEST_BRANCH_ID, TEST_PROGRAM_IDENTIFIER, TEST_UNIVERSITY_ID, TEST_VOTER_ID} from "../../utils/consts";
 import {Duration, OrderBy, Sex, Year} from "../../utils/enums";
 import {
-    createProgram, createResidence,
+    createElection,
+    createProgram,
+    createResidence,
     createSchool,
     createUser,
     generateClasses,
     registerProgram
 } from "../../utils/test/initDummyData";
 import {formatRegNo} from "../../helpers/regNo";
+import {ElectionRepository} from "../election/electionRepository";
 
 let repository: UserRepository;
+let electionRepository: ElectionRepository;
 
 beforeEach(async () => {
     repository = getCustomRepository(UserRepository);
+    electionRepository = getCustomRepository(ElectionRepository);
 });
 
 describe('User', () => {
@@ -136,11 +141,23 @@ describe('User', () => {
         )
     });
 
-
     it('should update user\'s residence', async () => {
         const residence = await createResidence();
-        const result = await repository.updateResidence(TEST_VOTER_ID,residence.id);
+        const result = await repository.updateResidence(TEST_VOTER_ID, residence.id, TEST_UNIVERSITY_ID);
         expect(result.residence!.id).toEqual(residence.id);
+    });
+
+    it('should fail to update user\'s residence', async () => {
+        const election = await createElection(TEST_UNIVERSITY_ID);
+        await electionRepository.openElection(election.id);
+        const residence = await createResidence();
+
+        try {
+            await repository.updateResidence(TEST_VOTER_ID, residence.id, TEST_UNIVERSITY_ID);
+            expect(true).toBeFalsy();
+        } catch (e) {
+            expect(e.message).toBeDefined()
+        }
     });
 
 });

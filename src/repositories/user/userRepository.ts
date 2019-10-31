@@ -6,6 +6,7 @@ import {OrderBy} from "../../utils/enums";
 import {formatRegNo} from "../../helpers/regNo";
 import bcrypt from "bcryptjs"
 import {ResidenceRepository} from "../residence/residenceRepository";
+import {ElectionRepository} from "../election/electionRepository";
 
 interface PassportDataInterface {
     accessToken: string,
@@ -19,12 +20,14 @@ export class UserRepository extends Repository<User> {
     private schoolProgramRepository: SchoolProgramRepository;
     private classRepository: ClassRepository;
     private residenceRepository: ResidenceRepository;
+    private electionRepository: ElectionRepository;
 
     constructor() {
         super();
         this.schoolProgramRepository = getCustomRepository(SchoolProgramRepository);
         this.classRepository = getCustomRepository(ClassRepository);
         this.residenceRepository = getCustomRepository(ResidenceRepository);
+        this.electionRepository = getCustomRepository(ElectionRepository);
     }
 
     async registrationByProgram(universityId: number, input: RegistrationByProgramInput): Promise<User> {
@@ -183,8 +186,16 @@ export class UserRepository extends Repository<User> {
 
     }
 
-    async updateResidence(userId: number, residenceId: number) {
+    async updateResidence(userId: number, residenceId: number, universityId: number) {
         const user = await this.findUser(userId);
+
+        //Check if there is any election running
+        const count = await this.electionRepository.countOpenedElections(universityId);
+
+        if (count > 0) {
+            throw new Error('action is not allowed while there are elections running')
+        }
+
         user.residence = await this.residenceRepository.findResidence(residenceId);
 
         return await this.save(user);

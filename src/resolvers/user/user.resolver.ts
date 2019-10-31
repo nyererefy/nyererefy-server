@@ -6,7 +6,7 @@ import {Role} from "../../utils/enums";
 import {TheContext} from "../../utils/TheContext";
 import {authenticateWithGoogle} from "../../helpers/auth";
 import {COOKIE_NAME} from "../../utils/consts";
-import {CurrentStudent} from "../../utils/currentAccount";
+import {CurrentStudent, CurrentUniversity} from "../../utils/currentAccount";
 
 const userRepository = getCustomRepository(UserRepository);
 
@@ -110,8 +110,9 @@ export class UserResolver {
     @Mutation(() => User)
     async updateResidence(
         @CurrentStudent() userId: number,
+        @CurrentUniversity() universityId: number,
         @Arg('residenceId', () => Int) residenceId: number
     ): Promise<User> {
-        return await userRepository.updateResidence(userId, residenceId);
+        return await userRepository.updateResidence(userId, residenceId, universityId);
     }
 }
