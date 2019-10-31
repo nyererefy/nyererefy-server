@@ -7,8 +7,8 @@ import {
     createCategory,
     createElection,
     createProgram,
+    createResidence,
     createSchool,
-    createUniversity,
     createUser,
     generateClasses,
     registerProgram
@@ -18,7 +18,6 @@ import {User} from "../../entities/user";
 import {School} from "../../entities/school";
 import {Program} from "../../entities/program";
 import {Branch} from "../../entities/branch";
-import {University} from "../../entities/university";
 import {TEST_BRANCH_ID, TEST_PROGRAM_IDENTIFIER, TEST_UNIVERSITY_ID} from "../../utils/consts";
 
 let repository: SubcategoryRepository;
@@ -27,29 +26,27 @@ let school: School;
 let user: User;
 let branch: Branch;
 let program: Program;
-let university: University;
 
 beforeAll(async () => {
     repository = getCustomRepository(SubcategoryRepository);
 
-    university = await createUniversity();
-    branch = await createBranch(university.id);
+    branch = await createBranch(TEST_UNIVERSITY_ID);
     school = await createSchool(branch.id);
     program = await createProgram();
     await registerProgram(school.id, program.id);
 
-    await generateClasses(university.id);
+    await generateClasses(TEST_UNIVERSITY_ID);
 
     user = await createUser(TEST_PROGRAM_IDENTIFIER);
 
-    election = await createElection(university.id);
+    election = await createElection(TEST_UNIVERSITY_ID);
 });
 
 describe('Subcategory', () => {
     it('should create a new subcategory for ALL', async () => {
         await createCategory(election.id);
 
-        const results = await repository.generateSubcategories(university.id, election.id);
+        const results = await repository.generateSubcategories(TEST_UNIVERSITY_ID, election.id);
 
         expect(results).toContainEqual(
             expect.objectContaining({
@@ -64,7 +61,7 @@ describe('Subcategory', () => {
 
         await createCategory(election.id, Eligible.SCHOOL);
 
-        const results = await repository.generateSubcategories(university.id, election.id);
+        const results = await repository.generateSubcategories(TEST_UNIVERSITY_ID, election.id);
 
         expect(results).toContainEqual(
             expect.objectContaining({
@@ -74,14 +71,14 @@ describe('Subcategory', () => {
         )
     });
 
-    it('should create a new subcategories for all programs', async () => {
+    it('should create a new subcategories for all PROGRAMS', async () => {
         const program = await createProgram(Duration.THREE_YEARS);
         const school = await createSchool(TEST_BRANCH_ID);
         await registerProgram(school.id, program.id);
 
         await createCategory(election.id, Eligible.PROGRAM);
 
-        const results = await repository.generateSubcategories(university.id, election.id);
+        const results = await repository.generateSubcategories(TEST_UNIVERSITY_ID, election.id);
 
         expect(results).toContainEqual(
             expect.objectContaining({
@@ -91,10 +88,10 @@ describe('Subcategory', () => {
         )
     });
 
-    it('should create new subcategories for all years', async () => {
+    it('should create new subcategories for all YEARS', async () => {
         await createCategory(election.id, Eligible.YEAR);
 
-        const results = await repository.generateSubcategories(university.id, election.id);
+        const results = await repository.generateSubcategories(TEST_UNIVERSITY_ID, election.id);
 
         expect(results).toContainEqual(
             expect.objectContaining({
@@ -104,11 +101,26 @@ describe('Subcategory', () => {
         )
     });
 
-    it('should create new subcategories for all branches', async () => {
+    it('should create new subcategories for all BRANCHES', async () => {
         await createBranch(TEST_UNIVERSITY_ID);
         await createCategory(election.id, Eligible.BRANCH);
 
-        const results = await repository.generateSubcategories(university.id, election.id);
+        const results = await repository.generateSubcategories(TEST_UNIVERSITY_ID, election.id);
+
+        expect(results).toContainEqual(
+            expect.objectContaining({
+                id: expect.any(Number),
+                title: expect.any(String)
+            })
+        )
+    });
+
+    it('should create new subcategories for all RESIDENCES', async () => {
+        await createResidence("Bugarika", TEST_UNIVERSITY_ID);
+        await createResidence("Igogo", TEST_UNIVERSITY_ID);
+
+        await createCategory(election.id, Eligible.RESIDENCE);
+        const results = await repository.generateSubcategories(TEST_UNIVERSITY_ID, election.id);
 
         expect(results).toContainEqual(
             expect.objectContaining({
@@ -124,7 +136,7 @@ describe('Subcategory', () => {
         // const categorySchool = await createCategory(election.id, Eligible.SCHOOL);
         await createCategory(election.id, Eligible.SCHOOL);
         await createCategory(election.id, Eligible.CLASS);
-        await repository.generateSubcategories(university.id, election.id);
+        await repository.generateSubcategories(TEST_UNIVERSITY_ID, election.id);
 
         const results = await repository.findEligibleElectionSubcategories(election.id, user.id);
 

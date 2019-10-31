@@ -8,6 +8,7 @@ import {UserRepository} from "../user/userRepository";
 import {ClassRepository} from "../class/classRepository";
 import {ProgramRepository} from "../program/programRepository";
 import {BranchRepository} from "../branch/branchRepository";
+import {ResidenceRepository} from "../residence/residenceRepository";
 
 interface SaveCategoryInterface {
     categoryId: number
@@ -25,6 +26,7 @@ export class SubcategoryRepository extends Repository<Subcategory> {
     private classRepository: ClassRepository;
     private programRepository: ProgramRepository;
     private branchRepository: BranchRepository;
+    private residenceRepository: ResidenceRepository;
 
     constructor() {
         super();
@@ -34,6 +36,7 @@ export class SubcategoryRepository extends Repository<Subcategory> {
         this.classRepository = getCustomRepository(ClassRepository);
         this.programRepository = getCustomRepository(ProgramRepository);
         this.branchRepository = getCustomRepository(BranchRepository);
+        this.residenceRepository = getCustomRepository(ResidenceRepository);
     }
 
     async generateSubcategories(universityId: number, electionId: number): Promise<Subcategory[]> {
@@ -153,6 +156,25 @@ export class SubcategoryRepository extends Repository<Subcategory> {
                         });
                         subcategories.push(subcategory);
                     }
+                }
+            }
+
+            if (category.eligible === Eligible.RESIDENCE) {
+                //Finding all residences
+                const residences = await this.residenceRepository.findResidences(universityId);
+
+                for (let r = 0; r < residences.length; r++) {
+                    const residence = residences[r];
+
+                    //Generate subcategories for all of them.
+                    subcategory = await this.saveSubcategory({
+                        title: category.title,
+                        suffix: residence.title,
+                        categoryId: category.id,
+                        ref: residence.id
+                    });
+
+                    subcategories.push(subcategory);
                 }
             }
         }

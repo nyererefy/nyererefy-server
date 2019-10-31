@@ -94,7 +94,7 @@ export async function generateClasses(universityId: number): Promise<Class[]> {
     return await repository.generateClasses(universityId);
 }
 
-export async function createElection(universityId: number) {
+export async function createElection(universityId: number = TEST_UNIVERSITY_ID) {
     const electionRepository = getCustomRepository(ElectionRepository);
 
     const now = new Date();
@@ -153,12 +153,12 @@ export async function createCandidate(userId: number, subcategoryId: number) {
     return await candidateRepository.createCandidate(input);
 }
 
-export async function createResidence(title: string = faker.lorem.word()) {
+export async function createResidence(title: string = faker.lorem.word(), universityId: number = TEST_UNIVERSITY_ID) {
     const repository = getCustomRepository(ResidenceRepository);
     const input: ResidenceInput = {
         title
     };
-    return await repository.createResidence(TEST_UNIVERSITY_ID, input);
+    return await repository.createResidence(universityId, input);
 }
 
 export const insertDummyData = async () => {
