@@ -161,6 +161,7 @@ export class UserRepository extends Repository<User> {
             .innerJoinAndSelect('class.program', 'program')
             .innerJoinAndSelect('school.branch', 'branch')
             .innerJoinAndSelect('branch.university', 'university')
+            .leftJoinAndSelect('user.residence', 'residence')
             .where("user.id = :userId", {userId})
             .getOne();
 

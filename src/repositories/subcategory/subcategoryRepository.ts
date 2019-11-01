@@ -255,6 +255,13 @@ export class SubcategoryRepository extends Repository<Subcategory> {
                 sub.category.election.university.id === user.class.school.branch.university.id) {
                 subcategories.push(sub)
             }
+
+            //Means student resides on the same area.
+            if (sub.category.eligible === Eligible.RESIDENCE
+                && user.residence
+                && sub.ref === user.residence.id) {
+                subcategories.push(sub)
+            }
         }
         return subcategories;
     }
