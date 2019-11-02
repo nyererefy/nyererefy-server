@@ -35,8 +35,9 @@ export async function deleteObject(filename: string) {
     return await bucket.file(filename).delete();
 }
 
-export async function getImageUrl(filename: string) {
-    return `https://storage.googleapis.com/${config.get('bucket')}/${filename}`
+export function getImageUrl(filename?: string): string | null {
+    if (filename) return `https://storage.googleapis.com/${config.get('bucket')}/${filename}`;
+    return null
 }
 
 /**

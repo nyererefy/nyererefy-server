@@ -5,6 +5,7 @@ import {Vote} from "./vote";
 import {GraphQLUpload} from "graphql-upload";
 import {GraphQLScalarType} from "graphql";
 import {Subcategory} from "./subcategory";
+import {getImageUrl} from "../helpers/avatar";
 
 /**
  * You can't contest on more than one category per election
@@ -28,7 +29,11 @@ export class Candidate {
     /**
      * Cloud storage link...
      */
-    @Field({nullable: true})
+    @Field(() => String, {nullable: true, name: 'avatar'})
+    get resolveAvatar(): string | null {
+        return `${getImageUrl(this.avatar)}` || null;
+    }
+
     @Column({nullable: true})
     avatar?: string;
 

@@ -70,13 +70,18 @@ export class CandidateResolver {
         return await candidateRepository.findCandidateAndCountVotes(candidateId);
     }
 
-    @Authorized(Role.MANAGER)
+    @Authorized()
     @Mutation(() => Candidate)
     async updateCandidateAvatar(
         @CurrentStudent() userId: number,
-        @Arg('input') input: CandidateAvatarInput
+        @Arg('input') input: CandidateAvatarInput,
+        @PubSub() pubSub: PubSubEngine
     ): Promise<Candidate> {
-        return await candidateRepository.updateCandidateAvatar(userId, input);
+        const candidate = await candidateRepository.updateCandidateAvatar(userId, input);
+        //Notify candidate.
+        await pubSub.publish(`${Topic.CANDIDATE_PROFILE_EDITED}:${input.id}`, input.id);
+
+        return candidate
     }
 
 }
