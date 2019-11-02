@@ -73,6 +73,9 @@ export class CandidateEditInput implements Partial<Candidate> {
 
 @InputType()
 export class CandidateAvatarInput {
+    @Field(() => Int)
+    id: number;
+
     @Field(() => GraphQLUpload)
     avatar: GraphQLScalarType;
 }

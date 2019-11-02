@@ -1,7 +1,8 @@
 import {EntityRepository, Repository} from "typeorm";
-import {Candidate, CandidateEditInput, CandidateInput} from "../../entities/candidate";
+import {Candidate, CandidateAvatarInput, CandidateEditInput, CandidateInput} from "../../entities/candidate";
 import {Subcategory} from "../../entities/subcategory";
 import {User} from "../../entities/user";
+import {deleteObject, uploadImage} from "../../helpers/avatar";
 
 @EntityRepository(Candidate)
 export class CandidateRepository extends Repository<Candidate> {
@@ -29,17 +30,7 @@ export class CandidateRepository extends Repository<Candidate> {
     }
 
     async editCandidate(userId: number, input: CandidateEditInput) {
-        const user = new User();
-        user.id = userId;
-
-        let candidate = await this.findOne({
-            where: {
-                id: input.id,
-                user
-            }
-        });
-
-        if (!candidate) throw new Error('Candidate was not found');
+        let candidate = await this.findCandidateWithUserId(input.id, userId);
 
         candidate = this.merge(candidate, input);
 
@@ -50,6 +41,7 @@ export class CandidateRepository extends Repository<Candidate> {
         let candidate = await this.findOne(id);
 
         if (!candidate) throw new Error('Candidate was not found');
+
         return candidate;
     }
 
@@ -90,5 +82,39 @@ export class CandidateRepository extends Repository<Candidate> {
         if (candidate) return candidate;
 
         throw new Error('Candidate was not found')
+    }
+
+    async updateCandidateAvatar(userId: number, input: CandidateAvatarInput): Promise<Candidate> {
+        let candidate = await this.findCandidateWithUserId(input.id, userId);
+
+        const newAvatar = await uploadImage(input.avatar);
+
+        if (newAvatar) {
+            const previousAvatar = candidate.avatar;
+            candidate.avatar = newAvatar;
+
+            if (previousAvatar) {
+                await deleteObject(previousAvatar);
+            }
+
+            return await this.save(candidate);
+        }
+        throw new Error('Something went wrong try again later!')
+    }
+
+    private async findCandidateWithUserId(id: number, userId: number) {
+        const user = new User();
+        user.id = userId;
+
+        let candidate = await this.findOne({
+            where: {
+                id,
+                user
+            }
+        });
+
+        if (!candidate) throw new Error('Candidate was not found');
+
+        return candidate;
     }
 }

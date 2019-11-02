@@ -1,5 +1,5 @@
 import {Arg, Args, Authorized, Ctx, Int, Mutation, Query, Resolver} from "type-graphql";
-import {GetUsersArgs, LoginInput, User, UserSetupInput} from "../../entities/user";
+import {GetUsersArgs, LoginInput, User, UserAvatarInput, UserSetupInput} from "../../entities/user";
 import {getCustomRepository} from "typeorm";
 import {UserRepository} from "../../repositories/user/userRepository";
 import {Role} from "../../utils/enums";
@@ -114,5 +114,14 @@ export class UserResolver {
         @Arg('residenceId', () => Int) residenceId: number
     ): Promise<User> {
         return await userRepository.updateResidence(userId, residenceId, universityId);
+    }
+
+    @Authorized()
+    @Mutation(() => User)
+    async updateUserAvatar(
+        @CurrentStudent() userId: number,
+        @Arg('input') input: UserAvatarInput
+    ): Promise<User> {
+        return await userRepository.updateAvatar(userId, input);
     }
 }

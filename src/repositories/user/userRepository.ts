@@ -1,5 +1,12 @@
 import {EntityRepository, getCustomRepository, Repository} from "typeorm";
-import {GetUsersArgs, RegistrationByProgramInput, RegistrationInput, User, UserSetupInput} from "../../entities/user";
+import {
+    GetUsersArgs,
+    RegistrationByProgramInput,
+    RegistrationInput,
+    User,
+    UserAvatarInput,
+    UserSetupInput
+} from "../../entities/user";
 import {SchoolProgramRepository} from "../schoolProgram/schoolProgramRepository";
 import {ClassRepository} from "../class/classRepository";
 import {OrderBy} from "../../utils/enums";
@@ -7,6 +14,7 @@ import {formatRegNo} from "../../helpers/regNo";
 import bcrypt from "bcryptjs"
 import {ResidenceRepository} from "../residence/residenceRepository";
 import {ElectionRepository} from "../election/electionRepository";
+import {deleteObject, uploadImage, uploadImageFromUrl} from "../../helpers/avatar";
 
 interface PassportDataInterface {
     accessToken: string,
@@ -119,11 +127,16 @@ export class UserRepository extends Repository<User> {
 
         //If user has already accepts how his data looks like, there is no need to update it.
         if (!user.isAccountSet) {
-            await this.update(user.id, {
-                name: profile.displayName || `${profile.familyName} ${profile.givenName}`,
-                token: accessToken,
-                avatar: profile._json.picture
-            });
+            const previousAvatar = user.avatar;
+
+            user.name = profile.displayName || `${profile.familyName} ${profile.givenName}`;
+            user.token = accessToken;
+            user.avatar = await uploadImageFromUrl(profile._json.picture);
+
+            if (previousAvatar) {
+                await deleteObject(previousAvatar);
+            }
+            return await this.save(user)
         }
         return user;
     }
@@ -200,5 +213,24 @@ export class UserRepository extends Repository<User> {
         user.residence = await this.residenceRepository.findResidence(residenceId);
 
         return await this.save(user);
+    }
+
+    async updateAvatar(userId: number, input: UserAvatarInput): Promise<User> {
+        let user = await this.findUser(userId);
+
+        const newAvatar = await uploadImage(input.avatar);
+
+        if (newAvatar) {
+            const previousAvatar = user.avatar;
+            user.avatar = newAvatar;
+
+            if (previousAvatar) {
+                await deleteObject(previousAvatar);
+            }
+
+            return await this.save(user);
+        }
+
+        throw new Error('Something went wrong try again later!')
     }
 }

@@ -1,7 +1,7 @@
 import {Arg, Authorized, Int, Mutation, PubSub, PubSubEngine, Query, Resolver, Root, Subscription} from "type-graphql";
 import {getCustomRepository} from "typeorm";
 import {CandidateRepository} from "../../repositories/candidate/candidateRepository";
-import {Candidate, CandidateEditInput, CandidateInput} from "../../entities/candidate";
+import {Candidate, CandidateAvatarInput, CandidateEditInput, CandidateInput} from "../../entities/candidate";
 import {Role, Topic} from "../../utils/enums";
 import {CurrentStudent} from "../../utils/currentAccount";
 
@@ -69,4 +69,14 @@ export class CandidateResolver {
     ): Promise<Candidate> {
         return await candidateRepository.findCandidateAndCountVotes(candidateId);
     }
+
+    @Authorized(Role.MANAGER)
+    @Mutation(() => Candidate)
+    async updateCandidateAvatar(
+        @CurrentStudent() userId: number,
+        @Arg('input') input: CandidateAvatarInput
+    ): Promise<Candidate> {
+        return await candidateRepository.updateCandidateAvatar(userId, input);
+    }
+
 }

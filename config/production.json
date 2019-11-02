@@ -1,5 +1,6 @@
 {
   "logging": false,
   "synchronize": false,
-  "trace": false
+  "trace": false,
+  "bucket": "nyererefy"
 }

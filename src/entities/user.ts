@@ -19,6 +19,8 @@ import {Review} from "./review";
 import {Residence} from "./residence";
 import {PaginationArgs} from "../utils/query";
 import {CURRENT_USER} from "../utils/consts";
+import {GraphQLUpload} from "graphql-upload";
+import {GraphQLScalarType} from "graphql";
 
 registerEnumType(State, {name: 'State'});
 registerEnumType(Sex, {name: 'Sex'});
@@ -241,5 +243,12 @@ export class UserResidenceInput {
     @IsInt()
     residenceId: number;
 }
+
+@InputType()
+export class UserAvatarInput {
+    @Field(() => GraphQLUpload)
+    avatar: GraphQLScalarType;
+}
+
 
 
