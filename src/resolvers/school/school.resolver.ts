@@ -30,6 +30,7 @@ export class SchoolResolver {
 
     @Query(() => [School])
     async schools(@CurrentUniversity() universityId: number): Promise<School[]> {
+        console.log(universityId);
         return await schoolRepository.findSchools(universityId);
     }
 }

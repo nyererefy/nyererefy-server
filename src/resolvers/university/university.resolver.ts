@@ -9,7 +9,6 @@ const universityRepository = getCustomRepository(UniversityRepository);
 
 @Resolver(() => University)
 export class UniversityResolver {
-    //todo should generate keys which will be sent to their email first.
     @Authorized(Role.MANAGER)
     @Mutation(() => University)
     async createUniversity(@Arg('input') input: UniversityInput): Promise<University> {

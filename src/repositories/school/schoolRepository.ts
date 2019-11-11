@@ -1,7 +1,6 @@
 import {EntityRepository, Repository} from "typeorm";
 import {School, SchoolInput} from "../../entities/school";
 import {Branch} from "../../entities/branch";
-import {University} from "../../entities/university";
 
 @EntityRepository(School)
 export class SchoolRepository extends Repository<School> {
@@ -42,10 +41,12 @@ export class SchoolRepository extends Repository<School> {
         return school;
     }
 
-    findSchools(universityId: number) {
-        const university = new University();
-        university.id = universityId;
-
-        return this.find({where: {university}});
+    async findSchools(universityId: number) {
+        return await this
+            .createQueryBuilder('school')
+            .innerJoinAndSelect('school.branch', 'branch')
+            .innerJoinAndSelect('branch.university', 'university')
+            .where("university.id = :universityId", {universityId})
+            .getMany();
     }
 }

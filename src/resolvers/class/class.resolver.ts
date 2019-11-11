@@ -15,7 +15,7 @@ export class ClassResolver {
         return await categoryRepository.generateClasses(universityId);
     }
 
-    @Authorized()
+    @Authorized([Role.STUDENT, Role.MANAGER])
     @Query(() => [Class])
     async classes(@CurrentUniversity() universityId: number): Promise<Class[]> {
         return await categoryRepository.findUniversityClasses(universityId);

@@ -12,7 +12,7 @@ const schoolProgramRepository = getCustomRepository(SchoolProgramRepository);
 
 @Resolver(() => Program)
 export class ProgramResolver {
-    @Authorized(Role.MANAGER)
+    @Authorized(Role.ADMIN)
     @Mutation(() => Program)
     async createProgram(@Arg('input') input: ProgramInput): Promise<Program> {
         return await programRepository.createProgram(input);
@@ -24,7 +24,7 @@ export class ProgramResolver {
         return await schoolProgramRepository.registerProgram(input);
     }
 
-    @Authorized(Role.MANAGER)
+    @Authorized(Role.ADMIN)
     @Mutation(() => Program)
     async updateProgram(
         @Arg('id', () => Int) id: number, //todo merge these into one.
