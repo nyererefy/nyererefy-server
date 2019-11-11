@@ -16,7 +16,7 @@ import {ResidenceRepository} from "../residence/residenceRepository";
 import {ElectionRepository} from "../election/electionRepository";
 import {deleteObject, uploadImage, uploadImageFromUrl} from "../../helpers/avatar";
 
-interface PassportDataInterface {
+export interface PassportDataInterface {
     accessToken: string,
     refreshToken: string,
     profile: any

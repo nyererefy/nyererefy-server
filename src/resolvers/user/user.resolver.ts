@@ -1,4 +1,4 @@
-import {Arg, Args, Authorized, Ctx, Int, Mutation, Query, Resolver} from "type-graphql";
+import {Arg, Args, Authorized, createUnionType, Ctx, Int, Mutation, Query, Resolver} from "type-graphql";
 import {GetUsersArgs, LoginInput, User, UserAvatarInput, UserSetupInput} from "../../entities/user";
 import {getCustomRepository} from "typeorm";
 import {UserRepository} from "../../repositories/user/userRepository";
@@ -7,16 +7,24 @@ import {TheContext} from "../../utils/TheContext";
 import {authenticateWithGoogle} from "../../helpers/auth";
 import {COOKIE_NAME} from "../../utils/consts";
 import {CurrentStudent, CurrentUniversity} from "../../utils/currentAccount";
+import {ManagerRepository} from "../../repositories/manager/managerRepository";
+import {Manager} from "../../entities/manager";
 
 const userRepository = getCustomRepository(UserRepository);
+const managerRepository = getCustomRepository(ManagerRepository);
+
+const AuthPayload = createUnionType({
+    name: "AuthPayload",
+    types: () => [User, Manager]
+});
 
 @Resolver(() => User)
 export class UserResolver {
-    @Mutation(() => User)
+    @Mutation(() => AuthPayload)
     async login(
         @Arg('input') input: LoginInput,
         @Ctx() {req, res}: TheContext
-    ): Promise<User> {
+    ): Promise<User | Manager> {
         req.body = {
             ...req.body,
             access_token: input.token,
@@ -42,7 +50,17 @@ export class UserResolver {
                     }
 
                     if (input.role === Role.MANAGER) {
-                        //todo
+                        const manager = await managerRepository.loginWithGoogle(data);
+                        if (manager) {
+                            // Setting session.
+                            req.session.managerId = manager.id;
+
+                            if (manager.university) {
+                                req.session.universityId = manager.university.id;
+                            }
+                            //resolving manager.
+                            resolve(manager);
+                        }
                     }
                 } catch (e) {
                     reject(e.message);

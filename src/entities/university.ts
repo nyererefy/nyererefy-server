@@ -1,11 +1,12 @@
 import {Authorized, Field, ID, InputType, Int, ObjectType} from "type-graphql";
-import {Column, Entity, Generated, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, Generated, OneToMany, OneToOne, PrimaryGeneratedColumn} from "typeorm";
 import {Election} from "./election";
 import {IsEmail, IsUrl, Length} from "class-validator";
 import {Branch} from "./branch";
 import {Residence} from "./residence";
 import {ColumnEncryptionTransformer} from "../utils/ColumnEncryptionTransformer";
 import {CURRENT_UNIVERSITY_MANAGER} from "../utils/consts";
+import {Manager} from "./manager";
 
 @ObjectType()
 @Entity('universities')
@@ -65,6 +66,9 @@ export class University {
 
     @OneToMany(() => Residence, s => s.university)
     residences: Residence[];
+
+    @OneToOne(() => Manager, s => s.university)
+    manager: Manager;
 }
 
 @InputType()
