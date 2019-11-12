@@ -18,8 +18,15 @@ export class ElectionResolver {
     async elections(
         @CurrentUniversity() universityId: number,
         @Args() args: GetElectionsArgs,
+        @Arg(
+            'strict',
+            {
+                description: 'If true, Only specific university\'s elections will be fetched or return empty array otherwise',
+                defaultValue: false
+            },
+        )strict: boolean
     ): Promise<Election[]> {
-        if (universityId) {
+        if (universityId || strict) {
             return await electionRepository.findUniversityElections(universityId, args);
         }
         return await electionRepository.findElections(args);
