@@ -3,7 +3,7 @@ import {getCustomRepository} from "typeorm";
 import {UniversityRepository} from "../../repositories/university/universityRepository";
 import {University, UniversityInput} from "../../entities/university";
 import {Role} from "../../utils/enums";
-import {CurrentUniversity} from "../../utils/currentAccount";
+import {CurrentManager, CurrentUniversity} from "../../utils/currentAccount";
 
 const universityRepository = getCustomRepository(UniversityRepository);
 
@@ -11,8 +11,11 @@ const universityRepository = getCustomRepository(UniversityRepository);
 export class UniversityResolver {
     @Authorized(Role.MANAGER)
     @Mutation(() => University)
-    async createUniversity(@Arg('input') input: UniversityInput): Promise<University> {
-        return await universityRepository.createUniversity(input);
+    async createUniversity(
+        @Arg('input') input: UniversityInput,
+        @CurrentManager() managerId: number
+    ): Promise<University> {
+        return await universityRepository.createUniversity(managerId, input);
     }
 
     @Authorized(Role.MANAGER)

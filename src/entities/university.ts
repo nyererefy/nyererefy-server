@@ -1,7 +1,7 @@
 import {Authorized, Field, ID, InputType, Int, ObjectType} from "type-graphql";
 import {Column, Entity, Generated, OneToMany, OneToOne, PrimaryGeneratedColumn} from "typeorm";
 import {Election} from "./election";
-import {IsEmail, IsUrl, Length} from "class-validator";
+import {IsUrl, Length} from "class-validator";
 import {Branch} from "./branch";
 import {Residence} from "./residence";
 import {ColumnEncryptionTransformer} from "../utils/ColumnEncryptionTransformer";
@@ -29,10 +29,6 @@ export class University {
     @Field()
     @Column({unique: true})
     abbreviation: string;
-
-    @Field()
-    @Column()
-    email: string;
 
     @Field()
     @Column()
@@ -67,16 +63,12 @@ export class University {
     @OneToMany(() => Residence, s => s.university)
     residences: Residence[];
 
-    @OneToOne(() => Manager, s => s.university)
+    @OneToOne(() => Manager, s => s.university, {cascade: true})
     manager: Manager;
 }
 
 @InputType()
 export class UniversityInput implements Partial<University> {
-    @Field()
-    @IsEmail()
-    email: string;
-
     @Field()
     @Length(5, 100)
     title: string;

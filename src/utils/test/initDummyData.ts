@@ -27,12 +27,29 @@ import moment from "moment";
 import {TEST_PROGRAM_IDENTIFIER, TEST_UNIVERSITY_ID} from "../consts";
 import {ResidenceInput} from "../../entities/residence";
 import {ResidenceRepository} from "../../repositories/residence/residenceRepository";
+import {RegistrationCodeRepository} from "../../repositories/registrationCode/registrationCodeRepository";
+import {ManagerRepository} from "../../repositories/manager/managerRepository";
+import {Manager, ManagerSignUpInput} from "../../entities/manager";
 
-export async function createUniversity(): Promise<University> {
+export async function createManager(email: string = faker.internet.email()): Promise<Manager> {
+    const registrationCodeRepository = getCustomRepository(RegistrationCodeRepository);
+    const managerRepository = getCustomRepository(ManagerRepository);
+
+    const registrationCode = await registrationCodeRepository.generateRegistrationCode();
+
+    const managerSignUpInput: ManagerSignUpInput = {
+        name: faker.internet.userName(),
+        email,
+        code: registrationCode.code
+    };
+
+    return await managerRepository.createManager(managerSignUpInput);
+}
+
+export async function createUniversity(managerId: number): Promise<University> {
     const universityRepository = getCustomRepository(UniversityRepository);
 
     const input: UniversityInput = {
-        email: faker.internet.email(),
         title: faker.company.companyName(),
         abbreviation: faker.random.word(),
         webUrl: faker.internet.url(),
@@ -41,7 +58,7 @@ export async function createUniversity(): Promise<University> {
         semesterEndsIn: 8
     };
 
-    return await universityRepository.createUniversity(input);
+    return await universityRepository.createUniversity(managerId, input);
 }
 
 export async function createBranch(universityId: number): Promise<Branch> {
@@ -164,7 +181,9 @@ export async function createResidence(title: string = faker.lorem.word(), univer
 export const insertDummyData = async () => {
     const program = await createProgram(Duration.FIVE_YEARS, 'MD', 'Medical Doctor');
 
-    const university = await createUniversity();
+    const manager = await createManager('teknolojia360@gmail.com');
+
+    const university = await createUniversity(manager.id);
 
     const school = await createSchool(1, 'School of Medicine', 'SM');
 
@@ -172,7 +191,7 @@ export const insertDummyData = async () => {
 
     await generateClasses(university.id);
 
-    const user1 = await createUser(registeredProgram.identifier);
+    const user = await createUser(registeredProgram.identifier);
     await createUser(registeredProgram.identifier, Year.THIRD_YEAR, 'mbwamwizi@gmail.com');
     await createUser(registeredProgram.identifier, Year.FIFTH_YEAR, 'sylvakateile@gmail.com');
 
@@ -182,5 +201,5 @@ export const insertDummyData = async () => {
 
     const subcategories = await generateSubcategories(university.id, election.id);
 
-    await createCandidate(user1.id, subcategories[0].id);
+    await createCandidate(user.id, subcategories[0].id);
 };

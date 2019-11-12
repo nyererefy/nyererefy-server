@@ -3,17 +3,23 @@ import {UniversityRepository} from "./universityRepository";
 import {getCustomRepository} from "typeorm";
 import faker from "faker";
 import {UniversityEditInput} from "../../entities/university";
-import {createUniversity} from "../../utils/test/initDummyData";
+import {createManager, createUniversity} from "../../utils/test/initDummyData";
+import {Manager} from "../../entities/manager";
 
 let repository: UniversityRepository;
+let manager: Manager;
+
+beforeAll(async () => {
+    repository = getCustomRepository(UniversityRepository);
+});
 
 beforeEach(async () => {
-    repository = getCustomRepository(UniversityRepository);
+    manager = await createManager();
 });
 
 describe('University', () => {
     it('should create a new university', async () => {
-        const result = await createUniversity();
+        const result = await createUniversity(manager.id);
 
         expect(result).toMatchObject({
             id: expect.any(Number)
@@ -24,7 +30,6 @@ describe('University', () => {
         const id = 1;
 
         const input: UniversityEditInput = {
-            email: faker.internet.email(),
             title: faker.lorem.sentence(),
             abbreviation: faker.random.word(),
             webUrl: faker.internet.url(),
@@ -68,14 +73,14 @@ describe('University', () => {
     });
 
     it('should validate university', async () => {
-        const university = await createUniversity();
+        const university = await createUniversity(manager.id);
         const result = await repository.validateUniversity(university.uuid, university.secret);
 
         expect(result).toBeTruthy();
     });
 
     it('should  fail to validate university', async () => {
-        const university = await createUniversity();
+        const university = await createUniversity(manager.id);
         await repository.regenerateSecret(university.id);
 
         try {
@@ -87,7 +92,7 @@ describe('University', () => {
     });
 
     it('should  regenerate Secret', async () => {
-        const university = await createUniversity();
+        const university = await createUniversity(manager.id);
         const secret = await repository.regenerateSecret(university.id);
         const result = await repository.findUniversity(university.id);
 

@@ -1,9 +1,11 @@
-import {Arg, Ctx, Mutation, Resolver} from "type-graphql";
+import {Arg, Authorized, Ctx, Mutation, Query, Resolver} from "type-graphql";
 import {Manager, ManagerSocialSignUpInput} from "../../entities/manager";
 import {getCustomRepository} from "typeorm";
 import {ManagerRepository} from "../../repositories/manager/managerRepository";
 import {TheContext} from "../../utils/TheContext";
 import {authenticateWithGoogle} from "../../helpers/auth";
+import {CurrentManager} from "../../utils/currentAccount";
+import {Role} from "../../utils/enums";
 
 const managerRepository = getCustomRepository(ManagerRepository);
 
@@ -46,5 +48,13 @@ export class ManagerResolver {
             }
             reject(Error('server error, Try Again'));
         }));
+    }
+
+    @Authorized(Role.MANAGER)
+    @Query(() => Manager)
+    async currentManager(
+        @CurrentManager() managerId: number
+    ): Promise<Manager> {
+        return managerRepository.findManager(managerId)
     }
 }

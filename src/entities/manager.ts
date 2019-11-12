@@ -48,8 +48,9 @@ export class Manager {
     @Column({type: "tinyint", default: State.ACTIVE})
     state: State;
 
+    @Field(() => University, {nullable: true})
     @JoinColumn()
-    @OneToOne(() => University, u => u.manager, {nullable: true})
+    @OneToOne(() => University, u => u.manager, {nullable: true, eager: true})
     university?: University;
 
     @BeforeInsert()

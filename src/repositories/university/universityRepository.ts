@@ -2,10 +2,11 @@ import {EntityRepository, Repository} from "typeorm";
 import {University, UniversityEditInput, UniversityInput} from "../../entities/university";
 import {Branch} from "../../entities/branch";
 import cryptoRandomString from "crypto-random-string";
+import {Manager} from "../../entities/manager";
 
 @EntityRepository(University)
 export class UniversityRepository extends Repository<University> {
-    createUniversity(input: UniversityInput) {
+    createUniversity(managerId: number, input: UniversityInput) {
         const university = this.create(input);
 
         university.secret = cryptoRandomString({length: 64});
@@ -14,6 +15,11 @@ export class UniversityRepository extends Repository<University> {
         const branch = new Branch();
         branch.title = "Main";
         university.branches = [branch];
+
+        //associate it's manager.
+        const manager = new Manager();
+        manager.id = managerId;
+        university.manager = manager;
 
         return this.save(university);
     }
