@@ -276,8 +276,7 @@ export class SubcategoryRepository extends Repository<Subcategory> {
         if (cat) {
             //updating only
             cat = this.merge(cat, {title, suffix, extraRef});
-            await this.update(cat.id, cat);
-            return cat;
+            return await this.save(cat);
         }
 
         const subcategory = this.create({category, title, suffix, ref, extraRef});

@@ -24,7 +24,7 @@ import {SchoolProgram} from "../../entities/schoolProgram";
 import {ClassRepository} from "../../repositories/class/classRepository";
 import {Class} from "../../entities/class";
 import moment from "moment";
-import {TEST_PROGRAM_IDENTIFIER, TEST_UNIVERSITY_ID} from "../consts";
+import {TEST_BRANCH_ID, TEST_PROGRAM_IDENTIFIER, TEST_UNIVERSITY_ID} from "../consts";
 import {ResidenceInput} from "../../entities/residence";
 import {ResidenceRepository} from "../../repositories/residence/residenceRepository";
 import {RegistrationCodeRepository} from "../../repositories/registrationCode/registrationCodeRepository";
@@ -185,7 +185,7 @@ export const insertDummyData = async () => {
 
     const university = await createUniversity(manager.id);
 
-    const school = await createSchool(1, 'School of Medicine', 'SM');
+    const school = await createSchool(TEST_BRANCH_ID, 'School of Medicine', 'SM');
 
     const registeredProgram = await registerProgram(school.id, program.id);
 
