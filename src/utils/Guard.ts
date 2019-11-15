@@ -19,7 +19,7 @@ export const Guard: AuthChecker<TheContext> = ({context: {req, res}, root}, role
         const managerId = req.session.managerId;
         const universityId = req.session.universityId;
 
-        if (!managerId || universityId) {
+        if (!managerId) {
             res.status(401);
         }
 

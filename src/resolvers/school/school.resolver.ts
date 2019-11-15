@@ -28,9 +28,9 @@ export class SchoolResolver {
         return await schoolRepository.findSchool(id);
     }
 
+    @Authorized(Role.STUDENT, Role.MANAGER)
     @Query(() => [School])
     async schools(@CurrentUniversity() universityId: number): Promise<School[]> {
-        console.log(universityId);
         return await schoolRepository.findSchools(universityId);
     }
 }
