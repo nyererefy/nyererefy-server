@@ -38,8 +38,8 @@ export class SchoolRepository extends Repository<School> {
         return await this
             .createQueryBuilder('school')
             .innerJoin('school.branch', 'branch')
-            .innerJoinAndSelect('school.schoolPrograms', 'schoolPrograms')
-            .innerJoinAndSelect('schoolPrograms.program', 'program')
+            .leftJoinAndSelect('school.schoolPrograms', 'schoolPrograms')
+            .leftJoinAndSelect('schoolPrograms.program', 'program')
             .innerJoin('branch.university', 'university')
             .where("university.id = :universityId", {universityId})
             .getMany();

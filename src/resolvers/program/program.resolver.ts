@@ -51,4 +51,13 @@ export class ProgramResolver {
         //Returning all
         return await programRepository.findPrograms();
     }
+
+    @Authorized(Role.ADMIN)
+    @Mutation(() => SchoolProgram)
+    async deleteSchoolProgram(
+        @Arg('id', () => Int) id: number,
+        @CurrentUniversity() universityId: number
+    ): Promise<SchoolProgram> {
+        return await schoolProgramRepository.deleteSchoolProgram(id, universityId);
+    }
 }

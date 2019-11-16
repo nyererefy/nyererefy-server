@@ -39,4 +39,20 @@ export class SchoolProgramRepository extends Repository<SchoolProgram> {
 
         throw new Error('School not found')
     }
+
+    async deleteSchoolProgram(id: number, universityId: number) {
+        let school = await this.createQueryBuilder('sp')
+            .innerJoin('sp.program', 'program')
+            .innerJoin('sp.school', 'school')
+            .innerJoin('school.branch', 'branch')
+            .where('sp.id = :id', {id})
+            .andWhere('branch.university = :universityId', {universityId})
+            .getOne();
+
+        if (!school) throw new Error('School was not found');
+
+        await this.delete(school.id);
+
+        return school;
+    }
 }
