@@ -4,6 +4,16 @@ import {Role} from "./enums";
 import {CURRENT_UNIVERSITY_MANAGER, CURRENT_USER, SAME_CLASS} from "./consts";
 
 export const Guard: AuthChecker<TheContext> = ({context: {req, res}, root}, roles: string[]) => {
+    if (roles.includes(Role.ADMIN)) {
+        const adminId = req.session.adminId;
+
+        if (!adminId) {
+            res.status(401);
+        }
+
+        return !!adminId
+    }
+
     if (roles.includes(Role.MANAGER)) {
         const managerId = req.session.managerId;
 

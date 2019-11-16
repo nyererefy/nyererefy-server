@@ -8,14 +8,15 @@ import {authenticateWithGoogle} from "../../helpers/auth";
 import {COOKIE_NAME} from "../../utils/consts";
 import {CurrentStudent, CurrentUniversity} from "../../utils/currentAccount";
 import {ManagerRepository} from "../../repositories/manager/managerRepository";
-import {Manager} from "../../entities/manager";
+import {Admin, Manager} from "../../entities/manager";
+import config from 'config'
 
 const userRepository = getCustomRepository(UserRepository);
 const managerRepository = getCustomRepository(ManagerRepository);
 
 const AuthPayload = createUnionType({
     name: "AuthPayload",
-    types: () => [User, Manager]
+    types: () => [User, Manager, Admin]
 });
 
 @Resolver(() => User)
@@ -24,7 +25,7 @@ export class UserResolver {
     async login(
         @Arg('input') input: LoginInput,
         @Ctx() {req, res}: TheContext
-    ): Promise<User | Manager> {
+    ): Promise<User | Manager | Admin> {
         req.body = {
             ...req.body,
             access_token: input.token,
@@ -61,6 +62,20 @@ export class UserResolver {
                             //resolving manager.
                             resolve(manager);
                         }
+                    }
+
+                    if (input.role === Role.ADMIN) {
+                        const {profile} = data;
+                        const email = profile.emails[0].value || profile._json.email;
+                        if (email === config.get('admin_email')) {
+                            const admin = new Admin();
+                            admin.id = 1;
+
+                            //setting dummy id
+                            req.session.adminId = admin.id;
+                            resolve(admin);
+
+                        } else reject('Keep trying!!!!');
                     }
                 } catch (e) {
                     reject(e.message);

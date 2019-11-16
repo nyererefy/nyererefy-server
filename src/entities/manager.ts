@@ -97,3 +97,9 @@ export class ManagerLoginInput implements Partial<Manager> {
     @IsEmail()
     email: string;
 }
+
+@ObjectType()
+export class Admin {
+    @Field(() => ID)
+    id: number;
+}
