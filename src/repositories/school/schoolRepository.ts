@@ -34,18 +34,13 @@ export class SchoolRepository extends Repository<School> {
         return school;
     }
 
-    async findSchoolAndPrograms(id: number) {
-        let school = await this.findOne(id, {relations: ['schoolPrograms']});
-        if (!school) throw new Error('School was not found');
-
-        return school;
-    }
-
     async findSchools(universityId: number) {
         return await this
             .createQueryBuilder('school')
-            .innerJoinAndSelect('school.branch', 'branch')
-            .innerJoinAndSelect('branch.university', 'university')
+            .innerJoin('school.branch', 'branch')
+            .innerJoinAndSelect('school.schoolPrograms', 'schoolPrograms')
+            .innerJoinAndSelect('schoolPrograms.program', 'program')
+            .innerJoin('branch.university', 'university')
             .where("university.id = :universityId", {universityId})
             .getMany();
     }

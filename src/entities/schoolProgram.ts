@@ -20,7 +20,7 @@ export class SchoolProgram {
     school: School;
 
     @Field()
-    @ManyToOne(() => Program, {eager: true})
+    @ManyToOne(() => Program)
     program: Program;
 }
 

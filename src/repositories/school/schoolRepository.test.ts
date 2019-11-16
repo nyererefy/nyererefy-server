@@ -2,7 +2,7 @@ import '../../utils/test/initTestDb'
 import {createProgram, createSchool, registerProgram} from "../../utils/test/initDummyData";
 import {SchoolRepository} from "./schoolRepository";
 import {getCustomRepository} from "typeorm";
-import {TEST_BRANCH_ID} from "../../utils/consts";
+import {TEST_BRANCH_ID, TEST_UNIVERSITY_ID} from "../../utils/consts";
 
 let repository: SchoolRepository;
 
@@ -19,17 +19,19 @@ describe('School', () => {
         })
     });
 
-    it('should return school and it\'s schoolPrograms', async () => {
+    it('should return schools and their schoolPrograms', async () => {
         const program = await createProgram();
         const school = await createSchool(TEST_BRANCH_ID);
 
         await registerProgram(school.id, program.id);
 
-        const result = await repository.findSchoolAndPrograms(school.id);
+        const result = await repository.findSchools(TEST_UNIVERSITY_ID);
 
-        expect(result).toMatchObject({
-            title: expect.any(String),
-            schoolPrograms: expect.any(Array)
-        })
+        expect(result).toContainEqual(
+            expect.objectContaining({
+                title: expect.any(String),
+                schoolPrograms: expect.any(Array)
+            })
+        )
     });
 });
