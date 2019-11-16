@@ -42,7 +42,7 @@ export class ResidenceResolver {
         return await residenceRepository.findResidence(id);
     }
 
-    @Authorized()
+    @Authorized(Role.MANAGER, Role.STUDENT)
     @Query(() => [Residence])
     async residences(@CurrentUniversity() universityId: number): Promise<Residence[]> {
         return await residenceRepository.findResidences(universityId);
