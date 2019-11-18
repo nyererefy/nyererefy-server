@@ -12,6 +12,7 @@ import {
     CACHE_VOTE_ID
 } from "../../utils/consts";
 import {OrderBy} from "../../utils/enums";
+import {UserRepository} from "../user/userRepository";
 
 interface VoteInterface {
     userId: number,
@@ -27,11 +28,13 @@ interface VoteInterface {
 export class VoteRepository extends Repository<Vote> {
     private candidateRepository: CandidateRepository;
     private subcategoryRepository: SubcategoryRepository;
+    private userRepository: UserRepository;
 
     constructor() {
         super();
         this.candidateRepository = getCustomRepository(CandidateRepository);
         this.subcategoryRepository = getCustomRepository(SubcategoryRepository);
+        this.userRepository = getCustomRepository(UserRepository);
     }
 
     async createVote({userId, input, ip, device}: VoteInterface): Promise<Vote> {
@@ -48,6 +51,9 @@ export class VoteRepository extends Repository<Vote> {
         if (!election.isOpen) {
             throw new Error('Election is not opened')
         }
+
+        //Verifying user password
+        await this.userRepository.verifyPassword(userId, input.password);
 
         //Finding all eligible subcategories for this user.
         const subcategories = await this.subcategoryRepository.findEligibleElectionSubcategories(
@@ -81,21 +87,20 @@ export class VoteRepository extends Repository<Vote> {
 
         let vote = this.create({user, subcategory, candidate, guard, ip, ip_guard, device});
 
-        vote = await this.save(vote);
-
-        if (!vote) {
-            //todo record this using winston
-            throw new Error('Ooops! Something went wrong!');
-        }
-
         try {
-            //Removing candidate's votes count from cache as well as subcategory's
-            await this.manager.connection.queryResultCache!.remove([
-                `${CACHE_SUBCATEGORY_VOTES_COUNT_ID}:${subcategory.id}`,
-                `${CACHE_CANDIDATE_VOTES_COUNT_ID}:${candidate.id}`
-            ]);
+            vote = await this.save(vote);
+
+            try {
+                //Removing candidate's votes count from cache as well as subcategory's
+                await this.manager.connection.queryResultCache!.remove([
+                    `${CACHE_SUBCATEGORY_VOTES_COUNT_ID}:${subcategory.id}`,
+                    `${CACHE_CANDIDATE_VOTES_COUNT_ID}:${candidate.id}`
+                ]);
+            } catch (e) {
+                console.error(e) //todo winston.
+            }
         } catch (e) {
-            console.error(e) //todo winston.
+            throw new Error('Ooops! Something went wrong!');
         }
 
         return vote;

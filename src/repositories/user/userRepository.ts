@@ -233,4 +233,27 @@ export class UserRepository extends Repository<User> {
 
         throw new Error('Something went wrong try again later!')
     }
+
+    /**
+     * Used to verify if user is exactly the one with account especially during voting.
+     * @param userId
+     * @param password
+     */
+    async verifyPassword(userId: number, password: string) {
+        let user = await this.findUser(userId);
+
+        const dbPassword = user.password;
+
+        if (!dbPassword) {
+            throw new Error('You need to set password first!')
+        }
+
+        const result = await bcrypt.compare(password, dbPassword);
+
+        if (!result) {
+            throw new Error('You entered wrong Password!')
+        }
+
+        return result
+    }
 }

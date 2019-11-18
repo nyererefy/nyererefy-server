@@ -4,12 +4,12 @@ import {University, UniversityInput} from "../../entities/university";
 import faker from "faker";
 import {CategoryRepository} from "../../repositories/category/categoryRepository";
 import {CategoryInput} from "../../entities/category";
-import {Duration, Eligible, Year} from "../enums";
+import {Duration, Eligible, Sex, Year} from "../enums";
 import {ElectionInput} from "../../entities/election";
 import {ElectionRepository} from "../../repositories/election/electionRepository";
 import {CandidateInput} from "../../entities/candidate";
 import {CandidateRepository} from "../../repositories/candidate/candidateRepository";
-import {RegistrationByProgramInput} from "../../entities/user";
+import {RegistrationByProgramInput, UserSetupInput} from "../../entities/user";
 import {UserRepository} from "../../repositories/user/userRepository";
 import {SubcategoryRepository} from "../../repositories/subcategory/subcategoryRepository";
 import {Subcategory} from "../../entities/subcategory";
@@ -158,6 +158,22 @@ export async function createUser(
     };
 
     return await userRepository.registrationByProgram(TEST_UNIVERSITY_ID, input);
+}
+
+export async function setUserAccount(userId: number) {
+    const userRepository = getCustomRepository(UserRepository);
+
+    const input: UserSetupInput = {
+        name: faker.random.words(2),
+        username: faker.internet.userName(),
+        password: faker.internet.password(8),
+        sex: Sex.FEMALE
+    };
+
+    await userRepository.confirmData(userId);
+    await userRepository.setupUser(userId, input);
+
+    return input;
 }
 
 export async function createCandidate(userId: number, subcategoryId: number) {

@@ -3,7 +3,7 @@ import {getCustomRepository} from "typeorm";
 import faker from "faker";
 import {VoteRepository} from "./voteRepository";
 import {VoteInput} from "../../entities/vote";
-import {createCandidate, createUser} from "../../utils/test/initDummyData";
+import {createCandidate, createUser, setUserAccount} from "../../utils/test/initDummyData";
 import {Candidate} from "../../entities/candidate";
 import {
     TEST_CATEGORY_ID,
@@ -31,12 +31,15 @@ beforeAll(async () => {
     candidate1 = await createCandidate(2, TEST_CATEGORY_ID);
     candidate2 = await createCandidate(3, 2);
 
-    input1 = {uuid: candidate1.uuid, password: TEST_PASSWORD};
-    input2 = {uuid: candidate2.uuid, password: TEST_PASSWORD};
+    //Setting up voter's account
+    const setInput = await setUserAccount(TEST_VOTER_ID);
+
+    input1 = {uuid: candidate1.uuid, password: setInput.password};
+    input2 = {uuid: candidate2.uuid, password: setInput.password};
 });
 
 describe('Vote', () => {
-    it('should create a new vote and fail to vote twice', async () => {
+    it('should create a new vote', async () => {
         const vote = await voteRepository.createVote({
             userId: TEST_VOTER_ID,
             input: input1,
@@ -51,13 +54,6 @@ describe('Vote', () => {
             candidate: {id: candidate1.id},
             user: {id: TEST_VOTER_ID}
         });
-        //
-        // expect(async () => {
-        //     await voteRepository.createVote({
-        //         userId: TEST_VOTER_ID,
-        //         input: input1
-        //     });
-        // }).toThrowError(/voted/);
     }, 10000);
 
     it('should vote for second subcategory', async () => {

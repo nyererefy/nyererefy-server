@@ -101,6 +101,54 @@ describe('User', () => {
         });
     });
 
+    it('should verify password', async () => {
+        const user = await createUser(TEST_PROGRAM_IDENTIFIER);
+
+        const input: UserSetupInput = {
+            name: "Nia Kateile",
+            username: "nia",
+            password: "nia@46567",
+            sex: Sex.FEMALE
+        };
+        await repository.confirmData(user.id);
+        await repository.setupUser(user.id, input);
+
+        const result = await repository.verifyPassword(user.id, input.password);
+        expect(result).toBeTruthy();
+    });
+
+    it('should fail verify wrong password', async () => {
+        const user = await createUser(TEST_PROGRAM_IDENTIFIER);
+
+        const input: UserSetupInput = {
+            name: "Kheri Kateile",
+            username: "kheri",
+            password: "nia@46567",
+            sex: Sex.MALE
+        };
+
+        await repository.confirmData(user.id);
+        await repository.setupUser(user.id, input);
+
+        try {
+            await repository.verifyPassword(user.id, 'wrong_pass');
+            expect(false).toBeTruthy();
+        } catch (e) {
+            expect(e.message).toMatch(/wrong/);
+        }
+    });
+
+    it('should fail verify null password', async () => {
+        const user = await createUser(TEST_PROGRAM_IDENTIFIER);
+
+        try {
+            await repository.verifyPassword(user.id, 'anything');
+            expect(false).toBeTruthy();
+        } catch (e) {
+            expect(e.message).toMatch(/password/);
+        }
+    });
+
     it('should find user with voting info', async () => {
         const user: User = await repository.findUser(TEST_VOTER_ID);
         const userInfo: User = await repository.findUserInfo(TEST_VOTER_ID);
