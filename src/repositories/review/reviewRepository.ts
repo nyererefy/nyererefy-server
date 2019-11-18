@@ -8,10 +8,9 @@ import {CACHE_MID_TIME, CACHE_REVIEW_ID} from "../../utils/consts";
 
 @EntityRepository(Review)
 export class ReviewRepository extends Repository<Review> {
-    createReview(userId: number, input: ReviewInput) {
-        const review = this.create(input);
+    async createReview(userId: number, input: ReviewInput) {
+        let review = this.create(input);
 
-        //todo catch error thrown when parent id is not available.
         const subcategory = new Subcategory();
         subcategory.id = input.subcategoryId;
 
@@ -21,7 +20,11 @@ export class ReviewRepository extends Repository<Review> {
         review.subcategory = subcategory;
         review.user = user;
 
-        return this.save(review);
+        try {
+            return await this.save(review);
+        } catch (e) {
+            throw new Error('Subcategory does not exist!')
+        }
     }
 
     async deleteReview(reviewId: number, userId: number): Promise<Review> {

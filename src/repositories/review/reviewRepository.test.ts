@@ -4,6 +4,7 @@ import {getCustomRepository} from "typeorm";
 import faker from "faker";
 import {ReviewInput} from "../../entities/review";
 import {TEST_SUBCATEGORY_ID, TEST_VOTER_ID} from "../../utils/consts";
+import {OrderBy} from "../../utils/enums";
 
 let repository: ReviewRepository;
 let input: ReviewInput;
@@ -24,10 +25,24 @@ describe('Review', () => {
         expect(result.content).toMatch(input.content)
     });
 
+    it('should fail to create a new review', async () => {
+        try {
+            await repository.createReview(TEST_VOTER_ID, {...input, subcategoryId: 100});
+            expect(true).toBeFalsy()
+        } catch (e) {
+            expect(e.message).toBeDefined()
+        }
+    });
+
     it('should find reviews', async () => {
         await repository.createReview(TEST_VOTER_ID, input);
 
-        const results = await repository.findReviews(TEST_SUBCATEGORY_ID);
+        const results = await repository.findReviews({
+            subcategoryId: TEST_SUBCATEGORY_ID,
+            offset: 0,
+            limit: 10,
+            orderBy: OrderBy.ASC
+        });
 
         expect(results).toContainEqual(
             expect.objectContaining({
