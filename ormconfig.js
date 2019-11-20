@@ -2,7 +2,7 @@ const config = require('config');
 
 module.exports = {
     "type": "mysql",
-    "host": "localhost",
+    "host": config.get('mysql_host'),
     "port": config.get('mysql_port'),
     "username": config.get('mysql_username'),
     "password": config.get('mysql_password'),
