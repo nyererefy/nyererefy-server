@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import http from "http";
 import {ApolloServer} from "apollo-server-express";
-import express from "express";
+import express, {Request, Response} from "express";
 import {createSchema} from "./utils/createSchema";
 import {createConnection} from "typeorm";
 import {registerCronJobs} from "./helpers/cronJob";
@@ -13,6 +13,7 @@ import {redis} from "./utils/redis";
 import {COOKIE_NAME} from "./utils/consts";
 import config from "config";
 import cors from "cors";
+import path from "path";
 
 const RedisStore = connectRedis(session);
 
@@ -35,6 +36,7 @@ const bootstrap = async () => {
 
     const app = express();
 
+    //todo disable by: process.env.NODE_ENV !== "production"
     app.use(cors({
         credentials: true,
         origin: ['http://localhost:3000', ' http://192.168.43.228:2000'] //React app.
@@ -55,6 +57,9 @@ const bootstrap = async () => {
 
     app.use(bodyParser.urlencoded({extended: false}));
     app.use(bodyParser.json());
+    app.use(express.static(path.join(__dirname, '..', 'public/web')));
+    app.use(express.static(path.join(__dirname, '..', 'public/manage')));
+    app.use(express.static(path.join(__dirname, '..', 'public/terminal')));
     app.use(registrationRouter);
     const httpServer = http.createServer(app);
     const PORT = process.env.port || 2000;
@@ -62,6 +67,18 @@ const bootstrap = async () => {
     // ref : https://dev.to/tmns/session-handling-in-react-with-redux-express-session-and-apollo-18j8
     apolloServer.applyMiddleware({app, cors: false});
     apolloServer.installSubscriptionHandlers(httpServer);
+
+    app.get('/manage/', function (_req: Request, res: Response) {
+        res.sendFile(path.join(__dirname, '..', 'public/manage', 'index.html'));
+    });
+
+    app.get('/terminal/', function (_req: Request, res: Response) {
+        res.sendFile(path.join(__dirname, '..', 'public/terminal', 'index.html'));
+    });
+
+    app.get('*', function (_req: Request, res: Response) {
+        res.sendFile(path.join(__dirname, '..', 'public/web', 'index.html'));
+    });
 
     //`listen` on the http server variable, and not on `app`.
     httpServer.listen(PORT, () => {
