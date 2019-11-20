@@ -26,5 +26,8 @@ jest.config.js
 # Yarn
 yarn-error.log
 
+#ts
+tsconfig.json
+
 
 
