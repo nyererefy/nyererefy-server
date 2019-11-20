@@ -4,6 +4,9 @@
   "logging": false,
   "synchronize": false,
   "trace": false,
+  "entities": [
+    "dist/entities/*.*"
+  ],
   "bucket": "nyererefy",
   "redis_host": "34.89.148.31",
   "redis_port": 6379,

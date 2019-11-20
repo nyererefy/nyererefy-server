@@ -7,9 +7,7 @@ module.exports = {
     "username": config.get('mysql_username'),
     "password": config.get('mysql_password'),
     "database": config.get('mysql_db'),
-    "entities": [
-        "src/entities/*.*"
-    ],
+    "entities": config.get('entities'),
     "logging": config.get("logging"),
     "synchronize": config.get("synchronize"),
     "trace": config.get("trace"),
