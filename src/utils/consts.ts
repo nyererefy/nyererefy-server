@@ -18,17 +18,6 @@ export const CACHE_REVIEW_ID = 'review_id';
 export const CACHE_VOTE_ID = 'vote_id';
 export const CACHE_SUBCATEGORY_VOTES_COUNT_ID = 'subcategory_votes_count_id';
 
-export const REDIS_HOST = 'redis_host';
-export const REDIS_PORT = 'redis_port';
-export const REDIS_DB = 'redis_db';
-export const REDIS_PASSWORD = 'redis_password';
-
-export const MYSQL_PORT = 'mysql_port';
-export const MYSQL_DB = 'mysql_db';
-export const MYSQL_USERNAME = 'mysql_username';
-export const MYSQL_PASSWORD = 'mysql_password';
-
-
 export const COOKIE_NAME = 'nid';
 
 export const CURRENT_USER = 'current_user';

@@ -1,16 +1,15 @@
 import Redis from "ioredis";
 import {RedisPubSub} from "graphql-redis-subscriptions";
 import config from "config";
-import {REDIS_DB, REDIS_HOST, REDIS_PASSWORD, REDIS_PORT} from "./consts";
 
 /**
  * Redis configuration.
  */
 const options: Redis.RedisOptions = {
-    host: config.get(REDIS_HOST),
-    port: config.get(REDIS_PORT),
-    db: config.get(REDIS_DB),
-    password: config.get(REDIS_PASSWORD),
+    host: config.get('redis_host'),
+    port: config.get('redis_port'),
+    db: config.get('redis_db'),
+    password: config.get('redis_password'),
     retryStrategy: times => Math.max(times * 100, 3000)
 };
 

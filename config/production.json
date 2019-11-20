@@ -3,5 +3,9 @@
   "logging": false,
   "synchronize": false,
   "trace": false,
-  "bucket": "nyererefy"
+  "bucket": "nyererefy",
+  "redis_host": "34.89.148.31",
+  "redis_port": 6379,
+  "redis_password": "NGc2HDKobWbJ",
+  "redis_db": 0
 }
