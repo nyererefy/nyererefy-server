@@ -36,9 +36,8 @@ const bootstrap = async () => {
 
     const app = express();
 
-    //todo disable by: process.env.NODE_ENV !== "production"
     app.use(cors({
-        credentials: true,
+        credentials: process.env.NODE_ENV !== "production",
         origin: ['http://localhost:3000', ' http://192.168.43.228:2000'] //React app.
     }));
 
