@@ -11,6 +11,7 @@ module.exports = {
     "logging": config.get("logging"),
     "synchronize": config.get("synchronize"),
     "trace": config.get("trace"),
+    "extra": config.get("extra"),
     cache: {
         type: "redis",
         options: {

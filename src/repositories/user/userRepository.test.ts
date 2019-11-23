@@ -149,6 +149,25 @@ describe('User', () => {
         }
     });
 
+
+    it('should reset user account', async () => {
+        const user = await createUser(TEST_PROGRAM_IDENTIFIER);
+
+        const input: UserSetupInput = {
+            name: faker.internet.userName(),
+            username: faker.internet.userName(),
+            password: faker.internet.password(),
+            sex: Sex.FEMALE
+        };
+
+        await repository.confirmData(user.id);
+        await repository.setupUser(user.id, input);
+
+        const result = await repository.resetUser(user.regNo);
+        expect(result.isAccountSet).toBeFalsy();
+        expect(result.isDataConfirmed).toBeFalsy();
+    });
+
     it('should find user with voting info', async () => {
         const user: User = await repository.findUser(TEST_VOTER_ID);
         const userInfo: User = await repository.findUserInfo(TEST_VOTER_ID);

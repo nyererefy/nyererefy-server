@@ -120,6 +120,19 @@ export class UserRepository extends Repository<User> {
         return await this.save(user);
     }
 
+    async resetUser(regNo: string) {
+        let user = await this.findOne({where: {regNo}});
+
+        if (!user) {
+            throw new Error('account was not found!')
+        }
+
+        user.isDataConfirmed = false;
+        user.isAccountSet = false;
+
+        return await this.save(user);
+    }
+
     async loginWithGoogle({profile, accessToken}: PassportDataInterface) {
         const email = profile.emails[0].value || profile._json.email;
 

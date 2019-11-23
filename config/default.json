@@ -26,5 +26,6 @@
     }
   },
   "bucket": "nyererefy_test",
-  "admin_email": "teknolojia360@gmail.com"
+  "admin_email": "teknolojia360@gmail.com",
+  "extra": []
 }

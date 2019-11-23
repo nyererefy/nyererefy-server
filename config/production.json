@@ -1,8 +1,10 @@
 {
-  "mysql_host": "34.77.68.236",
   "mysql_password": "UD}9u:fw^{6RR5;G",
+  "extra": {
+    "socketPath": "/cloudsql/nyererefy:europe-west1:nyererefy"
+  },
   "logging": false,
-  "synchronize": false,
+  "synchronize": true,
   "trace": false,
   "entities": [
     "dist/entities/*.*"

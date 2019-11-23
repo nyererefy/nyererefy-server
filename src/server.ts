@@ -5,7 +5,7 @@ import express, {Request, Response} from "express";
 import {createSchema} from "./utils/createSchema";
 import {createConnection} from "typeorm";
 import {registerCronJobs} from "./helpers/cronJob";
-import {registrationRouter} from "./routes/register";
+import {bridgeRouter} from "./routes/register";
 import bodyParser from "body-parser";
 import session from "express-session";
 import connectRedis from "connect-redis";
@@ -59,7 +59,7 @@ const bootstrap = async () => {
     app.use(express.static(path.join(__dirname, '..', 'public/web')));
     app.use(express.static(path.join(__dirname, '..', 'public/manage')));
     app.use(express.static(path.join(__dirname, '..', 'public/terminal')));
-    app.use(registrationRouter);
+    app.use(bridgeRouter);
     const httpServer = http.createServer(app);
     const PORT = process.env.port || 2000;
 
