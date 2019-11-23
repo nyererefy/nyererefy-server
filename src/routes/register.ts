@@ -48,13 +48,15 @@ bridgeRouter.post('/api/v1/register', async (req: Request, res: Response) => {
         const user = await userRepository.registrationByProgram(university.id, input);
 
         if (user) {
-            res.status(200).send({
-                regNo: user.regNo,
-                email: user.email,
-            });
+            res.status(200).send(
+                {message: 'Your data has been sent successfully! You can now login to Nyererefy'}
+            );
         }
     } catch (e) {
-        res.status(403).send({message: 'Something went wrong, Please contact your Bridge administrator'})
+        res.status(403).send({
+            message: 'Something went wrong and we can\'t register you right now, ' +
+                'Please contact your Bridge administrator'
+        })
     }
 });
 
@@ -73,7 +75,7 @@ bridgeRouter.post('/api/v1/reset', async (req: Request, res: Response) => {
 
         if (user) {
             res.status(200).send({
-                regNo: user.regNo
+                message: `Your account has been reset successfully`
             });
         }
     } catch (e) {
