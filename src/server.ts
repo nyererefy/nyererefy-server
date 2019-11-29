@@ -31,8 +31,7 @@ const bootstrap = async () => {
 
     const apolloServer = new ApolloServer({
         schema: await createSchema(),
-        context: ({req, res}: any) => ({req, res}),
-        playground: process.env.NODE_ENV !== "production"
+        context: ({req, res}: any) => ({req, res})
     });
 
     const app = express();
