@@ -2,8 +2,9 @@
   "mysql_username": "kali",
   "mysql_password": "#$%GNHy-po",
   "logging": false,
-  "synchronize": true,
+  "synchronize": false,
   "trace": false,
+  "mysql_db": "nyererefy_db",
   "entities": [
     "dist/entities/*.*"
   ],
