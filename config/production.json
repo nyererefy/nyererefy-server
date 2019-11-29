@@ -1,8 +1,6 @@
 {
-  "mysql_password": "UD}9u:fw^{6RR5;G",
-  "extra": {
-    "socketPath": "/cloudsql/nyererefy:europe-west1:nyererefy"
-  },
+  "mysql_username": "kali",
+  "mysql_password": "#$%GNHy-po",
   "logging": false,
   "synchronize": true,
   "trace": false,
@@ -10,8 +8,6 @@
     "dist/entities/*.*"
   ],
   "bucket": "nyererefy",
-  "redis_host": "34.89.148.31",
-  "redis_port": 6379,
-  "redis_password": "NGc2HDKobWbJ",
+  "redis_password": "a4yZ8vmSXGry",
   "redis_db": 0
 }

@@ -6,6 +6,7 @@
   "scripts": {
     "build": "rimraf dist && tsc",
     "start": "node dist/server.js",
+    "serve": "set NODE_ENV=production&& pm2 start dist/server.js --watch -f",
     "dev": "ts-node-dev --respawn src/server.ts",
     "test": "npm run test-db:setup && jest",
     "clean": "npm run test-db:setup",
@@ -64,7 +65,7 @@
     "@types/passport": "^1.0.1",
     "@types/uuid": "^3.4.6",
     "jest": "^24.8.0",
-    "rimraf": "^2.6.3",
+    "rimraf": "^3.0.0",
     "ts-jest": "^24.0.2",
     "ts-node-dev": "^1.0.0-pre.40",
     "typescript": "^3.5.3"
