@@ -1,6 +1,6 @@
 {
   "mysql_username": "kali",
-  "mysql_password": "#$%GNHy-po",
+  "mysql_password": "#G$5-R12@#",
   "logging": false,
   "synchronize": false,
   "trace": false,
@@ -9,6 +9,6 @@
     "dist/entities/*.*"
   ],
   "bucket": "nyererefy",
-  "redis_password": "a4yZ8vmSXGry",
+  "redis_password": "sJwsFiytQi3e",
   "redis_db": 0
 }
