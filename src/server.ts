@@ -14,6 +14,8 @@ import {COOKIE_NAME} from "./utils/consts";
 import config from "config";
 import cors from "cors";
 import path from "path";
+// @ts-ignore
+import subdomain from "express-subdomain";
 
 const RedisStore = connectRedis(session);
 
@@ -68,14 +70,27 @@ const bootstrap = async () => {
     apolloServer.applyMiddleware({app, cors: false});
     apolloServer.installSubscriptionHandlers(httpServer);
 
-    app.get('/manage/', function (_req: Request, res: Response) {
+    const terminalRouter = express.Router();
+    const manageRouter = express.Router();
+    const webRouter = express.Router();
+
+    webRouter.get('*', function (_req: Request, res: Response) {
+        res.sendFile(path.join(__dirname, '..', 'public/web', 'index.html'));
+    });
+
+    manageRouter.get('*', function (_req: Request, res: Response) {
         res.sendFile(path.join(__dirname, '..', 'public/manage', 'index.html'));
     });
 
-    app.get('/terminal/', function (_req: Request, res: Response) {
+    terminalRouter.get('*', function (_req: Request, res: Response) {
         res.sendFile(path.join(__dirname, '..', 'public/terminal', 'index.html'));
     });
 
+    app.use(subdomain('web', webRouter));
+    app.use(subdomain('manage', manageRouter));
+    app.use(subdomain('terminal', terminalRouter));
+
+    //The rest
     app.get('*', function (_req: Request, res: Response) {
         res.sendFile(path.join(__dirname, '..', 'public/web', 'index.html'));
     });

@@ -30,6 +30,7 @@
     "crypto-random-string": "^3.0.1",
     "express": "^4.17.1",
     "express-session": "^1.16.2",
+    "express-subdomain": "^1.0.5",
     "faker": "^4.1.0",
     "graphql": "^14.5.8",
     "graphql-redis-subscriptions": "^2.1.1",
