@@ -17,7 +17,6 @@ import path from "path";
 
 const RedisStore = connectRedis(session);
 
-//todo disable mysqli errors in production.
 const bootstrap = async () => {
     //Db connection.
     await createConnection();
@@ -68,11 +67,11 @@ const bootstrap = async () => {
     apolloServer.applyMiddleware({app, cors: false});
     apolloServer.installSubscriptionHandlers(httpServer);
 
-    app.get('/manage/', function (_req: Request, res: Response) {
+    app.get('/manage*', function (_req: Request, res: Response) {
         res.sendFile(path.join(__dirname, '..', 'public/manage', 'index.html'));
     });
 
-    app.get('/terminal/', function (_req: Request, res: Response) {
+    app.get('/terminal*', function (_req: Request, res: Response) {
         res.sendFile(path.join(__dirname, '..', 'public/terminal', 'index.html'));
     });
 
