@@ -40,7 +40,7 @@ export enum Eligible {
     /**
      * If election is universal then all categories should also made universal
      */
-    // UNIVERSAL = 0
+    UNIVERSAL = 0
 }
 
 /**

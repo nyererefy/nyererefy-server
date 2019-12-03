@@ -48,6 +48,18 @@ export class SubcategoryRepository extends Repository<Subcategory> {
 
             let subcategory = new Subcategory();
 
+            if (category.eligible === Eligible.UNIVERSAL) {
+                //Generate one subcategory for all of them.
+                subcategory = await this.saveSubcategory({
+                    title: category.title,
+                    suffix: 'Universal',
+                    ref: 0, //Means all universities.
+                    categoryId: category.id
+                });
+
+                subcategories.push(subcategory);
+            }
+
             if (category.eligible === Eligible.ALL) {
                 //Generate one subcategory for all of them.
                 subcategory = await this.saveSubcategory({
@@ -217,6 +229,11 @@ export class SubcategoryRepository extends Repository<Subcategory> {
         //For now we just deal with single university. That's is the reality.
         for (let i = 0; i < subs.length; i++) {
             const sub = subs[i];
+
+            //all students in the system.
+            if (sub.category.eligible === Eligible.UNIVERSAL) {
+                subcategories.push(sub)
+            }
 
             //all students in the university will see this subcategory.
             if (sub.category.eligible === Eligible.ALL &&

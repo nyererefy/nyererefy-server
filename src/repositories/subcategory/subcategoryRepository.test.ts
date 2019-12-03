@@ -147,4 +147,19 @@ describe('Subcategory', () => {
             })
         )
     }, 10000);
+
+    it('should find all universal subcategories', async () => {
+        // const categoryAll = await createCategory(election.id, Eligible.ALL);
+        await createCategory(election.id, Eligible.UNIVERSAL);
+        await repository.generateSubcategories(TEST_UNIVERSITY_ID, election.id);
+
+        const results = await repository.findEligibleElectionSubcategories(election.id, user.id);
+
+        expect(results).toContainEqual(
+            expect.objectContaining({
+                id: expect.any(Number),
+                title: expect.any(String)
+            })
+        )
+    }, 10000);
 });
