@@ -38,6 +38,6 @@ export class ProgramRepository extends Repository<Program> {
     }
 
     findPrograms() {
-        return this.find()
+        return this.find({order: {id: 'DESC'}})
     }
 }
