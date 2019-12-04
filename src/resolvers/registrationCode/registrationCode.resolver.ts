@@ -1,4 +1,4 @@
-import {Authorized, Mutation, Resolver} from "type-graphql";
+import {Authorized, Mutation, Query, Resolver} from "type-graphql";
 import {getCustomRepository} from "typeorm";
 import {RegistrationCodeRepository} from "../../repositories/registrationCode/registrationCodeRepository";
 import {RegistrationCode} from "../../entities/registrationCode";
@@ -12,5 +12,11 @@ export class RegistrationCodeResolver {
     @Mutation(() => RegistrationCode)
     async generateRegistrationCode(): Promise<RegistrationCode> {
         return await registrationCodeRepository.generateRegistrationCode();
+    }
+
+    @Authorized(Role.ADMIN)
+    @Query(() => [RegistrationCode], {description: 'Needs admin access'})
+    async registrationCodes(): Promise<RegistrationCode[]> {
+        return await registrationCodeRepository.findRegistrationCodes();
     }
 }

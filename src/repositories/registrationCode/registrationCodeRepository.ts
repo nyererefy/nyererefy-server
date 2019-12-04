@@ -17,6 +17,10 @@ export class RegistrationCodeRepository extends Repository<RegistrationCode> {
         return registrationCode;
     }
 
+    async findRegistrationCodes(): Promise<RegistrationCode[]> {
+        return await this.find();
+    }
+
     deleteRegistrationCode(id: number): Promise<DeleteResult> {
         return this.delete(id);
     }
