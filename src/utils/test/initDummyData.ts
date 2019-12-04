@@ -166,7 +166,7 @@ export async function setUserAccount(userId: number) {
     const input: UserSetupInput = {
         name: faker.random.words(2),
         username: faker.internet.userName(),
-        password: faker.internet.password(8),
+        pin: faker.internet.password(8),
         sex: Sex.FEMALE
     };
 

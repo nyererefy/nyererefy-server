@@ -52,8 +52,8 @@ export class VoteRepository extends Repository<Vote> {
             throw new Error('Election is not opened')
         }
 
-        //Verifying user password
-        await this.userRepository.verifyPassword(userId, input.password);
+        //Verifying user pin
+        await this.userRepository.verifyPassword(userId, input.pin);
 
         //Finding all eligible subcategories for this user.
         const subcategories = await this.subcategoryRepository.findEligibleElectionSubcategories(

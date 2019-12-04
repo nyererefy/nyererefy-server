@@ -86,7 +86,7 @@ describe('User', () => {
         const input: UserSetupInput = {
             name: "Natalia Kateile",
             username: "Naa",
-            password: "password",
+            pin: "1234",
             sex: Sex.FEMALE
         };
 
@@ -101,29 +101,30 @@ describe('User', () => {
         });
     });
 
-    it('should verify password', async () => {
+    it('should verify pin', async () => {
         const user = await createUser(TEST_PROGRAM_IDENTIFIER);
 
         const input: UserSetupInput = {
             name: "Nia Kateile",
             username: "nia",
-            password: "nia@46567",
+            pin: "4656",
             sex: Sex.FEMALE
         };
+
         await repository.confirmData(user.id);
         await repository.setupUser(user.id, input);
 
-        const result = await repository.verifyPassword(user.id, input.password);
+        const result = await repository.verifyPassword(user.id, input.pin);
         expect(result).toBeTruthy();
     });
 
-    it('should fail verify wrong password', async () => {
+    it('should fail verify wrong pin', async () => {
         const user = await createUser(TEST_PROGRAM_IDENTIFIER);
 
         const input: UserSetupInput = {
             name: "Kheri Kateile",
             username: "kheri",
-            password: "nia@46567",
+            pin: "6567",
             sex: Sex.MALE
         };
 
@@ -138,14 +139,14 @@ describe('User', () => {
         }
     });
 
-    it('should fail verify null password', async () => {
+    it('should fail verify null pin', async () => {
         const user = await createUser(TEST_PROGRAM_IDENTIFIER);
 
         try {
             await repository.verifyPassword(user.id, 'anything');
             expect(false).toBeTruthy();
         } catch (e) {
-            expect(e.message).toMatch(/password/);
+            expect(e.message).toMatch(/pin/);
         }
     });
 
@@ -156,7 +157,7 @@ describe('User', () => {
         const input: UserSetupInput = {
             name: faker.internet.userName(),
             username: faker.internet.userName(),
-            password: faker.internet.password(),
+            pin: faker.internet.password(),
             sex: Sex.FEMALE
         };
 

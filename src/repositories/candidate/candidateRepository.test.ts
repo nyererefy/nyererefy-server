@@ -87,7 +87,7 @@ describe('CandidateRepository', () => {
         //Opening election.
         await electionRepository.openElection(TEST_ELECTION_ID);
 
-        const input: VoteInput = {uuid: candidate.uuid, password: TEST_PASSWORD};
+        const input: VoteInput = {uuid: candidate.uuid, pin: TEST_PASSWORD};
 
         await voteRepository.createVote({userId: user.id, input});
 

@@ -2,7 +2,7 @@ import {ArgsType, Authorized, Field, ID, InputType, Int, ObjectType} from "type-
 import {Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 import {User} from "./user";
 import {Candidate} from "./candidate";
-import {IsInt, IsUUID, Length} from "class-validator";
+import {IsInt, IsNumberString, IsUUID, Length} from "class-validator";
 import {Subcategory} from "./subcategory";
 import {PaginationArgs} from "../utils/query";
 import {Role} from "../utils/enums";
@@ -68,9 +68,10 @@ export class VoteInput {
     @Field({description: 'UUID of a candidate'})
     uuid: string;
 
-    @Length(6,64)
-    @Field({description: 'student password'})
-    password: string;
+    @Length(4,4)
+    @IsNumberString()
+    @Field({description: 'student pin'})
+    pin: string;
 }
 
 @ArgsType()

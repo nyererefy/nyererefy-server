@@ -34,8 +34,8 @@ beforeAll(async () => {
     //Setting up voter's account
     const setInput = await setUserAccount(TEST_VOTER_ID);
 
-    input1 = {uuid: candidate1.uuid, password: setInput.password};
-    input2 = {uuid: candidate2.uuid, password: setInput.password};
+    input1 = {uuid: candidate1.uuid, pin: setInput.pin};
+    input2 = {uuid: candidate2.uuid, pin: setInput.pin};
 });
 
 describe('Vote', () => {

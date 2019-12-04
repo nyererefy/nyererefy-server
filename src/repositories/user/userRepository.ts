@@ -109,12 +109,12 @@ export class UserRepository extends Repository<User> {
             throw new Error(`${username} is taken!, Please choose another one`)
         }
 
-        const password = await bcrypt.hash(input.password, 8);
+        const pin = await bcrypt.hash(input.pin, 8);
 
         user.name = input.name;
         user.username = username;
         user.sex = input.sex;
-        user.password = password;
+        user.pin = pin;
         user.isAccountSet = true;
 
         return await this.save(user);
@@ -255,10 +255,10 @@ export class UserRepository extends Repository<User> {
     async verifyPassword(userId: number, password: string) {
         let user = await this.findUser(userId);
 
-        const dbPassword = user.password;
+        const dbPassword = user.pin;
 
         if (!dbPassword) {
-            throw new Error('You need to set password first!')
+            throw new Error('You need to set pin first!')
         }
 
         const result = await bcrypt.compare(password, dbPassword);

@@ -14,7 +14,7 @@ import {Class} from "./class";
 import {Candidate} from "./candidate";
 import {Role, Sex, State, Strategy, Year} from "../utils/enums";
 import {Vote} from "./vote";
-import {IsAlphanumeric, IsEmail, IsInt, IsString, Length} from "class-validator";
+import {IsAlphanumeric, IsEmail, IsInt, IsNumberString, IsString, Length} from "class-validator";
 import {Review} from "./review";
 import {Residence} from "./residence";
 import {PaginationArgs} from "../utils/query";
@@ -68,10 +68,10 @@ export class User {
     token?: string;
 
     /**
-     * Email token
+     * Pin
      */
     @Column({nullable: true})
-    password?: string;
+    pin?: string;
 
     /**
      * Despite from bridge-registration but is this user verified
@@ -229,9 +229,10 @@ export class UserSetupInput implements Partial<User> {
     @Length(1, 20)
     name: string;
 
-    @Field()
-    @Length(6, 64)
-    password: string;
+    @Field({description:"Student\'s pin must be 4 digits"})
+    @Length(4, 4)
+    @IsNumberString()
+    pin: string;
 
     @Field(() => Sex)
     sex: Sex;
