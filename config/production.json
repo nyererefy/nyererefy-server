@@ -2,7 +2,7 @@
   "mysql_username": "kali",
   "mysql_password": "#G$5-R12@#",
   "logging": false,
-  "synchronize": false,
+  "synchronize": true,
   "trace": false,
   "mysql_db": "nyererefy_db",
   "entities": [

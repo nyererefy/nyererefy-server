@@ -157,4 +157,10 @@ export class UserResolver {
     ): Promise<User> {
         return await userRepository.updateAvatar(userId, input);
     }
+
+    @Authorized(Role.ADMIN)
+    @Query(() => Int)
+    async usersCount(): Promise<number> {
+        return await userRepository.countUsers();
+    }
 }

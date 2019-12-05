@@ -269,4 +269,9 @@ export class UserRepository extends Repository<User> {
 
         return result
     }
+
+    async countUsers(_universityId?: number) {
+        return await this.count()
+    }
+
 }
