@@ -31,17 +31,29 @@ bridgeRouter.post('/api/v1/register', async (req: Request, res: Response) => {
     try {
         const userRepository = getCustomRepository(UserRepository);
 
+        const body: RegistrationByProgramInputInterface = req.body;
+        const input = new RegistrationByProgramInput();
+
+        const email = body.email.toLowerCase();
+
+        if (!email.endsWith('@gmail.com')) {
+            res.status(403).send(
+                {
+                    message: 'We only support Gmails (Google mails) for now! ' +
+                        'So you should switch to Gmail and try again!'
+                }
+            );
+            return
+        }
+
         const university = await validateUniversity(req, res);
         if (!university) {
             res.status(401).send({message: 'Unknown university/college'});
             return
         }
 
-        const body: RegistrationByProgramInputInterface = req.body;
-        const input = new RegistrationByProgramInput();
-
         input.regNo = body.regNo;
-        input.email = body.email;
+        input.email = email;
         input.programIdentifier = body.programIdentifier;
         input.year = body.year;
 
