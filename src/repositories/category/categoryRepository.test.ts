@@ -2,7 +2,7 @@ import '../../utils/test/initTestDb'
 import {CategoryRepository} from "./categoryRepository";
 import {getCustomRepository} from "typeorm";
 import faker from "faker";
-import {CategoryEditInput} from "../../entities/category";
+import {CategoryEditInput, CategoryInput} from "../../entities/category";
 import {Eligible} from "../../utils/enums";
 import {createCategory} from "../../utils/test/initDummyData";
 import {TEST_ELECTION_ID} from "../../utils/consts";
@@ -62,5 +62,20 @@ describe('Category', () => {
                 title: expect.any(String)
             })
         )
+    });
+
+    it('should make categories live', async () => {
+        const input: CategoryInput = {
+            isLive: false,
+            title: "new cat",
+            electionId: TEST_ELECTION_ID,
+            eligible: Eligible.ALL
+        };
+
+        const createdCategory = await repository.createCategory(input);
+        await repository.makeCategoriesLive(TEST_ELECTION_ID);
+        const category = await repository.findCategory(createdCategory.id);
+
+        expect(category.isLive).toBeTruthy();
     });
 });

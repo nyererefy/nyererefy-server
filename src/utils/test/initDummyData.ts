@@ -131,6 +131,7 @@ export async function createCategory(electionId: number, eligible = Eligible.ALL
     const categoryInput: CategoryInput = {
         title: faker.random.words(2),
         electionId,
+        isLive: true,
         eligible
     };
 

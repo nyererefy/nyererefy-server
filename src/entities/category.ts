@@ -23,6 +23,13 @@ export class Category {
     eligible: Eligible;
 
     /**
+     * If there will be live results for all descendants subcategories.
+     */
+    @Field()
+    @Column({default: true})
+    isLive: boolean;
+
+    /**
      * OneToMany
      */
     @OneToMany(() => Subcategory, s => s.category, {onDelete: "CASCADE"})
@@ -41,6 +48,9 @@ export class CategoryInput implements Partial<Category> {
     @Length(1, 50)
     @Field({description: 'a-zA-Z only'})
     title: string;
+
+    @Field({defaultValue: true})
+    isLive: boolean;
 
     @Field(() => Eligible)
     eligible: Eligible;

@@ -37,8 +37,9 @@ const bootstrap = async () => {
     const app = express();
 
     app.use(cors({
-        credentials: process.env.NODE_ENV !== "production",
-        origin: ['http://localhost:3000', ' http://192.168.43.228:2000'] //React app.
+        credentials: true,
+        origin: process.env.NODE_ENV !== "production" ?
+            ['http://localhost:3000', ' http://192.168.43.228:2000'] : 'https://nyererefy.com' //React app.
     }));
 
     app.use(session({

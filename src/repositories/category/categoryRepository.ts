@@ -25,6 +25,27 @@ export class CategoryRepository extends Repository<Category> {
         return this.save(category);
     }
 
+    /**
+     * Used to make category live mainly once election ends.
+     * @param electionId
+     */
+    async makeCategoriesLive(electionId: number) {
+        const election = new Election();
+        election.id = electionId;
+
+        const categories = await this.find({where: {election}});
+
+        for (let i = 0; i < categories.length; i++) {
+            const category = categories[i];
+
+            //If was live then no need of editing it.
+            if (category.isLive) continue;
+
+            category.isLive = true;
+            await this.save(category)
+        }
+    }
+
     async findCategory(id: number): Promise<Category> {
         let category = await this.findOne(id);
         if (!category) throw new Error('Category was not found');

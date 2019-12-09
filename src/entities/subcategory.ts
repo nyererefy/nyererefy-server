@@ -42,7 +42,8 @@ export class Subcategory {
     /**
      * ManyToOne
      */
-    @ManyToOne(() => Category, s => s.subcategories)
+    @Field(() => Category)
+    @ManyToOne(() => Category, s => s.subcategories, {eager: true})
     category: Category;
 
     /**
