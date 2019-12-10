@@ -56,6 +56,11 @@ export class Candidate {
 
     @Field(() => Int, {description: 'Not to be used in every query'})
     votesCount: number;
+
+    // todo add winner field that when election ends winner is declared automatically and notify every body.
+    @Field({nullable: true})
+    @Column({nullable: true})
+    isWinner?: boolean;
 }
 
 @InputType()

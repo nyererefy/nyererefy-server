@@ -2,3 +2,5 @@ node_modules/
 dist/
 .idea/
 public
+
+test.pdf
