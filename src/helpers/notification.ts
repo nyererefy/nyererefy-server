@@ -13,7 +13,7 @@ export interface BulkNotificationInterface {
     body: string,
 }
 
-function pushNotification(title: string, body: string, token: string | string[]) {
+export function pushNotification(title: string, body: string, token: string | string[]) {
     const payload = {
         notification: {title, body}
     };
