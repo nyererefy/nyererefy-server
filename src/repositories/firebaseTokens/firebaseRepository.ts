@@ -31,4 +31,8 @@ export class FirebaseRepository extends Repository<FirebaseToken> {
 
         return this.find({where: {user}})
     }
+
+    findAllUsersFirebaseTokens(): Promise<FirebaseToken[]> {
+        return this.find({select: ["token"]})
+    }
 }
