@@ -8,9 +8,9 @@ export class FirebaseRepository extends Repository<FirebaseToken> {
         const user = new User();
         user.id = userId;
 
-        //Checking if device's token exists.
+        //Checking if deviceId's token exists.
         const previousFirebaseToken = await this.findOne(
-            {where: {user, device: input.device}}
+            {where: {deviceId: input.deviceId}}
         );
 
         if (previousFirebaseToken) {
@@ -33,6 +33,6 @@ export class FirebaseRepository extends Repository<FirebaseToken> {
     }
 
     findAllUsersFirebaseTokens(): Promise<FirebaseToken[]> {
-        return this.find({select: ["token"]})
+        return this.find({select: ["token"], relations: ["user"]})
     }
 }

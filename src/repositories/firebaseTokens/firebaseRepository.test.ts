@@ -13,7 +13,7 @@ beforeAll(async () => {
 describe('FirebaseToken', () => {
     it('should create a new firebaseToken', async () => {
         const token: FirebaseTokenInput = {
-            device: faker.internet.userName(),
+            deviceId: faker.internet.userName(),
             token: faker.lorem.paragraphs(1)
         };
 
@@ -26,14 +26,14 @@ describe('FirebaseToken', () => {
 
     it('should update a previous firebaseToken', async () => {
         const token: FirebaseTokenInput = {
-            device: faker.internet.userName(),
+            deviceId: faker.internet.userName(),
             token: faker.lorem.paragraphs(1)
         };
 
         await repository.createFirebaseToken(2, token);
 
         const newToken: FirebaseTokenInput = {
-            device: token.device,
+            deviceId: token.deviceId,
             token: faker.lorem.paragraphs(1)
         };
 
@@ -43,16 +43,16 @@ describe('FirebaseToken', () => {
         expect(result.length).toBe(1)
     });
 
-    it('should add new device firebaseToken', async () => {
+    it('should add new deviceId firebaseToken', async () => {
         const token: FirebaseTokenInput = {
-            device: faker.internet.userName(),
+            deviceId: faker.internet.userName(),
             token: faker.lorem.paragraphs(1)
         };
 
         await repository.createFirebaseToken(3, token);
 
         const newToken: FirebaseTokenInput = {
-            device: faker.internet.userName(),
+            deviceId: faker.internet.userName(),
             token: faker.lorem.paragraphs(1)
         };
 
@@ -60,5 +60,31 @@ describe('FirebaseToken', () => {
         const result = await repository.findUserFirebaseTokens(3);
 
         expect(result.length).toBe(2)
+    });
+
+    it('should find user\'s firebase tokens', async () => {
+        const newToken: FirebaseTokenInput = {
+            deviceId: faker.internet.userName(),
+            token: faker.lorem.paragraphs(1)
+        };
+
+        await repository.createFirebaseToken(3, newToken);
+        const result = await repository.findUserFirebaseTokens(3);
+
+        expect(result.length).toBeGreaterThan(0);
+        expect(result[0].user.regNo).toBeDefined();
+    });
+
+    it('should find all users\' firebase tokens', async () => {
+        const newToken: FirebaseTokenInput = {
+            deviceId: faker.internet.userName(),
+            token: faker.lorem.paragraphs(1)
+        };
+
+        await repository.createFirebaseToken(3, newToken);
+        const result = await repository.findAllUsersFirebaseTokens();
+
+        expect(result.length).toBeGreaterThan(0);
+        expect(result[0].user.regNo).toBeDefined();
     });
 });

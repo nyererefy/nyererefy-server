@@ -6,7 +6,7 @@ import {FirebaseRepository} from "../repositories/firebaseTokens/firebaseReposit
 export interface NotificationInterface {
     title: string,
     body: string,
-    token: string
+    userId: number
 }
 
 export interface BulkNotificationInterface {
@@ -14,7 +14,7 @@ export interface BulkNotificationInterface {
     body: string,
 }
 
-export async function pushNotification({title, body, token}: NotificationInterface) {
+function pushNotification(title: string, body: string, token: string) {
     const payload = {
         notification: {title, body}
     };
@@ -35,6 +35,19 @@ export async function pushNotification({title, body, token}: NotificationInterfa
         });
 }
 
+export async function notifyUser({title, body, userId}: NotificationInterface) {
+    const repository = getCustomRepository(FirebaseRepository);
+
+    const firebaseTokens = await repository.findUserFirebaseTokens(userId);
+
+    //Notify all users devices.
+    for (let i = 0; i < firebaseTokens.length; i++) {
+        const tkn = firebaseTokens[i];
+        const titleWithName = `${tkn.user.name || tkn.user.username || tkn.user.regNo}, ${title}`;
+        pushNotification(titleWithName, body, tkn.token);
+    }
+}
+
 //todo find a way to push bulk notifications
 export async function notifyAll({title, body}: BulkNotificationInterface) {
     const repository = getCustomRepository(FirebaseRepository);
@@ -42,10 +55,10 @@ export async function notifyAll({title, body}: BulkNotificationInterface) {
     const firebaseTokens = await repository.findAllUsersFirebaseTokens();
 
     for (let i = 0; i < firebaseTokens.length; i++) {
-        const firebaseToken = firebaseTokens[i];
-
-        await pushNotification({title, body, token: firebaseToken.token});
+        const tkn = firebaseTokens[i];
+        const titleWithName = `${tkn.user.name || tkn.user.username || tkn.user.regNo}, ${title}`;
+        pushNotification(titleWithName, body, tkn.token);
     }
-
-    return true
 }
+
+//todo notify university.

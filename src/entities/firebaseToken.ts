@@ -1,4 +1,4 @@
-import {Column, CreateDateColumn, Entity, Index, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
+import {Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
 import {Field, InputType} from "type-graphql";
 import {User} from "./user";
 
@@ -11,9 +11,9 @@ export class FirebaseToken {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Index()
-    @Column()
-    device: string;
+    /* Device Id*/
+    @Column({unique: true, length: 100})
+    deviceId: string;
 
     @Column({type: "text"})
     token: string;
@@ -24,7 +24,7 @@ export class FirebaseToken {
     @UpdateDateColumn()
     updatedAt: Date;
 
-    @ManyToOne(() => User, s => s.firebaseTokens)
+    @ManyToOne(() => User, s => s.firebaseTokens, {eager: true})
     user: User;
 }
 
@@ -34,5 +34,5 @@ export class FirebaseTokenInput implements Partial<FirebaseToken> {
     token: string;
 
     @Field()
-    device: string;
+    deviceId: string;
 }
