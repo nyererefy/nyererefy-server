@@ -15,6 +15,7 @@ import bcrypt from "bcryptjs"
 import {ResidenceRepository} from "../residence/residenceRepository";
 import {ElectionRepository} from "../election/electionRepository";
 import {deleteObject, uploadImage, uploadImageFromUrl} from "../../helpers/avatar";
+import {notifyUser} from "../../helpers/notification";
 
 export interface PassportDataInterface {
     accessToken: string,
@@ -130,7 +131,16 @@ export class UserRepository extends Repository<User> {
         user.isDataConfirmed = false;
         user.isAccountSet = false;
 
-        return await this.save(user);
+        user = await this.save(user);
+
+        //Notify user
+        await notifyUser({
+                userId: user.id,
+                title: `Your account has been reset, Please Re-login to set it up`,
+                body: "Thank you"
+            }
+        );
+        return user;
     }
 
     async loginWithGoogle({profile, accessToken}: PassportDataInterface) {

@@ -2,6 +2,7 @@ import {CronJob} from "cron";
 import {getCustomRepository} from "typeorm";
 import {ElectionRepository} from "../repositories/election/electionRepository";
 import {CategoryRepository} from "../repositories/category/categoryRepository";
+import {notifyAll} from "./notification";
 
 export const registerCronJobs = () => {
     // This runs every minute.
@@ -14,16 +15,24 @@ export const registerCronJobs = () => {
             const state = states[i];
 
             if (state.isStarted) {
-                //todo send notification. publish election
-                console.info(`Started ${state.election.title}`)
+                //Notify user
+                await notifyAll({
+                        title: `${state.election.title} has started.`,
+                        body: `${state.election.title} has started, You can now vote for your favourite candidates.`
+                    }
+                );
             }
 
             if (state.isClosed) {
-                //todo send notification.
-                console.log(`Closed ${state.election.title}`);
-
                 //Releasing results.
                 await categoryRepository.makeCategoriesLive(state.election.id);
+
+                //Notify user
+                await notifyAll({
+                        title: `${state.election.title} has ended.`,
+                        body: `${state.election.title} has ended and all results have been released.`
+                    }
+                );
             }
         }
     });

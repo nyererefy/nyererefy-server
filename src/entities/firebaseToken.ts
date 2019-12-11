@@ -24,7 +24,7 @@ export class FirebaseToken {
     @UpdateDateColumn()
     updatedAt: Date;
 
-    @ManyToOne(() => User, s => s.firebaseTokens, {eager: true})
+    @ManyToOne(() => User, s => s.firebaseTokens)
     user: User;
 }
 

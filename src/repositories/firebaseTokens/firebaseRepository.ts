@@ -29,10 +29,10 @@ export class FirebaseRepository extends Repository<FirebaseToken> {
         const user = new User();
         user.id = userId;
 
-        return this.find({where: {user}})
+        return this.find({where: {user}, relations: ['user']})
     }
 
     findAllUsersFirebaseTokens(): Promise<FirebaseToken[]> {
-        return this.find({select: ["token"], relations: ["user"]})
+        return this.find({select: ["token"]})
     }
 }

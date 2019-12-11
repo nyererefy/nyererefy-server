@@ -13,6 +13,7 @@ import {
 } from "../../utils/consts";
 import {OrderBy} from "../../utils/enums";
 import {UserRepository} from "../user/userRepository";
+import {notifyUser} from "../../helpers/notification";
 
 interface VoteInterface {
     userId: number,
@@ -102,6 +103,14 @@ export class VoteRepository extends Repository<Vote> {
         } catch (e) {
             throw new Error('Ooops! Something went wrong!');
         }
+
+        //Notify user
+        await notifyUser({
+                userId,
+                title: `You have successfully voted for ${candidate.user.name}`,
+                body: "Thank you"
+            }
+        );
 
         return vote;
     }

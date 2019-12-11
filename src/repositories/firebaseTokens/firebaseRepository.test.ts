@@ -85,6 +85,5 @@ describe('FirebaseToken', () => {
         const result = await repository.findAllUsersFirebaseTokens();
 
         expect(result.length).toBeGreaterThan(0);
-        expect(result[0].user.regNo).toBeDefined();
     });
 });

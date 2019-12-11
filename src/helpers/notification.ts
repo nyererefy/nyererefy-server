@@ -2,7 +2,6 @@ import {getCustomRepository} from "typeorm";
 import admin from "firebase-admin";
 import {FirebaseRepository} from "../repositories/firebaseTokens/firebaseRepository";
 
-
 export interface NotificationInterface {
     title: string,
     body: string,
@@ -14,7 +13,7 @@ export interface BulkNotificationInterface {
     body: string,
 }
 
-function pushNotification(title: string, body: string, token: string) {
+function pushNotification(title: string, body: string, token: string | string[]) {
     const payload = {
         notification: {title, body}
     };
@@ -48,17 +47,13 @@ export async function notifyUser({title, body, userId}: NotificationInterface) {
     }
 }
 
-//todo find a way to push bulk notifications
 export async function notifyAll({title, body}: BulkNotificationInterface) {
     const repository = getCustomRepository(FirebaseRepository);
 
     const firebaseTokens = await repository.findAllUsersFirebaseTokens();
+    const tokens = firebaseTokens.map(t => t.token);
 
-    for (let i = 0; i < firebaseTokens.length; i++) {
-        const tkn = firebaseTokens[i];
-        const titleWithName = `${tkn.user.name || tkn.user.username || tkn.user.regNo}, ${title}`;
-        pushNotification(titleWithName, body, tkn.token);
-    }
+    pushNotification(title, body, tokens);
 }
 
 //todo notify university.
