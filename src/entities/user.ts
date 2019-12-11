@@ -21,6 +21,7 @@ import {PaginationArgs} from "../utils/query";
 import {CURRENT_USER} from "../utils/consts";
 import {GraphQLUpload} from "graphql-upload";
 import {GraphQLScalarType} from "graphql";
+import {FirebaseToken} from "./firebaseToken";
 
 registerEnumType(State, {name: 'State'});
 registerEnumType(Sex, {name: 'Sex'});
@@ -157,6 +158,9 @@ export class User {
 
     @OneToMany(() => Review, s => s.user)
     reviews: Review[];
+
+    @OneToMany(() => FirebaseToken, s => s.user)
+    firebaseTokens: FirebaseToken[];
 
     @BeforeInsert()
     cleanData() {
