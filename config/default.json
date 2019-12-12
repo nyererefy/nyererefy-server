@@ -27,5 +27,13 @@
   },
   "bucket": "nyererefy_test",
   "admin_email": "teknolojia360@gmail.com",
-  "extra": []
+  "extra": [],
+  "transporter": {
+    "host": "smtp.mailtrap.io",
+    "port": 2525,
+    "auth": {
+      "user": "9fe82801a0e030",
+      "pass": "c8429892f90f36"
+    }
+  }
 }

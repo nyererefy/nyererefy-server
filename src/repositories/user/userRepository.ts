@@ -15,6 +15,9 @@ import bcrypt from "bcryptjs"
 import {ResidenceRepository} from "../residence/residenceRepository";
 import {ElectionRepository} from "../election/electionRepository";
 import {deleteObject, uploadImage, uploadImageFromUrl} from "../../helpers/avatar";
+import {notifyUser} from "../../helpers/notification";
+import {sendEmail} from "../../helpers/mail";
+import {ACCOUNT_RESET_EMAIL, WELCOME_EMAIL} from "../../utils/emails";
 
 export interface PassportDataInterface {
     accessToken: string,
@@ -65,7 +68,16 @@ export class UserRepository extends Repository<User> {
                     }
                     return student;
                 }
-                return await this.save(user);
+                const createdUser = await this.save(user);
+
+                if (createdUser) {
+                    await sendEmail({
+                        to: createdUser.email,
+                        subject: `Welcome to Nyererefy`,
+                        html: WELCOME_EMAIL
+                    });
+                }
+                return createdUser;
             } catch (e) {
                 //todo use logger here.
                 throw new Error('Change your email address please!');
@@ -130,7 +142,22 @@ export class UserRepository extends Repository<User> {
         user.isDataConfirmed = false;
         user.isAccountSet = false;
 
-        return await this.save(user);
+        user = await this.save(user);
+
+        //Notify user
+        await notifyUser({
+                userId: user.id,
+                title: `Your account has been reset, Please Re-login to set it up`,
+                body: "Thank you"
+            }
+        );
+
+        await sendEmail({
+            to: user.email,
+            subject: `Your account has been reset`,
+            html: ACCOUNT_RESET_EMAIL
+        });
+        return user;
     }
 
     async loginWithGoogle({profile, accessToken}: PassportDataInterface) {
@@ -272,6 +299,10 @@ export class UserRepository extends Repository<User> {
 
     async countUsers(_universityId?: number) {
         return await this.count()
+    }
+
+    async findAllUsersEmails() {
+        return await this.find({select: ["email"]})
     }
 
 }

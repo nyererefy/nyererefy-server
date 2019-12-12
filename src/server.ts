@@ -14,6 +14,7 @@ import {COOKIE_NAME} from "./utils/consts";
 import config from "config";
 import cors from "cors";
 import path from "path";
+import {initFirebase} from "./helpers/initFirebase";
 
 const RedisStore = connectRedis(session);
 
@@ -22,6 +23,8 @@ const bootstrap = async () => {
     await createConnection();
     //cron jobs.
     registerCronJobs();
+    //Init Firebase
+    initFirebase();
 
     const store = new RedisStore({
         client: redis as any,
@@ -31,7 +34,7 @@ const bootstrap = async () => {
     const apolloServer = new ApolloServer({
         schema: await createSchema(),
         context: ({req, res}: any) => ({req, res}),
-        introspection: true
+        //introspection: true //turn it on later when other developers can take part.
     });
 
     const app = express();
