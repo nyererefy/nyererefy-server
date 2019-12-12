@@ -14,6 +14,7 @@ import {
 import {OrderBy} from "../../utils/enums";
 import {UserRepository} from "../user/userRepository";
 import {notifyUser} from "../../helpers/notification";
+import {sendEmail} from "../../helpers/mail";
 
 interface VoteInterface {
     userId: number,
@@ -111,6 +112,19 @@ export class VoteRepository extends Repository<Vote> {
                 body: "Thank you"
             }
         );
+
+        await sendEmail({
+            to: user.email,
+            subject: `You have successfully voted for ${candidate.user.name}`,
+            html: `<p>Your vote has been successfully recorded 
+                <i>Candidate</i>: <b>${candidate.user.name}</b> <hr>
+                <i>Time</i>: ${vote.createdAt}  <hr>
+                <i>Device</i>: ${device}  <hr>
+                <i>IP</i>: ${ip} <hr>
+                <br>
+                <p>Nyererefy Team.</p>
+                </p>`
+        });
 
         return vote;
     }
