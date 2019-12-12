@@ -15,6 +15,7 @@ import config from "config";
 import cors from "cors";
 import path from "path";
 import {initFirebase} from "./helpers/initFirebase";
+import helmet from "helmet";
 
 const RedisStore = connectRedis(session);
 
@@ -39,10 +40,14 @@ const bootstrap = async () => {
 
     const app = express();
 
+    app.use(helmet());
+
     app.use(cors({
         credentials: process.env.NODE_ENV !== "production",
         origin: ['http://localhost:3000', ' http://192.168.43.228:2000'] //React app.
     }));
+
+    app.set('trust proxy', process.env.NODE_ENV === "production");
 
     app.use(session({
         store,
