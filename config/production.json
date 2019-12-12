@@ -8,6 +8,7 @@
   "entities": [
     "dist/entities/*.*"
   ],
+  "session_secret": "uVyUm4Q81M-l3e3HAZTl?TGL",
   "bucket": "nyererefy",
   "redis_password": "sJwsFiytQi3e",
   "redis_db": 0

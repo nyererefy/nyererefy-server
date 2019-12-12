@@ -37,9 +37,8 @@ const bootstrap = async () => {
     const app = express();
 
     app.use(cors({
-        credentials: true,
-        origin: process.env.NODE_ENV !== "production" ?
-            ['http://localhost:3000', ' http://192.168.43.228:2000'] : 'https://nyererefy.com' //React app.
+        credentials: process.env.NODE_ENV !== "production",
+        origin: ['http://localhost:3000', ' http://192.168.43.228:2000'] //React app.
     }));
 
     app.use(session({
@@ -57,9 +56,9 @@ const bootstrap = async () => {
 
     app.use(bodyParser.urlencoded({extended: false}));
     app.use(bodyParser.json());
-    app.use(express.static(path.join(__dirname, '..', 'public/web')));
-    app.use(express.static(path.join(__dirname, '..', 'public/manage')));
-    app.use(express.static(path.join(__dirname, '..', 'public/terminal')));
+    app.use(express.static(path.join(__dirname, '..', 'public/web/build')));
+    app.use(express.static(path.join(__dirname, '..', 'public/manage/build')));
+    app.use(express.static(path.join(__dirname, '..', 'public/terminal/build')));
     app.use(bridgeRouter);
     const httpServer = http.createServer(app);
     const PORT = process.env.port || 2000;
@@ -69,15 +68,15 @@ const bootstrap = async () => {
     apolloServer.installSubscriptionHandlers(httpServer);
 
     app.get('/manage*', function (_req: Request, res: Response) {
-        res.sendFile(path.join(__dirname, '..', 'public/manage', 'index.html'));
+        res.sendFile(path.join(__dirname, '..', 'public/manage/build', 'index.html'));
     });
 
     app.get('/terminal*', function (_req: Request, res: Response) {
-        res.sendFile(path.join(__dirname, '..', 'public/terminal', 'index.html'));
+        res.sendFile(path.join(__dirname, '..', 'public/terminal/build', 'index.html'));
     });
 
     app.get('*', function (_req: Request, res: Response) {
-        res.sendFile(path.join(__dirname, '..', 'public/web', 'index.html'));
+        res.sendFile(path.join(__dirname, '..', 'public/web/build', 'index.html'));
     });
 
     //`listen` on the http server variable, and not on `app`.

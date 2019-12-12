@@ -4460,10 +4460,10 @@ passport-strategy@1.x.x:
   resolved "https://registry.yarnpkg.com/passport-strategy/-/passport-strategy-1.0.0.tgz#b5539aa8fc225a3d1ad179476ddf236b440f52e4"
   integrity sha1-tVOaqPwiWj0a0XlHbd8ja0QPUuQ=
 
-passport-token-google@^0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/passport-token-google/-/passport-token-google-0.1.2.tgz#aa655376e0270e0db44b07402bba9945989df91a"
-  integrity sha512-DBCYAlEMjM7R8Qc/6Nxg8lIvl+xKM5RlHdAFyvcDARQ89+lkE7Ho9nC732cj/oov4GmeP0d6ats7b3feW15Dqw==
+passport-token-google2@^0.1.4:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/passport-token-google2/-/passport-token-google2-0.1.4.tgz#ff4ba5762f197e2c09bc04785b34f654e6eddd17"
+  integrity sha512-TfqMwD2ucwixVt4ErZfwEHTU2kYZ1pyAbjlNJuWhfaHY3RiXN8c9xUdltu0R7uBFlBYjV8/B6j20QC71V12w/g==
   dependencies:
     passport-oauth "^1.0.0"
     pkginfo "0.2.x"

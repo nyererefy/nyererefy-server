@@ -1,6 +1,6 @@
 import passport from 'passport';
 // @ts-ignore
-import {Strategy as GoogleStrategy} from "passport-token-google";
+import {Strategy as GoogleStrategy} from "passport-token-google2";
 import config from "config";
 import {Request, Response} from "express";
 
