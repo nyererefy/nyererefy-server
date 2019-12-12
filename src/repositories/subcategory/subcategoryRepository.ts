@@ -215,6 +215,16 @@ export class SubcategoryRepository extends Repository<Subcategory> {
             .getMany();
     }
 
+    async findElectionSubcategoriesWithCandidates(electionId: number): Promise<Subcategory[]> {
+        return await this
+            .createQueryBuilder('subcategory')
+            .innerJoinAndSelect('subcategory.candidates', 'candidates')
+            .innerJoinAndSelect('subcategory.category', 'category')
+            .innerJoinAndSelect('category.election', 'election')
+            .where("election.id = :electionId", {electionId})
+            .getMany();
+    }
+
     /**
      * This filters subcategories basing on user info.
      * @param electionId

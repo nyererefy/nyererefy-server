@@ -1,5 +1,5 @@
 import {Field, ID, ObjectType} from "type-graphql";
-import {Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {Candidate} from "./candidate";
 import {Vote} from "./vote";
 import {Review} from "./review";
@@ -7,7 +7,6 @@ import {Category} from "./category";
 
 /**
  * These are generated automatically with one click "Generate".
- * todo add winner field that when election ends winner is declared automatically and notify every body.
  */
 @ObjectType()
 @Entity('subcategories')
@@ -45,13 +44,6 @@ export class Subcategory {
     @Field(() => Category)
     @ManyToOne(() => Category, s => s.subcategories, {eager: true})
     category: Category;
-
-    /**
-     * OneToOne
-     */
-    @OneToOne(() => Candidate, {nullable: true})
-    @JoinColumn()
-    winner: Candidate;
 
     /**
      * For intelligence.
