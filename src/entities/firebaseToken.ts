@@ -36,3 +36,13 @@ export class FirebaseTokenInput implements Partial<FirebaseToken> {
     @Field()
     deviceId: string;
 }
+
+
+@InputType()
+export class AlertInput {
+    @Field()
+    title: string;
+
+    @Field()
+    body: string;
+}

@@ -1,1 +1,9 @@
-{}
+{
+  "transporter": {
+    "service":  "Mailgun",
+    "auth": {
+      "api_key": "507701fc0ebadde16a6fd402812f33b7-5645b1f9-38962bc8",
+      "domain": "https://api.mailgun.net/v3/sandbox6dc3d652a131403586f658189e0caf08.mailgun.org"
+    }
+  }
+}
