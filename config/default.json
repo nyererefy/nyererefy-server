@@ -12,7 +12,6 @@
   ],
   "redis_host": "127.0.0.1",
   "redis_port": 6379,
-  "redis_password": "",
   "redis_db": 1,
   "session_secret": "uVyUm4Q81M_l3e3HAZTlzTGL",
   "auth": {
@@ -27,7 +26,7 @@
   },
   "bucket": "nyererefy_test",
   "admin_email": "teknolojia360@gmail.com",
-  "extra": [],
+  "extra": {},
   "transporter": {
     "host": "smtp.mailtrap.io",
     "port": 2525,

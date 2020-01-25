@@ -17,8 +17,7 @@ module.exports = {
         options: {
             host: config.get('redis_host'),
             port: config.get('redis_port'),
-            db: config.get('redis_db'),
-            password: config.get('redis_password')
+            db: config.get('redis_db')
         }
     }
 };

@@ -1,6 +1,11 @@
 {
-  "mysql_username": "kali",
-  "mysql_password": "#G$5-R12@#",
+  "mysql_host": null,
+  "mysql_port": null,
+  "mysql_username": "root",
+  "mysql_password": "PNncq2OHBp3At23P",
+  "extra": {
+    "socketPath": "/cloudsql/nyererefy:europe-west1:nyererefy"
+  },
   "logging": false,
   "synchronize": true,
   "trace": false,
@@ -10,7 +15,8 @@
   ],
   "session_secret": "uVyUm4Q81M-l3e3HAZTl?TGL",
   "bucket": "nyererefy",
-  "redis_password": "sJwsFiytQi3e",
+  "redis_host": "10.69.231.75",
+  "redis_port": "6379",
   "redis_db": 0,
   "transporter": {
     "service": "Mailgun",

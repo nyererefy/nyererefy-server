@@ -47,8 +47,6 @@ const bootstrap = async () => {
         origin: ['http://localhost:3000', ' http://192.168.43.228:2000'] //React app.
     }));
 
-    app.set('trust proxy', process.env.NODE_ENV === "production");
-
     app.use(session({
         store,
         name: COOKIE_NAME,
@@ -68,12 +66,13 @@ const bootstrap = async () => {
     app.use(express.static(path.join(__dirname, '..', 'public/manage/build')));
     app.use(express.static(path.join(__dirname, '..', 'public/terminal/build')));
     app.use(bridgeRouter);
-    const httpServer = http.createServer(app);
+
+    const server = http.createServer(app);
     const PORT = process.env.port || 2000;
 
     // ref : https://dev.to/tmns/session-handling-in-react-with-redux-express-session-and-apollo-18j8
     apolloServer.applyMiddleware({app, cors: false});
-    apolloServer.installSubscriptionHandlers(httpServer);
+    apolloServer.installSubscriptionHandlers(server);
 
     app.get('/manage*', function (_req: Request, res: Response) {
         res.sendFile(path.join(__dirname, '..', 'public/manage/build', 'index.html'));
@@ -88,7 +87,7 @@ const bootstrap = async () => {
     });
 
     //`listen` on the http server variable, and not on `app`.
-    httpServer.listen(PORT, () => {
+    server.listen(PORT, () => {
         console.log(`Server ready at http://localhost:${PORT}${apolloServer.graphqlPath}`);
         console.log(`Subscriptions ready at ws://localhost:${PORT}${apolloServer.subscriptionsPath}`);
     })

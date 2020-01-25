@@ -9,7 +9,6 @@ const options: Redis.RedisOptions = {
     host: config.get('redis_host'),
     port: config.get('redis_port'),
     db: config.get('redis_db'),
-    password: config.get('redis_password'),
     retryStrategy: times => Math.max(times * 100, 3000)
 };
 
